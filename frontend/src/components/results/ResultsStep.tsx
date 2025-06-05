@@ -102,13 +102,13 @@ export function ResultsStep({ result, onRestart, onDownload, onShare }: ResultsS
       </div>
 
       <div className="mt-8 flex justify-center space-x-4">
-        <Button onClick={onRestart} variant="PRIMARY">
+        <Button onClick={onRestart} variant="primary">
           Start Over
         </Button>
-        <Button onClick={onDownload} variant="SECONDARY">
+        <Button onClick={onDownload} variant="secondary">
           Download Report
         </Button>
-        <Button onClick={onShare} variant="SECONDARY">
+        <Button onClick={onShare} variant="secondary">
           Share Results
         </Button>
       </div>

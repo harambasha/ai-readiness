@@ -1,4 +1,5 @@
 import { DivideIcon as LucideIcon } from 'lucide-react';
+import { Answer, Question } from '../constants/types';
 
 export type QuestionType = 'multiple-choice' | 'slider' | 'text' | 'yes-no';
 
@@ -67,8 +68,59 @@ export type ScoreResult = {
 };
 
 export type MaturityLevel = 
-  | 'Beginner'
+  | 'Initial'
   | 'Developing'
-  | 'Established'
+  | 'Defined'
+  | 'Managed'
   | 'Advanced'
   | 'Leading';
+
+export interface WizardContextType {
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+  answers: Array<{
+    questionId: string;
+    optionId?: string;
+    score?: number;
+    sliderValue?: number;
+    textValue?: string;
+  }>;
+  setAnswers: (answers: Array<{
+    questionId: string;
+    optionId?: string;
+    score?: number;
+    sliderValue?: number;
+    textValue?: string;
+  }>) => void;
+  questions: Array<{
+    id: string;
+    text: string;
+    type: 'multiple-choice' | 'slider' | 'text' | 'yes-no';
+    description?: string;
+    category?: string;
+    weight?: number;
+    options?: Array<{
+      id: string;
+      text: string;
+      score: number;
+    }>;
+    slider?: {
+      labels: {
+        start: string;
+        end: string;
+      };
+      min: number;
+      max: number;
+    };
+    textInput?: {
+      placeholder: string;
+      maxLength: number;
+    };
+    yesNo?: {
+      yesScore: number;
+      noScore: number;
+    };
+  }>;
+  showError: boolean;
+  setShowError: (show: boolean) => void;
+}

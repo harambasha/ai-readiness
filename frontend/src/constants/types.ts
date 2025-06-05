@@ -4,6 +4,9 @@ export interface Question {
   id: string;
   text: string;
   type: QuestionType;
+  description?: string;
+  category?: string;
+  weight?: number;
   options?: {
     id: string;
     text: string;
