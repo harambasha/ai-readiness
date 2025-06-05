@@ -1,24 +1,43 @@
 import { DivideIcon as LucideIcon } from 'lucide-react';
 import { Answer, Question } from '../constants/types';
 
+export type MaturityLevel = 
+  | 'Initial'
+  | 'Developing'
+  | 'Defined'
+  | 'Managed'
+  | 'Advanced'
+  | 'Leading';
+
 export type QuestionType = 'multiple-choice' | 'slider' | 'text' | 'yes-no';
 
-export type Question = {
+export interface Answer {
+  questionId: string;
+  optionId?: string;
+  score?: number;
+  sliderValue?: number;
+  textValue?: string;
+}
+
+export interface Question {
   id: string;
   text: string;
-  description: string;
-  category: Category;
   type: QuestionType;
-  weight: number;
-  options?: Option[];
+  description?: string;
+  category?: string;
+  weight?: number;
+  options?: Array<{
+    id: string;
+    text: string;
+    score: number;
+  }>;
   slider?: {
-    min: number;
-    max: number;
-    step: number;
     labels: {
       start: string;
       end: string;
     };
+    min: number;
+    max: number;
   };
   textInput?: {
     placeholder: string;
@@ -28,13 +47,7 @@ export type Question = {
     yesScore: number;
     noScore: number;
   };
-};
-
-export type Option = {
-  id: string;
-  text: string;
-  score: number;
-};
+}
 
 export type Category = 
   | 'strategy'
@@ -52,28 +65,12 @@ export type CategoryInfo = {
   color: string;
 };
 
-export type Answer = {
-  questionId: string;
-  optionId?: string;
-  score?: number;
-  sliderValue?: number;
-  textValue?: string;
-};
-
 export type ScoreResult = {
   score: number;
   maxScore: number;
   percentage: number;
   maturityLevel: MaturityLevel;
 };
-
-export type MaturityLevel = 
-  | 'Initial'
-  | 'Developing'
-  | 'Defined'
-  | 'Managed'
-  | 'Advanced'
-  | 'Leading';
 
 export interface WizardContextType {
   currentStep: number;
