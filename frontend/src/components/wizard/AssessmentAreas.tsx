@@ -15,7 +15,7 @@ const areas = [
   {
     icon: Users,
     title: 'Team & Skills',
-    description: 'Review your team's AI expertise and organizational readiness.'
+    description: 'Review your team\'s AI expertise and organizational readiness.'
   },
   {
     icon: LineChart,
