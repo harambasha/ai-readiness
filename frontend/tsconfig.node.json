@@ -20,7 +20,8 @@
 
     "composite": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "outDir": "dist"
   },
   "include": ["vite.config.ts"]
 }

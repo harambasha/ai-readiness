@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:next": "next dev",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:next\"",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
