@@ -7,6 +7,7 @@ const WizardContext = createContext<WizardContextType | undefined>(undefined);
 export function WizardProvider({ children }: { children: React.ReactNode }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [showError, setShowError] = useState(false);
 
   const totalSteps = questions.length + 2; // Questions + Welcome + Results
 
@@ -49,38 +50,41 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   }, []);
 
-  const calculateScore = useCallback((): ScoreResult => {
-    let totalScore = 0;
-    let maxPossibleScore = 0;
-
-    questions.forEach(question => {
-      const answer = answers.find(a => a.questionId === question.id);
-      if (answer) {
-        if (question.type === 'text') {
-          // For text questions, assign a neutral score of 2 (middle of 0-4 scale)
-          totalScore += 2 * question.weight;
-        } else {
-          totalScore += (answer.score || 0) * question.weight;
-        }
-        maxPossibleScore += 4 * question.weight; // Max score is 4 for all types
+  const calculateScore = useCallback(() => {
+    const totalScore = answers.reduce((sum, answer) => sum + (answer.score || 0), 0);
+    const maxPossibleScore = questions.reduce((sum, question) => {
+      if (question.type === 'multiple-choice' && question.options) {
+        return sum + Math.max(...question.options.map(opt => opt.score));
       }
-    });
+      if (question.type === 'slider') {
+        return sum + (question.slider?.max || 0);
+      }
+      if (question.type === 'yes-no') {
+        return sum + Math.max(question.yesNo?.yesScore || 0, question.yesNo?.noScore || 0);
+      }
+      return sum;
+    }, 0);
 
-    const percentage = maxPossibleScore > 0 
-      ? (totalScore / maxPossibleScore) * 100 
-      : 0;
+    const percentage = (totalScore / maxPossibleScore) * 100;
+    let maturityLevel: MaturityLevel = 'Initial';
 
-    let maturityLevel: MaturityLevel = 'Beginner';
-    if (percentage >= 90) maturityLevel = 'Leading';
-    else if (percentage >= 75) maturityLevel = 'Advanced';
-    else if (percentage >= 60) maturityLevel = 'Established';
-    else if (percentage >= 40) maturityLevel = 'Developing';
+    if (percentage >= 90) {
+      maturityLevel = 'Leading';
+    } else if (percentage >= 75) {
+      maturityLevel = 'Advanced';
+    } else if (percentage >= 60) {
+      maturityLevel = 'Managed';
+    } else if (percentage >= 45) {
+      maturityLevel = 'Defined';
+    } else if (percentage >= 30) {
+      maturityLevel = 'Developing';
+    }
 
     return {
-      score: totalScore,
-      maxScore: maxPossibleScore,
       percentage,
-      maturityLevel
+      maturityLevel,
+      score: totalScore,
+      maxScore: maxPossibleScore
     };
   }, [answers]);
 
@@ -88,9 +92,13 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     <WizardContext.Provider
       value={{
         currentStep,
+        setCurrentStep,
         totalSteps,
         answers,
         setAnswers,
+        questions,
+        showError,
+        setShowError,
         goToNextStep,
         goToPreviousStep,
         isFirstStep: currentStep === 1,

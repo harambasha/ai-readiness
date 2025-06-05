@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { CheckCircle2 } from 'lucide-react';
-import { Question, Answer } from '../constants/types';
+import { Question, Answer } from '../types';
 import { TextInput } from './assessment/QuestionTypes';
 import { sendAssessmentResults } from '../services/emailService';
 

@@ -78,49 +78,20 @@ export type MaturityLevel =
 export interface WizardContextType {
   currentStep: number;
   setCurrentStep: (step: number) => void;
-  answers: Array<{
-    questionId: string;
-    optionId?: string;
-    score?: number;
-    sliderValue?: number;
-    textValue?: string;
-  }>;
-  setAnswers: (answers: Array<{
-    questionId: string;
-    optionId?: string;
-    score?: number;
-    sliderValue?: number;
-    textValue?: string;
-  }>) => void;
-  questions: Array<{
-    id: string;
-    text: string;
-    type: 'multiple-choice' | 'slider' | 'text' | 'yes-no';
-    description?: string;
-    category?: string;
-    weight?: number;
-    options?: Array<{
-      id: string;
-      text: string;
-      score: number;
-    }>;
-    slider?: {
-      labels: {
-        start: string;
-        end: string;
-      };
-      min: number;
-      max: number;
-    };
-    textInput?: {
-      placeholder: string;
-      maxLength: number;
-    };
-    yesNo?: {
-      yesScore: number;
-      noScore: number;
-    };
-  }>;
+  answers: Answer[];
+  setAnswers: (answers: Answer[]) => void;
+  questions: Question[];
   showError: boolean;
   setShowError: (show: boolean) => void;
+  totalSteps: number;
+  goToNextStep: () => void;
+  goToPreviousStep: () => void;
+  isFirstStep: boolean;
+  isLastStep: boolean;
+  calculateScore: () => {
+    percentage: number;
+    maturityLevel: MaturityLevel;
+    score: number;
+    maxScore: number;
+  };
 }
