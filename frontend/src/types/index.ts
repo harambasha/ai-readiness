@@ -1,5 +1,4 @@
-import { DivideIcon as LucideIcon } from 'lucide-react';
-import { Answer, Question } from '../constants/types';
+import { LucideIcon } from 'lucide-react';
 
 export type MaturityLevel = 
   | 'Initial'
@@ -62,7 +61,7 @@ export type CategoryInfo = {
   id: Category;
   title: string;
   description: string;
-  icon: typeof LucideIcon;
+  icon: LucideIcon;
   color: string;
 };
 
