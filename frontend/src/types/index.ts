@@ -38,6 +38,7 @@ export interface Question {
     };
     min: number;
     max: number;
+    step?: number;
   };
   textInput?: {
     placeholder: string;
