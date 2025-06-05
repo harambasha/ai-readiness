@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:next": "next dev",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:next\"",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b tsconfig.app.json tsconfig.node.json && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -7,14 +7,16 @@
     "skipLibCheck": true,
     "strict": false,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "noEmit": false
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules"]
