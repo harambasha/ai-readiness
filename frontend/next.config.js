@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
   env: {
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
   },
