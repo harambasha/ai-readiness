@@ -123,7 +123,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
         <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         <div className="absolute top-8 left-8 z-20">
           <img 
-            src={bloomteqLogo}
+            src="/bloomteq-logo.svg" 
             alt="Bloomteq Logo" 
             className="h-8 w-auto"
             onError={(e) => {
@@ -191,7 +191,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 blur-3xl"></div>
               <img
-                src={heroImage}
+                src="/hero-image.svg"
                 alt="AI Readiness Assessment"
                 className="relative w-[600px] h-[600px]"
                 onError={(e) => {
@@ -567,7 +567,7 @@ function ResultsStep() {
 
       <div className="relative w-full">
         <img
-          src={workingProgramming}
+          src="/working_programming.png"
           alt="Working Programming"
           className="w-full h-auto rounded-lg shadow-lg"
           onError={(e) => {
@@ -661,7 +661,7 @@ function ResultsStep() {
 
       <div className="relative w-full">
         <img
-          src={futureImage}
+          src="/future_image.png"
           alt="Future of AI"
           className="w-full h-auto rounded-lg shadow-lg"
           onError={(e) => {

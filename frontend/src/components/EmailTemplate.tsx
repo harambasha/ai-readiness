@@ -2,7 +2,6 @@ import React from 'react';
 import { Answer } from '../types';
 import { questions } from '../data/questions';
 import Image from 'next/image';
-import bloomteqLogo from '../assets/bloomteq-logo.svg?url';
 
 interface EmailTemplateProps {
   answers: Answer[];
@@ -24,7 +23,7 @@ export const EmailTemplate: React.FC<EmailTemplateProps> = ({ answers, score, ma
       {/* Header */}
       <div style={{ textAlign: 'center', padding: '20px 0', borderBottom: '2px solid #677076' }}>
         <img 
-          src={bloomteqLogo}
+          src="/bloomteq-logo.svg" 
           alt="Bloomteq Logo" 
           style={{ height: '40px', marginBottom: '20px' }} 
         />
