@@ -1,1 +1,1 @@
-export const CALENDLY_URL = import.meta.env.VITE_CALENDLY_URL || 'https://calendly.com/bloomteq/ai-readiness-consultation'; 
+export const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL || 'https://calendly.com/bloomteq/ai-readiness-consultation'; 

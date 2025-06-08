@@ -6,6 +6,7 @@
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "18"
+  NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/bloomteq/ai-readiness-consultation"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
