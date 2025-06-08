@@ -11,10 +11,6 @@ import {
 import { Question, Answer } from '../types';
 import { TextInput } from './assessment/QuestionTypes/TextInput';
 import Image from 'next/image';
-import bloomteqLogo from '../assets/bloomteq-logo.svg?url';
-import heroImage from '../assets/hero-image.svg?url';
-import workingProgramming from '../assets/working_programming.png?url';
-import futureImage from '../assets/future_image.png?url';
 
 export function Wizard() {
   const {
