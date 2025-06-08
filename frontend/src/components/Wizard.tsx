@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Question, Answer } from '../types';
 import { TextInput } from './assessment/QuestionTypes/TextInput';
+import Image from 'next/image';
 
 export function Wizard() {
   const {
@@ -117,7 +118,13 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 
         <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         <div className="absolute top-8 left-8 z-20">
-        <img src="/bloomteq-logo.svg" alt="Bloomteq Logo" className="h-8 w-auto" />
+        <Image 
+          src="/bloomteq-logo.svg" 
+          alt="Bloomteq Logo" 
+          width={32} 
+          height={32} 
+          className="h-8 w-auto" 
+        />
       </div>
           <div className="flex items-center justify-between">
             <div>
@@ -176,10 +183,12 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 blur-3xl"></div>
-              <img 
+              <Image
                 src="/hero-image.svg"
-                alt="AI Technology"
-                className="relative w-[600px] h-[600px]"
+                alt="AI Readiness Assessment"
+                width={600}
+                height={400}
+                priority
               />
             </div>
           </div>
@@ -547,10 +556,12 @@ function ResultsStep() {
       </div>
 
       <div className="relative w-full">
-        <img 
-          src="/working_programming.png" 
-          alt="AI Implementation" 
-          className="w-full h-auto rounded-lg shadow-lg"
+        <Image
+          src="/working_programming.png"
+          alt="Working Programming"
+          width={500}
+          height={300}
+          className="rounded-lg shadow-lg"
         />
       </div>
 
@@ -636,10 +647,12 @@ function ResultsStep() {
       </div>
 
       <div className="relative w-full">
-        <img 
-          src="/future_image.png" 
-          alt="Future of AI" 
-          className="w-full h-auto rounded-lg shadow-lg"
+        <Image
+          src="/future_image.png"
+          alt="Future of AI"
+          width={500}
+          height={300}
+          className="rounded-lg shadow-lg"
         />
       </div>
 
