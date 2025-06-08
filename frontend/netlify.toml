@@ -11,6 +11,13 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# Handle Next.js static files
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Handle API routes
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
