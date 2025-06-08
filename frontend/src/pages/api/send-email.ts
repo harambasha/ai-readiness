@@ -1,6 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { Handler } from '@netlify/functions';
 import sgMail from '@sendgrid/mail';
-import { createServerlessHandler } from '../../lib/serverless';
 
 // Initialize SendGrid
 const apiKey = process.env.SENDGRID_API_KEY;
@@ -9,16 +8,22 @@ if (!apiKey) {
 }
 sgMail.setApiKey(apiKey);
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+const handler: Handler = async (event, context) => {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Method not allowed' }),
+    };
   }
 
   try {
-    const { to, subject, text, html } = req.body;
+    const { to, subject, text, html } = JSON.parse(event.body || '{}');
 
     if (!to || !subject || (!text && !html)) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Missing required fields' }),
+      };
     }
 
     const msg = {
@@ -30,11 +35,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     };
 
     await sgMail.send(msg);
-    res.status(200).json({ message: 'Email sent successfully' });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Email sent successfully' }),
+    };
   } catch (error) {
     console.error('Error sending email:', error);
-    res.status(500).json({ error: 'Failed to send email' });
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to send email' }),
+    };
   }
-}
+};
 
-export default createServerlessHandler(handler); 
+export { handler }; 

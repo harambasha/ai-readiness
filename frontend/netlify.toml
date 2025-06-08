@@ -46,8 +46,14 @@
   force = true
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/send-email"
+  to = "/.netlify/functions/send-email"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/send-assessment-results"
+  to = "/.netlify/functions/send-assessment-results"
   status = 200
   force = true
 

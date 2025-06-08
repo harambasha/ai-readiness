@@ -1,31 +1,33 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import nodemailer from 'nodemailer';
+import { Handler } from '@netlify/functions';
+import sgMail from '@sendgrid/mail';
 import { renderToString } from 'react-dom/server';
 import { EmailTemplate } from '../../components/EmailTemplate';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+// Initialize SendGrid
+const apiKey = process.env.SENDGRID_API_KEY;
+if (!apiKey) {
+  throw new Error('SENDGRID_API_KEY is not set');
+}
+sgMail.setApiKey(apiKey);
+
+const handler: Handler = async (event, context) => {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Method not allowed' }),
+    };
   }
 
   try {
-    const { to, answers, score, maturityLevel } = req.body;
+    const { email, answers, score, maturityLevel } = JSON.parse(event.body || '{}');
 
-    // Create email transporter
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      },
-    });
+    if (!email || !answers || !score || !maturityLevel) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Missing required fields' }),
+      };
+    }
 
-    // Render email template to HTML
     const emailHtml = renderToString(
       <EmailTemplate
         answers={answers}
@@ -34,17 +36,25 @@ export default async function handler(
       />
     );
 
-    // Send email
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM,
-      to,
+    const msg = {
+      to: email,
+      from: 'noreply@yourdomain.com', // Replace with your verified sender
       subject: 'Your AI Readiness Assessment Results',
       html: emailHtml,
-    });
+    };
 
-    res.status(200).json({ message: 'Email sent successfully' });
+    await sgMail.send(msg);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Assessment results sent successfully' }),
+    };
   } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ message: 'Failed to send email' });
+    console.error('Error sending assessment results:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to send assessment results' }),
+    };
   }
-} 
+};
+
+export { handler }; 
