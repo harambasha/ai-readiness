@@ -11,6 +11,10 @@ import {
 import { Question, Answer } from '../types';
 import { TextInput } from './assessment/QuestionTypes/TextInput';
 import Image from 'next/image';
+import bloomteqLogo from '../assets/bloomteq-logo.svg?url';
+import heroImage from '../assets/hero-image.svg?url';
+import workingProgramming from '../assets/working_programming.png?url';
+import futureImage from '../assets/future_image.png?url';
 
 export function Wizard() {
   const {
@@ -119,7 +123,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
         <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         <div className="absolute top-8 left-8 z-20">
           <img 
-            src="/bloomteq-logo.svg" 
+            src={bloomteqLogo}
             alt="Bloomteq Logo" 
             className="h-8 w-auto"
             onError={(e) => {
@@ -187,7 +191,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 blur-3xl"></div>
               <img
-                src="/hero-image.svg"
+                src={heroImage}
                 alt="AI Readiness Assessment"
                 className="relative w-[600px] h-[600px]"
                 onError={(e) => {
@@ -563,7 +567,7 @@ function ResultsStep() {
 
       <div className="relative w-full">
         <img
-          src="/working_programming.png"
+          src={workingProgramming}
           alt="Working Programming"
           className="w-full h-auto rounded-lg shadow-lg"
           onError={(e) => {
@@ -657,7 +661,7 @@ function ResultsStep() {
 
       <div className="relative w-full">
         <img
-          src="/future_image.png"
+          src={futureImage}
           alt="Future of AI"
           className="w-full h-auto rounded-lg shadow-lg"
           onError={(e) => {
