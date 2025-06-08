@@ -7,8 +7,13 @@ const nextConfig = {
     NEXT_PUBLIC_CALENDLY_URL: process.env.NEXT_PUBLIC_CALENDLY_URL || 'https://calendly.com/bloomteq/ai-readiness-consultation',
   },
   images: {
-    domains: ['localhost'],
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
   webpack: (config) => {
     config.module.rules.push({
