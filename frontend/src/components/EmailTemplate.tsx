@@ -23,7 +23,7 @@ export const EmailTemplate: React.FC<EmailTemplateProps> = ({ answers, score, ma
       {/* Header */}
       <div style={{ textAlign: 'center', padding: '20px 0', borderBottom: '2px solid #677076' }}>
         <Image 
-          src="/bloomteq-logo.svg" 
+          src="./bloomteq-logo.svg" 
           alt="Bloomteq Logo" 
           width={160} 
           height={40} 
