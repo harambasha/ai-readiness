@@ -19,6 +19,8 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   trailingSlash: true,
+  assetPrefix: '.',
+  basePath: '',
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,

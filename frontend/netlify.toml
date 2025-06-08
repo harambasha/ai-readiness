@@ -2,54 +2,20 @@
   base = "frontend"
   command = "npm run build"
   publish = "out"
-  functions = "src/pages/api"
-
-[build.environment]
-  NEXT_TELEMETRY_DISABLED = "1"
-  NODE_VERSION = "18"
-  NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/bloomteq/ai-readiness-consultation"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-# Handle static files
-[[redirects]]
-  from = "/public/*"
-  to = "/:splat"
-  status = 200
-  force = true
-
-# Handle Next.js static files
-[[redirects]]
-  from = "/_next/static/*"
-  to = "/_next/static/:splat"
-  status = 200
-  force = true
-
-# Handle client-side routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = true
+  environment = { SENDGRID_API_KEY = "", NEXT_TELEMETRY_DISABLED = "1", NODE_VERSION = "20.11.1", NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/bloomteq/ai-readiness-consultation" }
 
 [functions]
+  directory = "src/pages/api"
   node_bundler = "esbuild"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-  force = true
 
 [[headers]]
   for = "/*"
   [headers.values]
+    Content-Security-Policy = "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
 
 [[headers]]
   for = "/*.svg"
@@ -59,4 +25,31 @@
 [[headers]]
   for = "/*.png"
   [headers.values]
-    Content-Type = "image/png" 
+    Content-Type = "image/png"
+
+[[redirects]]
+  from = "/public/*"
+  to = "/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/_next/static/*"
+  to = "/_next/static/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+[plugins]
+  - package = "@netlify/plugin-nextjs" 
