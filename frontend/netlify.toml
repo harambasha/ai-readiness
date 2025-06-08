@@ -1,7 +1,7 @@
 [build]
   base = "frontend"
-  command = "npm run build"
-  publish = ".next"
+  command = "npm run build && next export"
+  publish = "out"
   functions = "src/pages/api"
 
 [build.environment]
