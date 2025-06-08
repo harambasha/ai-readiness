@@ -2,7 +2,12 @@
   base = "frontend"
   command = "npm run build"
   publish = "out"
-  environment = { SENDGRID_API_KEY = "", NEXT_TELEMETRY_DISABLED = "1", NODE_VERSION = "20.11.1", NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/bloomteq/ai-readiness-consultation" }
+  environment = { 
+    SENDGRID_API_KEY = "", 
+    NEXT_TELEMETRY_DISABLED = "1", 
+    NODE_VERSION = "20.11.1", 
+    NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/bloomteq/ai-readiness-consultation" 
+  }
 
 [functions]
   directory = "src/pages/api"
@@ -52,8 +57,4 @@
   force = true
 
 [[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-[build.environment]
-  SENDGRID_API_KEY = ""
-  NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/bloomteq/ai-readiness-consultation" 
+  package = "@netlify/plugin-nextjs" 
