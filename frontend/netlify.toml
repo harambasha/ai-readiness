@@ -52,4 +52,8 @@
   force = true
 
 [[plugins]]
-  package = "@netlify/plugin-nextjs" 
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  SENDGRID_API_KEY = ""
+  NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/bloomteq/ai-readiness-consultation" 
