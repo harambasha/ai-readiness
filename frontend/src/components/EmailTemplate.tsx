@@ -22,12 +22,10 @@ export const EmailTemplate: React.FC<EmailTemplateProps> = ({ answers, score, ma
     <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
       {/* Header */}
       <div style={{ textAlign: 'center', padding: '20px 0', borderBottom: '2px solid #677076' }}>
-        <Image 
+        <img 
           src="/bloomteq-logo.svg" 
           alt="Bloomteq Logo" 
-          width={160} 
-          height={40} 
-          style={{ marginBottom: '20px' }} 
+          style={{ height: '40px', marginBottom: '20px' }} 
         />
         <h1 style={{ color: '#677076', fontSize: '24px', margin: '0' }}>AI Readiness Assessment Results</h1>
       </div>
