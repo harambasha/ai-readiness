@@ -18,7 +18,8 @@ const nextConfig = {
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  assetPrefix: '.',
+  assetPrefix: '',
+  basePath: '',
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,

@@ -119,20 +119,23 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
         <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         <div className="absolute top-8 left-8 z-20">
         <Image 
-          src="./bloomteq-logo.svg" 
+          src="/bloomteq-logo.svg" 
           alt="Bloomteq Logo" 
           width={32} 
           height={32} 
           className="h-8 w-auto"
           onError={(e) => {
             console.error('Error loading logo:', e);
-            // Fallback to regular img if Image component fails
             const img = e.target as HTMLImageElement;
+            console.log('Failed image src:', img.src);
             img.style.display = 'none';
             const fallback = document.createElement('img');
-            fallback.src = './bloomteq-logo.svg';
+            fallback.src = '/bloomteq-logo.svg';
             fallback.alt = 'Bloomteq Logo';
             fallback.className = 'h-8 w-auto';
+            fallback.onerror = (e) => {
+              console.error('Fallback image also failed:', e);
+            };
             img.parentNode?.replaceChild(fallback, img);
           }}
         />
@@ -195,7 +198,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 blur-3xl"></div>
               <Image
-                src="./hero-image.svg"
+                src="/hero-image.svg"
                 alt="AI Readiness Assessment"
                 width={600}
                 height={400}
@@ -203,11 +206,15 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
                 onError={(e) => {
                   console.error('Error loading hero image:', e);
                   const img = e.target as HTMLImageElement;
+                  console.log('Failed image src:', img.src);
                   img.style.display = 'none';
                   const fallback = document.createElement('img');
-                  fallback.src = './hero-image.svg';
+                  fallback.src = '/hero-image.svg';
                   fallback.alt = 'AI Readiness Assessment';
                   fallback.className = 'relative w-[600px] h-[600px]';
+                  fallback.onerror = (e) => {
+                    console.error('Fallback image also failed:', e);
+                  };
                   img.parentNode?.replaceChild(fallback, img);
                 }}
               />
@@ -578,7 +585,7 @@ function ResultsStep() {
 
       <div className="relative w-full">
         <Image
-          src="./working_programming.png"
+          src="/working_programming.png"
           alt="Working Programming"
           width={500}
           height={300}
@@ -586,11 +593,15 @@ function ResultsStep() {
           onError={(e) => {
             console.error('Error loading working programming image:', e);
             const img = e.target as HTMLImageElement;
+            console.log('Failed image src:', img.src);
             img.style.display = 'none';
             const fallback = document.createElement('img');
-            fallback.src = './working_programming.png';
+            fallback.src = '/working_programming.png';
             fallback.alt = 'Working Programming';
             fallback.className = 'w-full h-auto rounded-lg shadow-lg';
+            fallback.onerror = (e) => {
+              console.error('Fallback image also failed:', e);
+            };
             img.parentNode?.replaceChild(fallback, img);
           }}
         />
@@ -679,7 +690,7 @@ function ResultsStep() {
 
       <div className="relative w-full">
         <Image
-          src="./future_image.png"
+          src="/future_image.png"
           alt="Future of AI"
           width={500}
           height={300}
@@ -687,11 +698,15 @@ function ResultsStep() {
           onError={(e) => {
             console.error('Error loading future image:', e);
             const img = e.target as HTMLImageElement;
+            console.log('Failed image src:', img.src);
             img.style.display = 'none';
             const fallback = document.createElement('img');
-            fallback.src = './future_image.png';
+            fallback.src = '/future_image.png';
             fallback.alt = 'Future of AI';
             fallback.className = 'w-full h-auto rounded-lg shadow-lg';
+            fallback.onerror = (e) => {
+              console.error('Fallback image also failed:', e);
+            };
             img.parentNode?.replaceChild(fallback, img);
           }}
         />
