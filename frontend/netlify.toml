@@ -11,10 +11,10 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Handle API routes
+# Handle static files
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/public/*"
+  to = "/:splat"
   status = 200
   force = true
 
