@@ -1,6 +1,7 @@
 [build]
   base = "frontend"
   command = "npm run build"
+  publish = ".next"
   functions = "src/pages/api"
 
 [build.environment]
@@ -33,4 +34,10 @@
   force = true
 
 [functions]
-  node_bundler = "esbuild" 
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true 
