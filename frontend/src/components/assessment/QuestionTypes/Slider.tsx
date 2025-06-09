@@ -20,6 +20,10 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
   const [sliderValue, setSliderValue] = useState<number | undefined>(currentAnswer?.sliderValue);
   const sliderRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    setSliderValue(currentAnswer?.sliderValue);
+  }, [currentAnswer]);
+
   const calculateSliderValue = (clientX: number) => {
     if (!sliderRef.current) return 0;
     const rect = sliderRef.current.getBoundingClientRect();
