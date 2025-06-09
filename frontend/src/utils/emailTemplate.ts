@@ -1,3 +1,5 @@
+import { questions } from '../data/questions';
+
 export function generateEmailTemplate(
   answers: Record<string, string>,
   score: number,
@@ -224,6 +226,7 @@ export function generateEmailTemplate(
     <html>
       <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>AI Readiness Assessment Results</title>
         <style>
           body {
@@ -403,12 +406,13 @@ export function generateEmailTemplate(
           .cta-button {
             display: inline-block;
             padding: 12px 24px;
-            background-color: #677076;
-            color: white;
+            background-color: white;
+            color: #677076;
             text-decoration: none;
             border-radius: 6px;
             font-weight: 500;
             font-size: 16px;
+            border: 2px solid #677076;
           }
           .footer {
             text-align: center;
@@ -433,39 +437,38 @@ export function generateEmailTemplate(
           </div>
           
           <div class="maturity-level">
-            <h2>Maturity Level: ${maturityLevelDescription}</h2>
-            <p>This indicates your organization's current stage in AI adoption and readiness.</p>
+            <h2>Your AI Maturity Level</h2>
+            <p>${maturityLevelDescription}</p>
           </div>
           
           <div class="answers">
             <h2>Your Responses</h2>
             ${Object.entries(answers)
               .filter(([key]) => key !== 'company-email')
-              .map(([key, value]) => `
-                <div class="answer-item">
-                  <div class="question">${formatQuestion(key)}</div>
-                  <div class="answer">${formatAnswer(key, value)}</div>
-                </div>
-              `)
-              .join('')}
-          </div>
-
-          <div class="analysis-section">
-            <h2>Analysis</h2>
-            <div class="analysis-grid">
-              <div class="analysis-card">
-                <h3>Key Strengths</h3>
-                <ul class="analysis-list">
-                  ${strengthsList}
-                </ul>
-              </div>
-              <div class="analysis-card">
-                <h3>Areas for Improvement</h3>
-                <ul class="analysis-list">
-                  ${improvementsList}
-                </ul>
-              </div>
-            </div>
+              .map(([key, value]) => {
+                const question = questions.find(q => q.id === key);
+                if (!question) return '';
+                
+                let displayValue = value;
+                if (typeof value === 'number') {
+                  displayValue = `${value}%`;
+                } else if (typeof value === 'string' && value.match(/^(ci|ps|st|it|sv|te|dq|ae|cm|di|rm|dg|roi)\d+$/)) {
+                  const category = value.match(/^([a-z]+)\d+$/)?.[1];
+                  if (category && optionMappings[category]) {
+                    displayValue = optionMappings[category][value] || value;
+                  }
+                } else if (typeof value === 'string' && value.match(/^\d+$/)) {
+                  // Convert numeric string to percentage
+                  displayValue = `${value}%`;
+                }
+                
+                return `
+                  <div class="answer-item">
+                    <div class="question">${question.text}</div>
+                    <div class="answer">${displayValue}</div>
+                  </div>
+                `;
+              }).join('')}
           </div>
 
           <div class="cta-section">
