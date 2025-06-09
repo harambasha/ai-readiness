@@ -47,7 +47,7 @@ export function QuestionStep({ question, answers, setAnswers }: QuestionStepProp
   return (
     <div className="bg-white">
       <div className="p-4 sm:p-6 lg:p-8">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#2E363C] mb-4">
               {question.text}
