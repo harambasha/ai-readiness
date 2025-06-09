@@ -17,6 +17,9 @@ type Answer = {
   optionId?: string;
 };
 
+// Replace this with your verified sender email address
+const SENDER_EMAIL = 'ismir@antcolony.io';
+
 export const handler: Handler = async (event) => {
   // Handle CORS
   if (event.httpMethod === 'OPTIONS') {
@@ -94,20 +97,34 @@ export const handler: Handler = async (event) => {
       throw new Error('SENDGRID_API_KEY is not configured');
     }
 
+    // Validate API key format
+    if (!apiKey.startsWith('SG.')) {
+      console.error('Invalid SendGrid API key format');
+      throw new Error('Invalid SendGrid API key format');
+    }
+
     sgMail.setApiKey(apiKey);
 
     const html = generateEmailTemplate(answersRecord, score, maturityLevel);
 
     const msg = {
       to: emailAnswer.textValue,
-      from: 'your-verified-sender@yourdomain.com', // Replace with your verified sender
+      from: SENDER_EMAIL,
       subject: 'Your AI Readiness Assessment Results',
       html,
     };
 
     console.log('Sending email to:', emailAnswer.textValue);
-    await sgMail.send(msg);
-    console.log('Email sent successfully');
+    try {
+      await sgMail.send(msg);
+      console.log('Email sent successfully');
+    } catch (sendError: any) {
+      console.error('SendGrid error:', sendError);
+      if (sendError.response) {
+        console.error('SendGrid response:', sendError.response.body);
+      }
+      throw new Error(`SendGrid error: ${sendError.message}`);
+    }
 
     return {
       statusCode: 200,
