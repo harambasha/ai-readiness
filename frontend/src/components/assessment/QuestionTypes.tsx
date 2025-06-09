@@ -50,13 +50,13 @@ interface SliderProps extends BaseProps {
 }
 
 export function Slider({ question, currentAnswer, onChange }: SliderProps) {
-  const [sliderValue, setSliderValue] = useState<number | undefined>(currentAnswer?.score);
+  const [sliderValue, setSliderValue] = useState<number | undefined>(currentAnswer?.score ? (currentAnswer.score / 4) * 100 : undefined);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
 
   // Reset slider value when question changes
   useEffect(() => {
-    setSliderValue(currentAnswer?.score);
+    setSliderValue(currentAnswer?.score ? (currentAnswer.score / 4) * 100 : undefined);
   }, [question.id, currentAnswer?.score]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -129,11 +129,11 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
       >
         <div
           className="absolute h-full bg-[#677076] transition-all duration-200 rounded-full"
-          style={{ width: `${((sliderValue || 0) - (question.slider?.min || 0)) / ((question.slider?.max || 100) - (question.slider?.min || 0)) * 100}%` }}
+          style={{ width: `${sliderValue || 0}%` }}
         />
         <div
           className="absolute w-6 h-6 bg-white border-2 border-[#677076] -top-2 transform -translate-x-1/2 transition-all duration-200 hover:scale-110 rounded-full"
-          style={{ left: `${((sliderValue || 0) - (question.slider?.min || 0)) / ((question.slider?.max || 100) - (question.slider?.min || 0)) * 100}%` }}
+          style={{ left: `${sliderValue || 0}%` }}
         />
       </div>
       <div className="flex justify-between mt-4 text-sm text-[#687177]">
