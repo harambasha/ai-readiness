@@ -9,6 +9,14 @@ const corsHeaders = {
   'Content-Type': 'application/json'
 };
 
+type Answer = {
+  questionId: string;
+  textValue?: string;
+  score?: number;
+  sliderValue?: number;
+  optionId?: string;
+};
+
 export const handler: Handler = async (event) => {
   // Handle CORS
   if (event.httpMethod === 'OPTIONS') {
@@ -37,21 +45,48 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    const { to, answers, score, maturityLevel } = JSON.parse(event.body);
+    const { answers, score, maturityLevel } = JSON.parse(event.body);
 
-    console.log('Received request:', { to, score, maturityLevel });
+    console.log('Received request:', { score, maturityLevel });
 
-    if (!to || !answers || typeof score !== 'number' || !maturityLevel) {
-      console.error('Missing required fields:', { to, answers, score, maturityLevel });
+    if (!Array.isArray(answers) || typeof score !== 'number' || !maturityLevel) {
+      console.error('Missing or invalid required fields:', { answers, score, maturityLevel });
       return {
         statusCode: 400,
         headers: corsHeaders,
         body: JSON.stringify({ 
-          error: 'Missing required fields',
-          received: { to, answers, score, maturityLevel }
+          error: 'Missing or invalid required fields',
+          received: { answers, score, maturityLevel }
         })
       };
     }
+
+    // Find the email answer
+    const emailAnswer = answers.find((answer: Answer) => answer.questionId === 'company-email');
+    if (!emailAnswer?.textValue) {
+      console.error('No email found in answers');
+      return {
+        statusCode: 400,
+        headers: corsHeaders,
+        body: JSON.stringify({ error: 'No email found in answers' })
+      };
+    }
+
+    // Transform answers array into a record
+    const answersRecord = answers.reduce((acc: Record<string, string>, answer: Answer) => {
+      let value = '';
+      if (answer.textValue) {
+        value = answer.textValue;
+      } else if (answer.optionId) {
+        value = answer.optionId;
+      } else if (answer.sliderValue !== undefined) {
+        value = answer.sliderValue.toString();
+      } else if (answer.score !== undefined) {
+        value = answer.score.toString();
+      }
+      acc[answer.questionId] = value;
+      return acc;
+    }, {});
 
     const apiKey = process.env.SENDGRID_API_KEY;
     if (!apiKey) {
@@ -61,16 +96,16 @@ export const handler: Handler = async (event) => {
 
     sgMail.setApiKey(apiKey);
 
-    const html = generateEmailTemplate(answers, score, maturityLevel);
+    const html = generateEmailTemplate(answersRecord, score, maturityLevel);
 
     const msg = {
-      to,
+      to: emailAnswer.textValue,
       from: 'your-verified-sender@yourdomain.com', // Replace with your verified sender
       subject: 'Your AI Readiness Assessment Results',
       html,
     };
 
-    console.log('Sending email to:', to);
+    console.log('Sending email to:', emailAnswer.textValue);
     await sgMail.send(msg);
     console.log('Email sent successfully');
 
