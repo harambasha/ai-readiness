@@ -11,16 +11,17 @@ export function TextInput({ question, currentAnswer, onChange }: TextInputProps)
   if (!question.textInput) return null;
 
   const isEmailQuestion = question.id === 'company-email';
+  const isCompanyNameQuestion = question.id === 'company-name';
   const inputValue = currentAnswer?.textValue || '';
 
-  if (isEmailQuestion) {
+  if (isEmailQuestion || isCompanyNameQuestion) {
     return (
       <div className="space-y-4">
         <input
-          type="email"
+          type={isEmailQuestion ? 'email' : 'text'}
           value={inputValue}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Enter your email..."
+          placeholder={isEmailQuestion ? "Enter your email..." : "Enter your company name..."}
           maxLength={50}
           className="w-full h-12 p-4 border border-[#E7E9EC] focus:border-[#677076] focus:outline-none transition-all duration-200"
         />
