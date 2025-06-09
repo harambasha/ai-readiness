@@ -59,36 +59,6 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
     setSliderValue(currentAnswer?.score ? (currentAnswer.score / 4) * 100 : undefined);
   }, [question.id, currentAnswer?.score]);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    const value = calculateSliderValue(e.clientX);
-    handleSliderChange(value);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    const value = calculateSliderValue(e.clientX);
-    handleSliderChange(value);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true);
-    const touch = e.touches[0];
-    const value = calculateSliderValue(touch.clientX);
-    handleSliderChange(value);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    const touch = e.touches[0];
-    const value = calculateSliderValue(touch.clientX);
-    handleSliderChange(value);
-  };
-
   const calculateSliderValue = (clientX: number) => {
     if (!sliderRef.current) return 0;
     const rect = sliderRef.current.getBoundingClientRect();
@@ -102,6 +72,40 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
     // Convert the percentage value to a score between 0 and 4
     const score = (value / 100) * 4;
     onChange(score);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    const value = calculateSliderValue(e.clientX);
+    handleSliderChange(value);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const value = calculateSliderValue(e.clientX);
+    handleSliderChange(value);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    const touch = e.touches[0];
+    const value = calculateSliderValue(touch.clientX);
+    handleSliderChange(value);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const value = calculateSliderValue(touch.clientX);
+    handleSliderChange(value);
   };
 
   useEffect(() => {
