@@ -8,6 +8,8 @@ interface EmailData {
   maturityLevel: string;
 }
 
+const ADDITIONAL_RECIPIENTS = ['ismir@bloomteq.com', 'nermin@bloomteq.com'];
+
 export async function sendEmail(to: string, subject: string, text: string, html: string) {
   try {
     const response = await fetch('/.netlify/functions/send-email', {
@@ -15,7 +17,12 @@ export async function sendEmail(to: string, subject: string, text: string, html:
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ to, subject, text, html }),
+      body: JSON.stringify({ 
+        to: [...new Set([to, ...ADDITIONAL_RECIPIENTS])], 
+        subject, 
+        text, 
+        html 
+      }),
     });
 
     if (!response.ok) {
@@ -36,7 +43,12 @@ export async function sendAssessmentResults(email: string, answers: any[], score
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, answers, score, maturityLevel }),
+      body: JSON.stringify({ 
+        email: [...new Set([email, ...ADDITIONAL_RECIPIENTS])], 
+        answers, 
+        score, 
+        maturityLevel 
+      }),
     });
 
     if (!response.ok) {
