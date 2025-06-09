@@ -21,46 +21,39 @@ type Answer = {
 const SENDER_EMAIL = 'info@bloomteq.com';
 
 function calculateScore(answers: Answer[]): number {
-  let totalScore = 0;
-  let totalQuestions = 0;
-
-  answers.forEach(answer => {
-    // Skip non-scoring questions
-    if (answer.questionId === 'company-email' || 
-        answer.questionId === 'company-challenges' ||
-        answer.questionId === 'business-goals' ||
-        answer.questionId === 'business-metrics' ||
-        answer.questionId === 'time-consuming-processes' ||
-        answer.questionId === 'software-list' ||
-        answer.questionId === 'business-objectives' ||
-        answer.questionId === 'industry-challenges' ||
-        answer.questionId === 'competitor-analysis' ||
-        answer.questionId === 'regulatory-compliance') {
-      return;
-    }
-
-    let score = 0;
+  const totalScore = answers.reduce((sum, answer) => {
     if (answer.score !== undefined) {
-      score = answer.score;
-    } else if (answer.sliderValue !== undefined) {
-      score = answer.sliderValue / 25; // Convert percentage to 1-5 scale
-    } else if (answer.optionId) {
+      return sum + answer.score;
+    }
+    if (answer.sliderValue !== undefined) {
+      // Convert slider percentage to a score out of 5
+      return sum + (answer.sliderValue / 20); // Divide by 20 to convert 0-100 to 0-5 scale
+    }
+    if (answer.optionId) {
       // Extract number from optionId (e.g., 'ci3' -> 3)
       const optionScore = parseInt(answer.optionId.replace(/\D/g, ''));
       if (!isNaN(optionScore)) {
-        score = optionScore;
+        return sum + optionScore;
       }
     }
+    return sum;
+  }, 0);
 
-    if (score > 0) {
-      totalScore += score;
-      totalQuestions++;
-    }
-  });
+  const maxPossibleScore = 5 * answers.filter(answer => 
+    answer.questionId !== 'company-email' && 
+    answer.questionId !== 'company-challenges' &&
+    answer.questionId !== 'business-goals' &&
+    answer.questionId !== 'business-metrics' &&
+    answer.questionId !== 'time-consuming-processes' &&
+    answer.questionId !== 'software-list' &&
+    answer.questionId !== 'business-objectives' &&
+    answer.questionId !== 'industry-challenges' &&
+    answer.questionId !== 'competitor-analysis' &&
+    answer.questionId !== 'regulatory-compliance'
+  ).length;
 
-  // Calculate average score and convert to percentage
-  const averageScore = totalQuestions > 0 ? (totalScore / totalQuestions) * 20 : 0; // Multiply by 20 to convert 1-5 scale to percentage
-  return Math.round(averageScore * 100) / 100; // Round to 2 decimal places
+  const percentage = (totalScore / maxPossibleScore) * 100;
+  return Math.round(percentage * 100) / 100; // Round to 2 decimal places
 }
 
 export const handler: Handler = async (event) => {
