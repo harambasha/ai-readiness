@@ -417,267 +417,328 @@ const handler: Handler = async (event, context) => {
     const html = `
       <html>
         <head>
+          <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
           <style>
             body {
-              font-family: Arial, sans-serif;
+              font-family: 'IBM Plex Sans', Arial, sans-serif;
               line-height: 1.6;
               color: #333;
-              max-width: 800px;
+              margin: 0;
+              padding: 0;
+              background-color: #f5f5f5;
+            }
+            .container {
+              max-width: 600px;
               margin: 0 auto;
-              padding: 20px;
+              background-color: #ffffff;
             }
             .header {
               text-align: center;
-              margin-bottom: 30px;
+              padding: 40px 20px;
+              background: linear-gradient(135deg, #677076 0%, #8a6b4e 100%);
+              color: white;
             }
             .logo {
-              max-width: 150px;
+              max-width: 120px;
               height: auto;
               margin-bottom: 20px;
             }
             h1 {
+              margin: 0;
+              font-size: 28px;
+              font-weight: 700;
+              color: white;
+            }
+            .subtitle {
+              color: rgba(255, 255, 255, 0.9);
+              font-size: 16px;
+              margin-top: 10px;
+            }
+            .content {
+              padding: 40px 20px;
+            }
+            .score-container {
+              text-align: center;
+              margin-bottom: 40px;
+            }
+            .score {
+              font-size: 48px;
+              font-weight: 700;
+              color: #677076;
+              margin: 0;
+            }
+            .maturity {
+              font-size: 20px;
+              font-weight: 600;
+              color: #8a6b4e;
+              margin: 10px 0;
+            }
+            .progress-bar {
+              height: 8px;
+              background: #f0f0f0;
+              border-radius: 4px;
+              margin: 20px auto;
+              max-width: 300px;
+              overflow: hidden;
+            }
+            .progress {
+              height: 100%;
+              background: linear-gradient(to right, #677076, #8a6b4e);
+              border-radius: 4px;
+            }
+            .section {
+              margin-bottom: 40px;
+            }
+            .section-title {
+              font-size: 20px;
+              font-weight: 600;
               color: #2E363C;
               margin-bottom: 20px;
-              font-size: 2.5rem;
-              font-weight: bold;
-            }
-            h2 {
-              color: #677076;
-              margin-bottom: 15px;
-            }
-            h3 {
-              color: #2E363C;
-              margin-bottom: 15px;
-              font-size: 1.25rem;
-              font-weight: 600;
+              padding-bottom: 10px;
+              border-bottom: 2px solid #f0f0f0;
             }
             .grid {
               display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-              gap: 1.5rem;
-              margin-top: 2rem;
+              grid-template-columns: 1fr 1fr;
+              gap: 20px;
+              margin-bottom: 40px;
             }
             .card {
               background: #f9fafb;
-              padding: 1.5rem;
+              padding: 20px;
               border-radius: 8px;
             }
             .list-item {
               display: flex;
               align-items: flex-start;
-              margin-bottom: 1rem;
+              margin-bottom: 15px;
             }
             .icon-container {
-              width: 2rem;
-              height: 2rem;
+              width: 24px;
+              height: 24px;
               background: #677076;
-              border-radius: 0.5rem;
+              border-radius: 6px;
               display: flex;
               align-items: center;
               justify-content: center;
-              margin-right: 1rem;
-              margin-top: 0.25rem;
+              margin-right: 12px;
+              flex-shrink: 0;
             }
             .icon {
-              width: 1.25rem;
-              height: 1.25rem;
+              width: 14px;
+              height: 14px;
               color: white;
             }
             .text {
               color: #4b5563;
+              font-size: 14px;
             }
-            .score-section {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 1rem;
-              margin: 2rem 0;
+            .response-item {
+              margin-bottom: 24px;
+              padding-bottom: 24px;
+              border-bottom: 1px solid #f0f0f0;
             }
-            .score {
-              font-size: 3.75rem;
-              font-weight: bold;
-              color: #677076;
+            .response-item:last-child {
+              border-bottom: none;
+              margin-bottom: 0;
+              padding-bottom: 0;
             }
-            .maturity {
-              font-size: 1.5rem;
+            .question {
               font-weight: 600;
+              color: #2E363C;
+              margin-bottom: 8px;
+              font-size: 15px;
             }
-            .progress-bar {
-              height: 0.5rem;
-              background: #E7E9EC;
-              border-radius: 9999px;
-              overflow: hidden;
-              margin: 1rem 0;
-            }
-            .progress {
-              height: 100%;
-              background: linear-gradient(to right, #677076, #8a6b4e);
+            .answer {
+              color: #677076;
+              font-size: 14px;
             }
             .cta-section {
-              margin-top: 40px;
-              padding: 30px;
-              background-color: #f8f9fa;
-              border-radius: 12px;
+              background: #f9fafb;
+              padding: 40px 20px;
               text-align: center;
+              border-top: 1px solid #f0f0f0;
             }
             .cta-title {
               font-size: 24px;
               color: #2E363C;
-              margin-bottom: 20px;
+              margin-bottom: 16px;
+              font-weight: 600;
             }
             .cta-description {
               color: #677076;
-              margin-bottom: 30px;
-              font-size: 16px;
+              margin-bottom: 24px;
+              font-size: 15px;
+              max-width: 500px;
+              margin-left: auto;
+              margin-right: auto;
             }
             .cta-button {
               display: inline-block;
-              padding: 15px 30px;
-              background-color: #677076;
+              padding: 14px 32px;
+              background: linear-gradient(135deg, #677076 0%, #8a6b4e 100%);
               color: white;
               text-decoration: none;
               border-radius: 8px;
-              font-weight: bold;
-              transition: background-color 0.2s;
+              font-weight: 600;
+              font-size: 15px;
+              transition: opacity 0.2s;
             }
             .cta-button:hover {
-              background-color: #2E363C;
+              opacity: 0.9;
+            }
+            .footer {
+              text-align: center;
+              padding: 20px;
+              color: #677076;
+              font-size: 12px;
+            }
+            @media (max-width: 600px) {
+              .grid {
+                grid-template-columns: 1fr;
+              }
+              .header {
+                padding: 30px 20px;
+              }
+              h1 {
+                font-size: 24px;
+              }
+              .content {
+                padding: 30px 20px;
+              }
             }
           </style>
         </head>
         <body>
-          <div class="header">
-            <img src="https://cdn.brandfetch.io/bloomteq.com/fallback/lettermark/theme/dark/h/256/w/256/icon?c=1bfwsmEH20zzEfSNTed" alt="Bloomteq Logo" class="logo">
-            <h1>Your AI Readiness Results</h1>
-            <p style="color: #687177; font-size: 1.25rem; max-width: 42rem; margin: 0 auto;">
-              Based on your responses, here's your organization's current AI readiness assessment.
-            </p>
-          </div>
-
-          <div class="score-section">
-            <div class="score">${Math.round(score)}%</div>
-            <div class="maturity">${maturityLevel}</div>
-          </div>
-
-          <div class="progress-bar">
-            <div class="progress" style="width: ${score}%"></div>
-          </div>
-
-          <div class="grid">
-            <div class="card">
-              <h3>Key Strengths</h3>
-              <ul style="list-style: none; padding: 0;">
-                <li class="list-item">
-                  <div class="icon-container">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="m9 12 2 2 4-4"></path>
-                    </svg>
-                  </div>
-                  <span class="text">Data infrastructure and quality</span>
-                </li>
-                <li class="list-item">
-                  <div class="icon-container">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="m9 12 2 2 4-4"></path>
-                    </svg>
-                  </div>
-                  <span class="text">AI strategy alignment</span>
-                </li>
-                <li class="list-item">
-                  <div class="icon-container">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="m9 12 2 2 4-4"></path>
-                    </svg>
-                  </div>
-                  <span class="text">Talent development programs</span>
-                </li>
-              </ul>
+          <div class="container">
+            <div class="header">
+              <img src="https://cdn.brandfetch.io/bloomteq.com/fallback/lettermark/theme/dark/h/256/w/256/icon?c=1bfwsmEH20zzEfSNTed" alt="Bloomteq Logo" class="logo">
+              <h1>Your AI Readiness Results</h1>
+              <div class="subtitle">Based on your responses, here's your organization's current AI readiness assessment.</div>
             </div>
 
-            <div class="card">
-              <h3>Areas for Improvement</h3>
-              <ul style="list-style: none; padding: 0;">
-                <li class="list-item">
-                  <div class="icon-container">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <circle cx="12" cy="12" r="6"></circle>
-                      <circle cx="12" cy="12" r="2"></circle>
-                    </svg>
-                  </div>
-                  <span class="text">AI governance framework</span>
-                </li>
-                <li class="list-item">
-                  <div class="icon-container">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <circle cx="12" cy="12" r="6"></circle>
-                      <circle cx="12" cy="12" r="2"></circle>
-                    </svg>
-                  </div>
-                  <span class="text">Change management processes</span>
-                </li>
-                <li class="list-item">
-                  <div class="icon-container">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <circle cx="12" cy="12" r="6"></circle>
-                      <circle cx="12" cy="12" r="2"></circle>
-                    </svg>
-                  </div>
-                  <span class="text">Innovation culture development</span>
-                </li>
-              </ul>
+            <div class="content">
+              <div class="score-container">
+                <div class="score">${Math.round(score)}%</div>
+                <div class="maturity">${maturityLevel}</div>
+                <div class="progress-bar">
+                  <div class="progress" style="width: ${score}%"></div>
+                </div>
+              </div>
+
+              <div class="grid">
+                <div class="card">
+                  <div class="section-title">Key Strengths</div>
+                  <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li class="list-item">
+                      <div class="icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <path d="m9 12 2 2 4-4"></path>
+                        </svg>
+                      </div>
+                      <span class="text">Data infrastructure and quality</span>
+                    </li>
+                    <li class="list-item">
+                      <div class="icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <path d="m9 12 2 2 4-4"></path>
+                        </svg>
+                      </div>
+                      <span class="text">AI strategy alignment</span>
+                    </li>
+                    <li class="list-item">
+                      <div class="icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <path d="m9 12 2 2 4-4"></path>
+                        </svg>
+                      </div>
+                      <span class="text">Talent development programs</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="card">
+                  <div class="section-title">Areas for Improvement</div>
+                  <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li class="list-item">
+                      <div class="icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <circle cx="12" cy="12" r="6"></circle>
+                          <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                      </div>
+                      <span class="text">AI governance framework</span>
+                    </li>
+                    <li class="list-item">
+                      <div class="icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <circle cx="12" cy="12" r="6"></circle>
+                          <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                      </div>
+                      <span class="text">Change management processes</span>
+                    </li>
+                    <li class="list-item">
+                      <div class="icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <circle cx="12" cy="12" r="6"></circle>
+                          <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                      </div>
+                      <span class="text">Innovation culture development</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Your Detailed Responses</div>
+                <div>
+                  ${answers.map(answer => {
+                    const questionId = answer.questionId.split('_')[0];
+                    const questionText = QUESTION_MAP[questionId] || answer.questionId;
+                    let answerText = '';
+                    
+                    if (answer.optionId) {
+                      answerText = OPTION_MAP[answer.optionId] || answer.optionId;
+                    } else if (answer.sliderValue !== undefined) {
+                      answerText = SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
+                    } else if (answer.textValue) {
+                      answerText = answer.textValue;
+                    }
+
+                    return `
+                      <div class="response-item">
+                        <div class="question">${questionText}</div>
+                        <div class="answer">${answerText}</div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div class="card" style="margin-top: 2rem;">
-            <h3>Your Detailed Responses</h3>
-            <ul style="list-style: none; padding: 0;">
-              ${answers.map(answer => {
-                const questionId = answer.questionId.split('_')[0]; // Get the prefix (it, te, dq, etc.)
-                const questionText = QUESTION_MAP[questionId] || answer.questionId;
-                let answerText = '';
-                
-                if (answer.optionId) {
-                  answerText = OPTION_MAP[answer.optionId] || answer.optionId;
-                } else if (answer.sliderValue !== undefined) {
-                  answerText = SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
-                } else if (answer.textValue) {
-                  answerText = answer.textValue;
-                }
+            <div class="cta-section">
+              <h2 class="cta-title">Ready to Transform Your Business with AI?</h2>
+              <p class="cta-description">
+                Based on your assessment results, we can help you develop a comprehensive AI strategy 
+                tailored to your organization's needs. Schedule a free consultation with our AI experts 
+                to discuss your results and next steps.
+              </p>
+              <a href="https://calendly.com/bloomteq/ai-readiness-consultation" class="cta-button">
+                Schedule Your Free Consultation
+              </a>
+            </div>
 
-                return `
-                  <li class="list-item">
-                    <div class="icon-container">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="m9 12 2 2 4-4"></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <div style="font-weight: bold; color: #2E363C;">${questionText}</div>
-                      <div style="color: #677076;">${answerText}</div>
-                    </div>
-                  </li>
-                `;
-              }).join('')}
-            </ul>
-          </div>
-
-          <div class="cta-section">
-            <h2 class="cta-title">Ready to Transform Your Business with AI?</h2>
-            <p class="cta-description">
-              Based on your assessment results, we can help you develop a comprehensive AI strategy 
-              tailored to your organization's needs. Schedule a free consultation with our AI experts 
-              to discuss your results and next steps.
-            </p>
-            <a href="https://calendly.com/bloomteq/ai-readiness-consultation" class="cta-button">
-              Schedule Your Free Consultation
-            </a>
+            <div class="footer">
+              © ${new Date().getFullYear()} Bloomteq. All rights reserved.
+            </div>
           </div>
         </body>
       </html>
