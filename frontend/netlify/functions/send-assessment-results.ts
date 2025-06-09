@@ -414,395 +414,369 @@ const handler: Handler = async (event, context) => {
     const recipients = Array.isArray(email) ? email : [email];
     console.log('Sending to recipients:', recipients);
 
-    const { score, maxScore, percentage, maturityLevel } = calculateScore(answers);
+    try {
+      const { score, maxScore, percentage, maturityLevel } = calculateScore(answers);
+      console.log('Calculated scores:', { score, maxScore, percentage, maturityLevel });
 
-    const subject = 'Your AI Readiness Assessment Results';
-    const text = `
-      Your AI Readiness Assessment Results
+      const subject = 'Your AI Readiness Assessment Results';
+      const text = `
+        Your AI Readiness Assessment Results
 
-      Thank you for completing the AI Readiness Assessment.
+        Thank you for completing the AI Readiness Assessment.
 
-      Your Score: ${percentage}%
-      Maturity Level: ${maturityLevel}
+        Your Score: ${percentage}%
+        Maturity Level: ${maturityLevel}
 
-      Your Answers:
-      ${answers.map(answer => {
-        const questionId = answer.questionId.split('_')[0]; // Get the prefix (it, te, dq, etc.)
-        const questionText = QUESTION_MAP[questionId] || answer.questionId;
-        let answerText = '';
-        
-        if (answer.optionId) {
-          answerText = `Selected Option: ${OPTION_MAP[answer.optionId] || answer.optionId}`;
-        } else if (answer.sliderValue !== undefined) {
-          answerText = `Slider Value: ${SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`}`;
-        } else if (answer.textValue) {
-          answerText = `Text Response: ${answer.textValue}`;
-        }
+        Your Answers:
+        ${answers.map(answer => {
+          const questionId = answer.questionId.split('_')[0]; // Get the prefix (it, te, dq, etc.)
+          const questionText = QUESTION_MAP[questionId] || answer.questionId;
+          let answerText = '';
+          
+          if (answer.optionId) {
+            answerText = `Selected Option: ${OPTION_MAP[answer.optionId] || answer.optionId}`;
+          } else if (answer.sliderValue !== undefined) {
+            answerText = `Slider Value: ${SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`}`;
+          } else if (answer.textValue) {
+            answerText = `Text Response: ${answer.textValue}`;
+          }
 
-        return `
-          Question: ${questionText}
-          ${answerText}
-        `;
-      }).join('\n')}
-    `;
+          return `
+            Question: ${questionText}
+            ${answerText}
+          `;
+        }).join('\n')}
+      `;
 
-    const html = `
-      <html>
-        <head>
-          <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-          <style>
-            body {
-              font-family: 'IBM Plex Sans', Arial, sans-serif;
-              line-height: 1.6;
-              color: #333;
-              margin: 0;
-              padding: 0;
-              background-color: #f5f5f5;
-            }
-            .container {
-              max-width: 600px;
-              margin: 0 auto;
-              background-color: #ffffff;
-            }
-            .header {
-              text-align: center;
-              padding: 40px 20px;
-              background: linear-gradient(135deg, #677076 0%, #8a6b4e 100%);
-              color: white;
-            }
-            .logo {
-              max-width: 120px;
-              height: auto;
-              margin-bottom: 20px;
-            }
-            h1 {
-              margin: 0;
-              font-size: 28px;
-              font-weight: 700;
-              color: white;
-            }
-            .subtitle {
-              color: rgba(255, 255, 255, 0.9);
-              font-size: 16px;
-              margin-top: 10px;
-            }
-            .content {
-              padding: 40px 20px;
-            }
-            .score-container {
-              text-align: center;
-              margin-bottom: 40px;
-            }
-            .score {
-              font-size: 48px;
-              font-weight: 700;
-              color: #677076;
-              margin: 0;
-            }
-            .maturity {
-              font-size: 20px;
-              font-weight: 600;
-              color: #8a6b4e;
-              margin: 10px 0;
-            }
-            .progress-bar {
-              height: 8px;
-              background: #f0f0f0;
-              border-radius: 4px;
-              margin: 20px auto;
-              max-width: 300px;
-              overflow: hidden;
-            }
-            .progress {
-              height: 100%;
-              background: linear-gradient(to right, #677076, #8a6b4e);
-              border-radius: 4px;
-            }
-            .section {
-              margin-bottom: 40px;
-            }
-            .section-title {
-              font-size: 20px;
-              font-weight: 600;
-              color: #2E363C;
-              margin-bottom: 20px;
-              padding-bottom: 10px;
-              border-bottom: 2px solid #f0f0f0;
-            }
-            .grid {
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              gap: 20px;
-              margin-bottom: 40px;
-            }
-            .card {
-              background: #f9fafb;
-              padding: 20px;
-              border-radius: 8px;
-            }
-            .list-item {
-              display: flex;
-              align-items: flex-start;
-              margin-bottom: 15px;
-            }
-            .icon-container {
-              width: 24px;
-              height: 24px;
-              background: #677076;
-              border-radius: 6px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-right: 12px;
-              flex-shrink: 0;
-            }
-            .icon {
-              width: 14px;
-              height: 14px;
-              color: white;
-            }
-            .text {
-              color: #4b5563;
-              font-size: 14px;
-            }
-            .response-item {
-              margin-bottom: 24px;
-              padding-bottom: 24px;
-              border-bottom: 1px solid #f0f0f0;
-            }
-            .response-item:last-child {
-              border-bottom: none;
-              margin-bottom: 0;
-              padding-bottom: 0;
-            }
-            .question {
-              font-weight: 600;
-              color: #2E363C;
-              margin-bottom: 8px;
-              font-size: 15px;
-            }
-            .answer {
-              color: #677076;
-              font-size: 14px;
-            }
-            .cta-section {
-              background: #f9fafb;
-              padding: 40px 20px;
-              text-align: center;
-              border-top: 1px solid #f0f0f0;
-            }
-            .cta-title {
-              font-size: 24px;
-              color: #2E363C;
-              margin-bottom: 16px;
-              font-weight: 600;
-            }
-            .cta-description {
-              color: #677076;
-              margin-bottom: 24px;
-              font-size: 15px;
-              max-width: 500px;
-              margin-left: auto;
-              margin-right: auto;
-            }
-            .cta-button {
-              display: inline-block;
-              padding: 14px 32px;
-              background: linear-gradient(135deg, #677076 0%, #8a6b4e 100%);
-              color: white !important;
-              text-decoration: none;
-              border-radius: 8px;
-              font-weight: 600;
-              font-size: 15px;
-              transition: opacity 0.2s;
-            }
-            .cta-button:hover {
-              opacity: 0.9;
-            }
-            .footer {
-              text-align: center;
-              padding: 20px;
-              color: #677076;
-              font-size: 12px;
-            }
-            @media (max-width: 600px) {
-              .grid {
-                grid-template-columns: 1fr;
+      const html = `
+        <html>
+          <head>
+            <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+            <style>
+              body {
+                font-family: 'IBM Plex Sans', Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                margin: 0;
+                padding: 0;
+                background-color: #f5f5f5;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
               }
               .header {
-                padding: 30px 20px;
+                text-align: center;
+                padding: 40px 20px;
+                background: linear-gradient(135deg, #677076 0%, #8a6b4e 100%);
+                color: white;
+              }
+              .logo {
+                max-width: 120px;
+                height: auto;
+                margin-bottom: 20px;
               }
               h1 {
-                font-size: 24px;
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                color: white;
+              }
+              .subtitle {
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 16px;
+                margin-top: 10px;
               }
               .content {
-                padding: 30px 20px;
+                padding: 40px 20px;
               }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <img src="https://cdn.theorg.com/1672900b-0fd1-453d-a7f5-04dbb991c987_medium.jpg" alt="Bloomteq Logo" class="logo">
-              <h1>Your AI Readiness Results</h1>
-              <div class="subtitle">Based on your responses, here's your organization's current AI readiness assessment.</div>
-            </div>
+              .score-container {
+                text-align: center;
+                margin-bottom: 40px;
+              }
+              .score {
+                font-size: 48px;
+                font-weight: 700;
+                color: #677076;
+                margin: 0;
+              }
+              .maturity {
+                font-size: 20px;
+                font-weight: 600;
+                color: #8a6b4e;
+                margin: 10px 0;
+              }
+              .progress-bar {
+                height: 8px;
+                background: #f0f0f0;
+                border-radius: 4px;
+                margin: 20px auto;
+                max-width: 300px;
+                overflow: hidden;
+              }
+              .progress {
+                height: 100%;
+                background: linear-gradient(to right, #677076, #8a6b4e);
+                border-radius: 4px;
+              }
+              .section {
+                margin-bottom: 40px;
+              }
+              .section-title {
+                font-size: 20px;
+                font-weight: 600;
+                color: #2E363C;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #f0f0f0;
+              }
+              .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin-bottom: 40px;
+              }
+              .card {
+                background: #f9fafb;
+                padding: 20px;
+                border-radius: 8px;
+              }
+              .list-item {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 15px;
+              }
+              .icon-container {
+                width: 24px;
+                height: 24px;
+                background: #677076;
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 12px;
+                flex-shrink: 0;
+              }
+              .icon {
+                width: 14px;
+                height: 14px;
+                color: white;
+              }
+              .text {
+                color: #4b5563;
+                font-size: 14px;
+              }
+              .response-item {
+                margin-bottom: 24px;
+                padding-bottom: 24px;
+                border-bottom: 1px solid #f0f0f0;
+              }
+              .response-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+              }
+              .question {
+                font-weight: 600;
+                color: #2E363C;
+                margin-bottom: 8px;
+                font-size: 15px;
+              }
+              .answer {
+                color: #677076;
+                font-size: 14px;
+              }
+              .cta-section {
+                background: #f9fafb;
+                padding: 40px 20px;
+                text-align: center;
+                border-top: 1px solid #f0f0f0;
+              }
+              .cta-title {
+                font-size: 24px;
+                color: #2E363C;
+                margin-bottom: 16px;
+                font-weight: 600;
+              }
+              .cta-description {
+                color: #677076;
+                margin-bottom: 24px;
+                font-size: 15px;
+                max-width: 500px;
+                margin-left: auto;
+                margin-right: auto;
+              }
+              .cta-button {
+                display: inline-block;
+                padding: 14px 32px;
+                background: linear-gradient(135deg, #677076 0%, #8a6b4e 100%);
+                color: white !important;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 15px;
+                transition: opacity 0.2s;
+              }
+              .cta-button:hover {
+                opacity: 0.9;
+              }
+              .footer {
+                text-align: center;
+                padding: 20px;
+                color: #677076;
+                font-size: 12px;
+              }
+              @media (max-width: 600px) {
+                .grid {
+                  grid-template-columns: 1fr;
+                }
+                .header {
+                  padding: 30px 20px;
+                }
+                h1 {
+                  font-size: 24px;
+                }
+                .content {
+                  padding: 30px 20px;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <img src="https://cdn.theorg.com/1672900b-0fd1-453d-a7f5-04dbb991c987_medium.jpg" alt="Bloomteq Logo" class="logo">
+                <h1>Your AI Readiness Results</h1>
+                <div class="subtitle">Based on your responses, here's your organization's current AI readiness assessment.</div>
+              </div>
 
-            <div class="content">
-              <div class="score-container">
-                <div class="score">${Math.round(percentage)}%</div>
-                <div class="maturity">${maturityLevel}</div>
-                <div class="progress-bar">
-                  <div class="progress" style="width: ${percentage}%"></div>
+              <div class="content">
+                <div class="score-container">
+                  <div class="score">${Math.round(percentage)}%</div>
+                  <div class="maturity">${maturityLevel}</div>
+                  <div class="progress-bar">
+                    <div class="progress" style="width: ${percentage}%"></div>
+                  </div>
+                </div>
+
+                <div class="grid">
+                  <div class="card">
+                    <div class="section-title">Key Strengths</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                      ${body.strengths?.map(strength => `
+                        <li class="list-item">
+                          <div class="icon-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <path d="m9 12 2 2 4-4"></path>
+                            </svg>
+                          </div>
+                          <span class="text">${strength}</span>
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+
+                  <div class="card">
+                    <div class="section-title">Areas for Improvement</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                      ${body.improvements?.map(improvement => `
+                        <li class="list-item">
+                          <div class="icon-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <circle cx="12" cy="12" r="6"></circle>
+                              <circle cx="12" cy="12" r="2"></circle>
+                            </svg>
+                          </div>
+                          <span class="text">${improvement}</span>
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Your Detailed Responses</div>
+                  <div>
+                    ${answers.map(answer => {
+                      const questionId = answer.questionId.split('_')[0];
+                      const questionText = QUESTION_MAP[questionId] || answer.questionId;
+                      let answerText = '';
+                      
+                      if (answer.optionId) {
+                        answerText = OPTION_MAP[answer.optionId] || answer.optionId;
+                      } else if (answer.sliderValue !== undefined) {
+                        answerText = SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
+                      } else if (answer.textValue) {
+                        answerText = answer.textValue;
+                      }
+
+                      return `
+                        <div class="response-item">
+                          <div class="question">${questionText}</div>
+                          <div class="answer">${answerText}</div>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
                 </div>
               </div>
 
-              <div class="grid">
-                <div class="card">
-                  <div class="section-title">Key Strengths</div>
-                  <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li class="list-item">
-                      <div class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <path d="m9 12 2 2 4-4"></path>
-                        </svg>
-                      </div>
-                      <span class="text">Data infrastructure and quality</span>
-                    </li>
-                    <li class="list-item">
-                      <div class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <path d="m9 12 2 2 4-4"></path>
-                        </svg>
-                      </div>
-                      <span class="text">AI strategy alignment</span>
-                    </li>
-                    <li class="list-item">
-                      <div class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <path d="m9 12 2 2 4-4"></path>
-                        </svg>
-                      </div>
-                      <span class="text">Talent development programs</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="card">
-                  <div class="section-title">Areas for Improvement</div>
-                  <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li class="list-item">
-                      <div class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <circle cx="12" cy="12" r="6"></circle>
-                          <circle cx="12" cy="12" r="2"></circle>
-                        </svg>
-                      </div>
-                      <span class="text">AI governance framework</span>
-                    </li>
-                    <li class="list-item">
-                      <div class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <circle cx="12" cy="12" r="6"></circle>
-                          <circle cx="12" cy="12" r="2"></circle>
-                        </svg>
-                      </div>
-                      <span class="text">Change management processes</span>
-                    </li>
-                    <li class="list-item">
-                      <div class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <circle cx="12" cy="12" r="6"></circle>
-                          <circle cx="12" cy="12" r="2"></circle>
-                        </svg>
-                      </div>
-                      <span class="text">Innovation culture development</span>
-                    </li>
-                  </ul>
-                </div>
+              <div class="cta-section">
+                <h2 class="cta-title">Ready to Transform Your Business with AI?</h2>
+                <p class="cta-description">
+                  Based on your assessment results, we can help you develop a comprehensive AI strategy 
+                  tailored to your organization's needs. Schedule a free consultation with our AI experts 
+                  to discuss your results and next steps.
+                </p>
+                <a href="https://calendly.com/ismir-bloomteq/30min" class="cta-button">
+                  Schedule Your Free Consultation
+                </a>
               </div>
 
-              <div class="section">
-                <div class="section-title">Your Detailed Responses</div>
-                <div>
-                  ${answers.map(answer => {
-                    const questionId = answer.questionId.split('_')[0];
-                    const questionText = QUESTION_MAP[questionId] || answer.questionId;
-                    let answerText = '';
-                    
-                    if (answer.optionId) {
-                      answerText = OPTION_MAP[answer.optionId] || answer.optionId;
-                    } else if (answer.sliderValue !== undefined) {
-                      answerText = SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
-                    } else if (answer.textValue) {
-                      answerText = answer.textValue;
-                    }
-
-                    return `
-                      <div class="response-item">
-                        <div class="question">${questionText}</div>
-                        <div class="answer">${answerText}</div>
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
+              <div class="footer">
+                © ${new Date().getFullYear()} Bloomteq. All rights reserved.
               </div>
             </div>
+          </body>
+        </html>
+      `;
 
-            <div class="cta-section">
-              <h2 class="cta-title">Ready to Transform Your Business with AI?</h2>
-              <p class="cta-description">
-                Based on your assessment results, we can help you develop a comprehensive AI strategy 
-                tailored to your organization's needs. Schedule a free consultation with our AI experts 
-                to discuss your results and next steps.
-              </p>
-              <a href="https://calendly.com/ismir-bloomteq/30min" class="cta-button">
-                Schedule Your Free Consultation
-              </a>
-            </div>
-
-            <div class="footer">
-              © ${new Date().getFullYear()} Bloomteq. All rights reserved.
-            </div>
-          </div>
-        </body>
-      </html>
-    `;
-
-    // Send to each recipient individually
-    const sendPromises = recipients.map(recipient => {
+      console.log('Sending email to:', recipients);
       const msg = {
-        to: recipient,
-        from: 'info@bloomteq.com', // Updated to use verified sender
+        to: recipients,
+        from: 'noreply@bloomteq.com',
         subject,
         text,
         html,
       };
-      console.log('Sending email to:', recipient);
-      return sgMail.send(msg);
-    });
 
-    try {
-      await Promise.all(sendPromises);
-      console.log('Successfully sent all emails');
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ message: 'Assessment results sent successfully' }),
-      };
-    } catch (sendError) {
-      console.error('Error sending emails:', sendError);
+      try {
+        await sgMail.send(msg);
+        console.log('Email sent successfully');
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ message: 'Email sent successfully' }),
+        };
+      } catch (emailError) {
+        console.error('Error sending email:', emailError);
+        return {
+          statusCode: 500,
+          body: JSON.stringify({ 
+            error: 'Failed to send email',
+            details: emailError instanceof Error ? emailError.message : 'Unknown error'
+          }),
+        };
+      }
+    } catch (calculationError) {
+      console.error('Error calculating scores:', calculationError);
       return {
         statusCode: 500,
         body: JSON.stringify({ 
-          error: 'Failed to send emails',
-          details: sendError.message
+          error: 'Failed to calculate scores',
+          details: calculationError instanceof Error ? calculationError.message : 'Unknown error'
         }),
       };
     }
@@ -812,7 +786,7 @@ const handler: Handler = async (event, context) => {
       statusCode: 500,
       body: JSON.stringify({ 
         error: 'Failed to process request',
-        details: error.message
+        details: error instanceof Error ? error.message : 'Unknown error'
       }),
     };
   }
