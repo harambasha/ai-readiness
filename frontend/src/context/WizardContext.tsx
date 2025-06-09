@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Answer, WizardContextType, ScoreResult, MaturityLevel } from '../types';
 import { questions } from '../data/questions';
+import { Question, Answer, MaturityLevel, WizardContextType } from '../types';
 
-const WizardContext = createContext<WizardContextType | undefined>(undefined);
+export const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
 export function WizardProvider({ children }: { children: React.ReactNode }) {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [showError, setShowError] = useState(false);
 
   const totalSteps = questions.length + 2; // Questions + Welcome + Results
@@ -104,6 +105,24 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
       maxScore: maxPossibleScore
     };
   }, [answers]);
+
+  const canProceed = useCallback(() => {
+    if (!currentQuestion) return false;
+
+    const currentAnswer = answers.find((a) => a.questionId === currentQuestion.id);
+    if (!currentAnswer) return false;
+
+    switch (currentQuestion.type) {
+      case 'multiple-choice':
+        return currentAnswer.optionId !== undefined;
+      case 'slider':
+        return currentAnswer.score !== undefined || currentAnswer.sliderValue !== undefined;
+      case 'text':
+        return currentAnswer.textValue !== undefined && currentAnswer.textValue.trim() !== '';
+      default:
+        return false;
+    }
+  }, [currentQuestion, answers]);
 
   return (
     <WizardContext.Provider

@@ -20,10 +20,10 @@ export function QuestionStep({ question, answers, setAnswers }: QuestionStepProp
     });
   };
 
-  const handleSlider = (score: number) => {
+  const handleSlider = (score: number, sliderValue?: number) => {
     setAnswers((prev) => {
       const newAnswers = prev.filter((a) => a.questionId !== question.id);
-      return [...newAnswers, { questionId: question.id, score }];
+      return [...newAnswers, { questionId: question.id, score, sliderValue }];
     });
   };
 
