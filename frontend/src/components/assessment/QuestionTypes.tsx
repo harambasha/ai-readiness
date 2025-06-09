@@ -46,7 +46,7 @@ export function MultipleChoice({ question, currentAnswer, onSelect }: MultipleCh
 }
 
 interface SliderProps extends BaseProps {
-  onChange: (score: number, sliderValue: number | undefined, sliderLabel: string | undefined, value: number) => void;
+  onChange: (score: number, sliderValue: number) => void;
 }
 
 export function Slider({ question, currentAnswer, onChange }: SliderProps) {
@@ -71,7 +71,7 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
     setSliderValue(value);
     // Convert the percentage value to a score between 0 and 4
     const score = (value / 100) * 4;
-    onChange(score, undefined, undefined, value); // Pass the sliderValue as the fourth parameter
+    onChange(score, value); // Pass score and sliderValue
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
