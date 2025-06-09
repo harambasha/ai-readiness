@@ -107,8 +107,6 @@ export function Wizard() {
 function WelcomeStep({ onStart }: { onStart: () => void }) {
   return (
     <div className="relative overflow-hidden">
-      {/* Logo */}
-    
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 text-gray-900">
         <div className="absolute inset-0 overflow-hidden">
@@ -117,45 +115,45 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
         </div>
 
         <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
-        <div className="absolute top-8 left-8 z-20">
-          <img 
-            src="/public/bloomteq-logo.svg" 
-            alt="Bloomteq Logo" 
-            className="h-8 w-auto"
-            onError={(e) => {
-              console.error('Error loading logo:', e);
-              const img = e.target as HTMLImageElement;
-              console.log('Failed image src:', img.src);
-            }}
-          />
-        </div>
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="absolute top-8 left-8 z-20">
+            <img 
+              src="/public/bloomteq-logo.svg" 
+              alt="Bloomteq Logo" 
+              className="h-8 w-auto"
+              onError={(e) => {
+                console.error('Error loading logo:', e);
+                const img = e.target as HTMLImageElement;
+                console.log('Failed image src:', img.src);
+              }}
+            />
+          </div>
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+            <div className="w-full lg:w-1/2">
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 mb-8">
                 <Sparkles className="w-4 h-4 mr-2" />
-                <span className="text-sm  font-medium">AI Readiness Assessment</span>
+                <span className="text-sm font-medium">AI Readiness Assessment</span>
               </div>
               
-              <h1 className="text-6xl font-bold mb-8 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8 leading-tight">
                 Transform Your Business with 
                 <span className="text-[#677076]"> AI Innovation</span>
               </h1>
               
-              <p className="text-xl text-gray-600 mb-12 leading-relaxed">
+              <p className="text-lg sm:text-xl text-gray-600 mb-8 sm:mb-12 leading-relaxed">
                 Discover if your organization is ready to harness the power of AI. Get personalized insights and actionable recommendations in just 10 minutes.
               </p>
 
               <button
                 onClick={onStart}
-                className="inline-flex items-center px-8 py-4 text-lg  bg-[#000000] text-white hover:opacity-90 transition-all duration-200 transform hover:scale-105"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 text-lg bg-[#000000] text-white hover:opacity-90 transition-all duration-200 transform hover:scale-105"
               >
                 Start Free Assessment
                 <ArrowRight className="w-6 h-6 ml-2" />
               </button>
 
-              <div className="flex items-center space-x-8 mt-12">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-12">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12  bg-[#F5F6FA] flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[#F5F6FA] flex items-center justify-center">
                     <Clock className="w-6 h-6 text-[#B4926E] stroke-[#000000]" />
                   </div>
                   <div>
@@ -164,7 +162,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12  bg-[#F5F6FA] flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[#F5F6FA] flex items-center justify-center">
                     <Zap className="w-6 h-6 text-[#B4926E] stroke-[#000000]" />
                   </div>
                   <div>
@@ -184,12 +182,12 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative w-full lg:w-1/2">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 blur-3xl"></div>
               <img
                 src="/public/hero-image.svg"
                 alt="AI Readiness Assessment"
-                className="relative w-[600px] h-[600px]"
+                className="relative w-full max-w-[600px] mx-auto"
                 onError={(e) => {
                   console.error('Error loading hero image:', e);
                   const img = e.target as HTMLImageElement;
@@ -202,16 +200,16 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
       </div>
 
       {/* Assessment Areas */}
-      <div className="bg-white py-24">
+      <div className="bg-white py-16 sm:py-24">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Comprehensive Assessment Areas</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6">Comprehensive Assessment Areas</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
               Our AI readiness scorecard evaluates your organization across four critical dimensions
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {[
               {
                 icon: Brain,
@@ -244,68 +242,13 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
             ].map((area, index) => (
               <div key={index} className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 transform transition-transform group-hover:scale-[1.02]"></div>
-                <div className="relative glass-card p-8 h-full">
-                  <div className={`w-16 h-16 bg-[#677076] flex items-center justify-center mb-6`}>
-                    <area.icon className="w-8 h-8 text-white" />
+                <div className="relative glass-card p-6 sm:p-8 h-full">
+                  <div className={`w-12 sm:w-16 h-12 sm:h-16 bg-[#677076] flex items-center justify-center mb-4 sm:mb-6`}>
+                    <area.icon className="w-6 sm:w-8 h-6 sm:h-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4">{area.title}</h3>
-                  <p className="text-gray-600 mb-4">{area.description}</p>
-                  <p className="text-gray-500 text-sm leading-relaxed">{area.details}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Testimonials */}
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-24">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Success Stories</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              See how organizations like yours benefited from our AI readiness assessment
-            </p>
-          </div>
-
-          <div className="grid grid-cols-3 gap-8">
-            {[
-              {
-                name: "Sarah Chen",
-                role: "CTO, TechVision",
-                image: "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg",
-                quote: "The assessment provided clear, actionable insights that helped us prioritize our AI initiatives."
-              },
-              {
-                name: "James Wilson",
-                role: "CEO, Innovation Labs",
-                image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg",
-                quote: "This scorecard was instrumental in helping us understand our AI readiness gaps and opportunities."
-              },
-              {
-                name: "Emily Rodriguez",
-                role: "Head of Digital",
-                image: "https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg",
-                quote: "The recommendations were practical and helped us create a solid AI implementation roadmap."
-              }
-            ].map((testimonial, index) => (
-              <div key={index} className="bg-white p-8 shadow-xl">
-                <div className="flex items-center space-x-1 mb-6">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-[#677076] fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-8">"{testimonial.quote}"</p>
-                <div className="flex items-center">
-                  <img
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover mr-4"
-                  />
-                  <div>
-                    <div className="font-semibold">{testimonial.name}</div>
-                    <div className="text-sm text-gray-500">{testimonial.role}</div>
-                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">{area.title}</h3>
+                  <p className="text-gray-600 mb-4 sm:mb-6">{area.description}</p>
+                  <p className="text-gray-500 text-sm sm:text-base">{area.details}</p>
                 </div>
               </div>
             ))}
@@ -529,21 +472,21 @@ function ResultsStep() {
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       <div className="text-center">
-        <h2 className="text-5xl font-bold text-[#677076] mb-8">
+        <h2 className="text-3xl sm:text-5xl font-bold text-[#677076] mb-6 sm:mb-8">
           Your AI Readiness Score
         </h2>
-        <div className="inline-block bg-[#f7f6f4] px-8 py-4 rounded-xl mb-8 shadow-sm">
-          <span className="text-[#677076] text-xl">
+        <div className="inline-block bg-[#f7f6f4] px-6 sm:px-8 py-3 sm:py-4 rounded-xl mb-6 sm:mb-8 shadow-sm">
+          <span className="text-[#677076] text-lg sm:text-xl">
             Maturity Level: <span className="font-bold text-[#677076]">{result.maturityLevel}</span>
           </span>
         </div>
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           <AnimatedScore value={result.percentage} />
         </div>
         {emailSent && (
-          <div className="mt-6 flex items-center justify-center">
+          <div className="mt-4 sm:mt-6 flex items-center justify-center">
             <CheckCircle2 className="w-5 h-5 text-[#677076] mr-2" />
             <span className="text-[#677076]">
               Results have been sent to <span className="font-semibold">{userEmail}</span>
@@ -551,7 +494,7 @@ function ResultsStep() {
           </div>
         )}
         <button
-          className="mt-8 px-8 py-3 bg-[#677076] text-white rounded-lg hover:bg-[#4d545a] transition text-lg font-medium"
+          className="mt-6 sm:mt-8 px-6 sm:px-8 py-3 bg-[#677076] text-white rounded-lg hover:bg-[#4d545a] transition text-base sm:text-lg font-medium"
           onClick={() => {
             navigator.clipboard.writeText(window.location.href);
             alert('Link copied to clipboard!');
@@ -574,7 +517,7 @@ function ResultsStep() {
         />
       </div>
 
-      <div className="bg-gray-50 p-8">
+      <div className="bg-gray-50 p-6 sm:p-8">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">
           What This Means
         </h3>
@@ -583,8 +526,8 @@ function ResultsStep() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-8">
-        <div className="bg-gray-50 p-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+        <div className="bg-gray-50 p-6 sm:p-8">
           <h3 className="text-xl font-semibold text-gray-900 mb-4">
             Key Strengths
           </h3>
@@ -610,7 +553,7 @@ function ResultsStep() {
           </ul>
         </div>
 
-        <div className="bg-gray-50 p-8">
+        <div className="bg-gray-50 p-6 sm:p-8">
           <h3 className="text-xl font-semibold text-gray-900 mb-4">
             Areas for Improvement
           </h3>
@@ -637,21 +580,21 @@ function ResultsStep() {
         </div>
       </div>
 
-      <div className="bg-[#f7f6f4] p-8 text-center">
+      <div className="bg-[#f7f6f4] p-6 sm:p-8 text-center">
         <h3 className="text-2xl font-bold text-[#677076] mb-4">
           Ready to Accelerate Your AI Journey?
         </h3>
-        <p className="text-gray-700 mb-8 max-w-2xl mx-auto">
+        <p className="text-gray-700 mb-6 sm:mb-8 max-w-2xl mx-auto">
           Our team of AI experts at Bloomteq can help you develop a comprehensive strategy and implementation plan tailored to your organization's needs.
         </p>
         <a
           href={CALENDLY_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center px-8 py-4 text-lg font-semibold bg-[#677076] text-white hover:bg-[#8a6b4e] transition-all duration-200 transform hover:scale-105"
+          className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold bg-[#677076] text-white hover:bg-[#8a6b4e] transition-all duration-200 transform hover:scale-105"
         >
           Schedule a Consultation
-          <ArrowRight className="w-6 h-6 ml-2" />
+          <ArrowRight className="w-5 sm:w-6 h-5 sm:h-6 ml-2" />
         </a>
       </div>
 
@@ -668,7 +611,7 @@ function ResultsStep() {
         />
       </div>
 
-      <div className="bg-gray-50 p-8 mt-12">
+      <div className="bg-gray-50 p-6 sm:p-8 mt-8 sm:mt-12">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">
           Next Steps
         </h3>
@@ -692,10 +635,6 @@ function ResultsStep() {
             <span className="text-gray-600">Schedule a follow-up assessment in 6 months</span>
           </div>
         </div>
-      </div>
-
-      <div className="border-t border-gray-200 mt-12">
-      
       </div>
     </div>
   );
