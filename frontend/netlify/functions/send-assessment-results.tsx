@@ -1,6 +1,7 @@
 import { Handler } from '@netlify/functions';
 import sgMail from '@sendgrid/mail';
 import { generateEmailTemplate } from '../../src/utils/emailTemplate';
+import { questions } from '../../src/data/questions';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -39,18 +40,18 @@ function calculateScore(answers: Answer[]): number {
     return sum;
   }, 0);
 
-  const maxPossibleScore = 5 * answers.filter(answer => 
-    answer.questionId !== 'company-email' && 
-    answer.questionId !== 'company-challenges' &&
-    answer.questionId !== 'business-goals' &&
-    answer.questionId !== 'business-metrics' &&
-    answer.questionId !== 'time-consuming-processes' &&
-    answer.questionId !== 'software-list' &&
-    answer.questionId !== 'business-objectives' &&
-    answer.questionId !== 'industry-challenges' &&
-    answer.questionId !== 'competitor-analysis' &&
-    answer.questionId !== 'regulatory-compliance'
-  ).length;
+  const maxPossibleScore = questions.reduce((sum, question) => {
+    if (question.type === 'multiple-choice' && question.options) {
+      return sum + Math.max(...question.options.map(opt => opt.score));
+    }
+    if (question.type === 'slider') {
+      return sum + 5; // Slider max score is 5 (100/20)
+    }
+    if (question.type === 'yes-no') {
+      return sum + Math.max(question.yesNo?.yesScore || 0, question.yesNo?.noScore || 0);
+    }
+    return sum;
+  }, 0);
 
   const percentage = (totalScore / maxPossibleScore) * 100;
   return Math.round(percentage * 100) / 100; // Round to 2 decimal places
