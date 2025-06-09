@@ -62,32 +62,38 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
 
   const calculateScore = useCallback(() => {
     const totalScore = answers.reduce((sum, answer) => {
+      const question = questions.find(q => q.id === answer.questionId.split('_')[0]);
+      if (!question) return sum;
+
+      let answerScore = 0;
       if (answer.score !== undefined) {
-        return sum + answer.score;
-      }
-      if (answer.sliderValue !== undefined) {
+        answerScore = answer.score;
+      } else if (answer.sliderValue !== undefined) {
         // Convert slider percentage to a score out of 5
-        return sum + (answer.sliderValue / 20); // Divide by 20 to convert 0-100 to 0-5 scale
-      }
-      if (answer.optionId) {
+        answerScore = answer.sliderValue / 20; // Divide by 20 to convert 0-100 to 0-5 scale
+      } else if (answer.optionId) {
         // Extract number from optionId (e.g., 'ci3' -> 3)
         const optionScore = parseInt(answer.optionId.replace(/\D/g, ''));
         if (!isNaN(optionScore)) {
-          return sum + optionScore;
+          answerScore = optionScore;
         }
       }
-      return sum;
+
+      // Apply question weight
+      return sum + (answerScore * (question.weight || 1));
     }, 0);
 
     const maxPossibleScore = questions.reduce((sum, question) => {
       if (question.type === 'multiple-choice' && question.options) {
-        return sum + Math.max(...question.options.map(opt => opt.score));
+        const maxOptionScore = Math.max(...question.options.map(opt => opt.score));
+        return sum + (maxOptionScore * (question.weight || 1));
       }
       if (question.type === 'slider') {
-        return sum + 5; // Slider max score is 5 (100/20)
+        return sum + (5 * (question.weight || 1)); // Slider max score is 5 (100/20)
       }
       if (question.type === 'yes-no') {
-        return sum + Math.max(question.yesNo?.yesScore || 0, question.yesNo?.noScore || 0);
+        const maxYesNoScore = Math.max(question.yesNo?.yesScore || 0, question.yesNo?.noScore || 0);
+        return sum + (maxYesNoScore * (question.weight || 1));
       }
       return sum;
     }, 0);
@@ -108,10 +114,10 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     }
 
     return {
-      percentage: Math.round(percentage * 100) / 100, // Round to 2 decimal places
-      maturityLevel,
       score: totalScore,
-      maxScore: maxPossibleScore
+      maxScore: maxPossibleScore,
+      percentage: Math.round(percentage * 100) / 100, // Round to 2 decimal places
+      maturityLevel
     };
   }, [answers]);
 
