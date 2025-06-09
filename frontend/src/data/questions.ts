@@ -8,6 +8,10 @@ export const questions: Question[] = [
     category: 'company',
     type: 'text',
     weight: 0, // No weight as it's not scored
+    textInput: {
+      placeholder: 'Enter your company name...',
+      maxLength: 50
+    }
   },
   {
     id: 'company-email',
