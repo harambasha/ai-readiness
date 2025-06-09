@@ -8,6 +8,62 @@ if (!apiKey) {
 }
 sgMail.setApiKey(apiKey);
 
+// Map for option IDs to their text values
+const OPTION_MAP: Record<string, string> = {
+  // IT Team questions
+  'it1': 'No dedicated IT team',
+  'it2': 'Small IT team (1-5 people)',
+  'it3': 'Medium IT team (6-20 people)',
+  'it4': 'Large IT team (20+ people)',
+  
+  // Team Expertise questions
+  'te1': 'No AI/ML expertise',
+  'te2': 'Basic understanding',
+  'te3': 'Some practical experience',
+  'te4': 'Advanced expertise',
+  
+  // Data Quality questions
+  'dq1': 'Poor - No data standards',
+  'dq2': 'Basic - Some standards in place',
+  'dq3': 'Good - Well-defined standards',
+  'dq4': 'Excellent - Comprehensive standards',
+  
+  // Data Infrastructure questions
+  'di1': 'Basic - Limited infrastructure',
+  'di2': 'Developing - Some modern tools',
+  'di3': 'Advanced - Cloud-based solutions',
+  'di4': 'State-of-the-art - AI-ready infrastructure',
+  
+  // Strategy Vision questions
+  'sv1': 'Not Started',
+  'sv2': 'Early Stage',
+  'sv3': 'In Progress',
+  'sv4': 'Advanced',
+  'sv5': 'Complete',
+  
+  // Yes/No questions
+  'yn1': 'Yes',
+  'yn2': 'No'
+};
+
+// Map for slider values to their text values
+const SLIDER_MAP: Record<number, string> = {
+  0: 'Not Started',
+  25: 'Early Stage',
+  50: 'In Progress',
+  75: 'Advanced',
+  100: 'Complete'
+};
+
+// Map for question IDs to their text values
+const QUESTION_MAP: Record<string, string> = {
+  'it': 'Do you have a dedicated IT Team in your company?',
+  'te': 'What is your team\'s AI/ML expertise level?',
+  'dq': 'How would you rate your data quality and standardization?',
+  'di': 'How advanced is your data infrastructure?',
+  'sv': 'How well-defined is your organization\'s AI strategy and vision?'
+};
+
 const handler: Handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return {
@@ -52,13 +108,24 @@ const handler: Handler = async (event, context) => {
       Maturity Level: ${maturityLevel}
 
       Your Answers:
-      ${answers.map(answer => `
-        Question: ${answer.questionId}
-        ${answer.optionId ? `Selected Option: ${answer.optionId}` : ''}
-        ${answer.score ? `Score: ${answer.score}` : ''}
-        ${answer.sliderValue ? `Slider Value: ${answer.sliderValue}%` : ''}
-        ${answer.textValue ? `Text Response: ${answer.textValue}` : ''}
-      `).join('\n')}
+      ${answers.map(answer => {
+        const questionId = answer.questionId.split('_')[0]; // Get the prefix (it, te, dq, etc.)
+        const questionText = QUESTION_MAP[questionId] || answer.questionId;
+        let answerText = '';
+        
+        if (answer.optionId) {
+          answerText = `Selected Option: ${OPTION_MAP[answer.optionId] || answer.optionId}`;
+        } else if (answer.sliderValue !== undefined) {
+          answerText = `Slider Value: ${SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`}`;
+        } else if (answer.textValue) {
+          answerText = `Text Response: ${answer.textValue}`;
+        }
+
+        return `
+          Question: ${questionText}
+          ${answerText}
+        `;
+      }).join('\n')}
     `;
 
     const html = `
@@ -115,6 +182,14 @@ const handler: Handler = async (event, context) => {
               color: #677076;
               margin-bottom: 30px;
             }
+            .question {
+              font-weight: bold;
+              color: #2E363C;
+              margin-bottom: 10px;
+            }
+            .answer {
+              color: #677076;
+            }
           </style>
         </head>
         <body>
@@ -127,15 +202,26 @@ const handler: Handler = async (event, context) => {
           <div class="maturity-level">Maturity Level: ${maturityLevel}</div>
           <h3>Your Answers:</h3>
           <ul>
-            ${answers.map(answer => `
-              <li>
-                <strong>Question:</strong> ${answer.questionId}<br>
-                ${answer.optionId ? `<strong>Selected Option:</strong> ${answer.optionId}<br>` : ''}
-                ${answer.score ? `<strong>Score:</strong> ${answer.score}<br>` : ''}
-                ${answer.sliderValue ? `<strong>Slider Value:</strong> ${answer.sliderValue}%<br>` : ''}
-                ${answer.textValue ? `<strong>Text Response:</strong> ${answer.textValue}<br>` : ''}
-              </li>
-            `).join('')}
+            ${answers.map(answer => {
+              const questionId = answer.questionId.split('_')[0]; // Get the prefix (it, te, dq, etc.)
+              const questionText = QUESTION_MAP[questionId] || answer.questionId;
+              let answerText = '';
+              
+              if (answer.optionId) {
+                answerText = OPTION_MAP[answer.optionId] || answer.optionId;
+              } else if (answer.sliderValue !== undefined) {
+                answerText = SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
+              } else if (answer.textValue) {
+                answerText = answer.textValue;
+              }
+
+              return `
+                <li>
+                  <div class="question">${questionText}</div>
+                  <div class="answer">${answerText}</div>
+                </li>
+              `;
+            }).join('')}
           </ul>
         </body>
       </html>
