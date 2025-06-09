@@ -88,7 +88,9 @@ export function generateEmailTemplate(
     'data-governance': {
       'dg1': 'No data governance',
       'dg2': 'Basic data governance',
-      'dg3': 'Comprehensive data governance'
+      'dg3': 'Comprehensive data governance',
+      'dg4': 'Advanced data governance',
+      'dg5': 'Enterprise data governance framework'
     },
     'roi-expectations': {
       'roi1': 'No clear ROI expectations',
@@ -192,6 +194,31 @@ export function generateEmailTemplate(
 
   const { strengths, improvements } = analyzeAnswers();
 
+  const strengthsList = strengths.map(strength => `
+    <li class="analysis-item">
+      <div class="icon-container">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
+      </div>
+      <span class="analysis-text">${strength}</span>
+    </li>
+  `).join('');
+
+  const improvementsList = improvements.map(improvement => `
+    <li class="analysis-item">
+      <div class="icon-container">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-target">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="12" r="6"></circle>
+          <circle cx="12" cy="12" r="2"></circle>
+        </svg>
+      </div>
+      <span class="analysis-text">${improvement}</span>
+    </li>
+  `).join('');
+
   return `
     <!DOCTYPE html>
     <html>
@@ -209,36 +236,55 @@ export function generateEmailTemplate(
             background-color: #f9fafb;
           }
           .container {
-            background-color: white;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #677076;
+            line-height: 1.6;
           }
           .header {
             text-align: center;
             margin-bottom: 40px;
           }
+          .header h1 {
+            color: #677076;
+            font-size: 28px;
+            margin-bottom: 16px;
+          }
+          .header p {
+            color: #4b5563;
+            font-size: 16px;
+          }
+          .score-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background-color: #f7f6f4;
+            border-radius: 12px;
+          }
+          .score-section h2 {
+            color: #677076;
+            font-size: 24px;
+            margin-bottom: 20px;
+          }
           .score {
-            font-size: 32px;
+            font-size: 48px;
             font-weight: bold;
             color: #677076;
-            text-align: center;
-            margin: 30px 0;
-            padding: 20px;
-            background-color: #f7f6f4;
-            border-radius: 8px;
+            margin: 20px 0;
           }
           .maturity-level {
             background-color: #f7f6f4;
-            padding: 25px;
-            border-radius: 8px;
-            margin: 30px 0;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
             text-align: center;
-            color: #677076;
           }
           .maturity-level h2 {
             color: #677076;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 16px;
           }
           .maturity-level p {
             color: #4b5563;
@@ -247,91 +293,129 @@ export function generateEmailTemplate(
           }
           .answers {
             margin-top: 40px;
+            background-color: #f7f6f4;
+            padding: 30px;
+            border-radius: 12px;
+          }
+          .answers h2 {
+            color: #677076;
+            font-size: 24px;
+            margin-bottom: 30px;
           }
           .answer-item {
             margin-bottom: 25px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
           }
           .answer-item:last-child {
-            border-bottom: none;
+            margin-bottom: 0;
           }
           .question {
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 600;
+            margin-bottom: 12px;
             color: #677076;
+            font-size: 16px;
           }
           .answer {
             color: #4b5563;
             padding-left: 20px;
+            font-size: 15px;
+            line-height: 1.6;
           }
           .analysis-section {
             margin: 40px 0;
-            padding: 25px;
-            background-color: #f7f6f4;
-            border-radius: 8px;
           }
           .analysis-section h2 {
             color: #677076;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+          }
+          .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+          }
+          .analysis-card {
+            background-color: #f7f6f4;
+            padding: 32px;
+            border-radius: 12px;
+          }
+          .analysis-card h3 {
+            color: #677076;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
           }
           .analysis-list {
-            list-style-type: none;
+            list-style: none;
             padding: 0;
+            margin: 0;
           }
-          .analysis-list li {
-            margin-bottom: 10px;
-            padding-left: 20px;
-            position: relative;
+          .analysis-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+          }
+          .analysis-item:last-child {
+            margin-bottom: 0;
+          }
+          .icon-container {
+            width: 32px;
+            height: 32px;
+            background-color: #677076;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            margin-top: 4px;
+          }
+          .icon-container svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+          }
+          .analysis-text {
             color: #4b5563;
-          }
-          .analysis-list li:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #677076;
+            font-size: 15px;
+            line-height: 1.6;
           }
           .cta-section {
             text-align: center;
             margin: 40px 0;
             padding: 30px;
             background-color: #f7f6f4;
-            border-radius: 8px;
+            border-radius: 12px;
           }
           .cta-section h2 {
             color: #677076;
-            margin-bottom: 15px;
             font-size: 24px;
-            font-weight: bold;
+            margin-bottom: 20px;
           }
           .cta-section p {
             color: #4b5563;
-            margin-bottom: 20px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            font-size: 16px;
+            margin-bottom: 24px;
           }
           .cta-button {
             display: inline-block;
-            padding: 16px 32px;
+            padding: 12px 24px;
             background-color: #677076;
-            color: white !important;
+            color: white;
             text-decoration: none;
             border-radius: 6px;
-            font-weight: bold;
-            font-size: 18px;
-            transition: all 0.2s ease;
-          }
-          .cta-button:hover {
-            background-color: #8a6b4e;
-            transform: scale(1.05);
+            font-weight: 500;
+            font-size: 16px;
           }
           .footer {
             text-align: center;
             margin-top: 40px;
             padding-top: 20px;
             border-top: 1px solid #e5e7eb;
-            color: #6b7280;
+            color: #4b5563;
             font-size: 14px;
           }
         </style>
@@ -339,11 +423,13 @@ export function generateEmailTemplate(
       <body>
         <div class="container">
           <div class="header">
-            <h1 style="color: #677076;">AI Readiness Assessment Results</h1>
+            <h1>AI Readiness Assessment Results</h1>
+            <p>This assessment was generated based on your responses to our AI Readiness Assessment.</p>
           </div>
           
-          <div class="score">
-            Your AI Readiness Score: ${roundedScore}%
+          <div class="score-section">
+            <h2>Your AI Readiness Score</h2>
+            <div class="score">${roundedScore}%</div>
           </div>
           
           <div class="maturity-level">
@@ -352,7 +438,7 @@ export function generateEmailTemplate(
           </div>
           
           <div class="answers">
-            <h2 style="color: #677076;">Your Responses</h2>
+            <h2>Your Responses</h2>
             ${Object.entries(answers)
               .filter(([key]) => key !== 'company-email')
               .map(([key, value]) => `
@@ -365,28 +451,31 @@ export function generateEmailTemplate(
           </div>
 
           <div class="analysis-section">
-            <h2>Key Strengths</h2>
-            <ul class="analysis-list">
-              ${strengths.map(strength => `<li>${strength}</li>`).join('')}
-            </ul>
-          </div>
-
-          <div class="analysis-section">
-            <h2>Areas for Improvement</h2>
-            <ul class="analysis-list">
-              ${improvements.map(improvement => `<li>${improvement}</li>`).join('')}
-            </ul>
+            <h2>Analysis</h2>
+            <div class="analysis-grid">
+              <div class="analysis-card">
+                <h3>Key Strengths</h3>
+                <ul class="analysis-list">
+                  ${strengthsList}
+                </ul>
+              </div>
+              <div class="analysis-card">
+                <h3>Areas for Improvement</h3>
+                <ul class="analysis-list">
+                  ${improvementsList}
+                </ul>
+              </div>
+            </div>
           </div>
 
           <div class="cta-section">
             <h2>Ready to Accelerate Your AI Journey?</h2>
             <p>Our team of AI experts at Bloomteq can help you develop a comprehensive strategy and implementation plan tailored to your organization's needs.</p>
-            <a href="${calendlyUrl}" class="cta-button" style="color: white !important;">Schedule a Consultation</a>
+            <a href="${calendlyUrl}" class="cta-button">Schedule a Consultation</a>
           </div>
 
           <div class="footer">
             <p>© ${new Date().getFullYear()} Bloomteq. All rights reserved.</p>
-            <p>This assessment was generated based on your responses to our AI Readiness Assessment.</p>
           </div>
         </div>
       </body>
