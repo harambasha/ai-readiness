@@ -7,6 +7,8 @@ import {
   Filler,
   Tooltip,
   Legend,
+  ChartData,
+  ChartOptions,
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
 
@@ -31,7 +33,7 @@ interface RadarChartProps {
 }
 
 export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements }) => {
-  const data = {
+  const data: ChartData<'radar'> = {
     labels: strengths.map(s => s.label),
     datasets: [
       {
@@ -59,7 +61,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements 
     ],
   };
 
-  const options = {
+  const options: ChartOptions<'radar'> = {
     scales: {
       r: {
         angleLines: {
