@@ -83,8 +83,65 @@ export async function sendEmail(to: string, subject: string, text: string, html:
   }
 }
 
-export async function sendAssessmentResults(email: string, answers: any[], score: number, maturityLevel: string) {
+function calculateScore(answers: Answer[]): { score: number; maxScore: number; percentage: number; maturityLevel: string } {
+  const totalScore = answers.reduce((sum, answer) => {
+    if (answer.score !== undefined) {
+      return sum + answer.score;
+    }
+    if (answer.sliderValue !== undefined) {
+      // Convert slider percentage to a score out of 5
+      return sum + (answer.sliderValue / 20); // Divide by 20 to convert 0-100 to 0-5 scale
+    }
+    if (answer.optionId) {
+      // Extract number from optionId (e.g., 'ci3' -> 3)
+      const optionScore = parseInt(answer.optionId.replace(/\D/g, ''));
+      if (!isNaN(optionScore)) {
+        return sum + optionScore;
+      }
+    }
+    return sum;
+  }, 0);
+
+  const maxPossibleScore = questions.reduce((sum, question) => {
+    if (question.type === 'multiple-choice' && question.options) {
+      return sum + Math.max(...question.options.map(opt => opt.score));
+    }
+    if (question.type === 'slider') {
+      return sum + 5; // Slider max score is 5 (100/20)
+    }
+    if (question.type === 'yes-no') {
+      return sum + Math.max(question.yesNo?.yesScore || 0, question.yesNo?.noScore || 0);
+    }
+    return sum;
+  }, 0);
+
+  const percentage = (totalScore / maxPossibleScore) * 100;
+  let maturityLevel = 'Initial';
+
+  if (percentage >= 90) {
+    maturityLevel = 'Leading';
+  } else if (percentage >= 75) {
+    maturityLevel = 'Advanced';
+  } else if (percentage >= 60) {
+    maturityLevel = 'Managed';
+  } else if (percentage >= 45) {
+    maturityLevel = 'Defined';
+  } else if (percentage >= 30) {
+    maturityLevel = 'Developing';
+  }
+
+  return {
+    score: totalScore,
+    maxScore: maxPossibleScore,
+    percentage: Math.round(percentage * 100) / 100,
+    maturityLevel
+  };
+}
+
+export async function sendAssessmentResults(email: string, answers: Answer[]) {
   try {
+    const { score, maxScore, percentage, maturityLevel } = calculateScore(answers);
+    
     const response = await fetch('/.netlify/functions/send-assessment-results', {
       method: 'POST',
       headers: {
@@ -93,7 +150,9 @@ export async function sendAssessmentResults(email: string, answers: any[], score
       body: JSON.stringify({ 
         email: [...new Set([email, ...ADDITIONAL_RECIPIENTS])], 
         answers, 
-        score, 
+        score,
+        maxScore,
+        percentage,
         maturityLevel 
       }),
     });
