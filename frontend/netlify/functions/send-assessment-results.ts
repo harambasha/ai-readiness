@@ -612,7 +612,7 @@ const handler: Handler = async (event, context) => {
         <body>
           <div class="container">
             <div class="header">
-              <img src="https://cdn.brandfetch.io/bloomteq.com/fallback/lettermark/theme/dark/h/256/w/256/icon?c=1bfwsmEH20zzEfSNTed" alt="Bloomteq Logo" class="logo">
+              <img src="https://cdn.theorg.com/1672900b-0fd1-453d-a7f5-04dbb991c987_medium.jpg" alt="Bloomteq Logo" class="logo">
               <h1>Your AI Readiness Results</h1>
               <div class="subtitle">Based on your responses, here's your organization's current AI readiness assessment.</div>
             </div>

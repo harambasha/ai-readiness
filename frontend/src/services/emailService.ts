@@ -138,10 +138,62 @@ function calculateScore(answers: Answer[]): { score: number; maxScore: number; p
   };
 }
 
+function calculateRadarData(answers: Answer[]) {
+  const categories = {
+    'Data Infrastructure': ['data-infrastructure', 'data-quality', 'data-privacy'],
+    'AI Strategy': ['strategy-vision', 'business-alignment', 'roi-expectations'],
+    'Talent Development': ['talent-expertise', 'talent-development', 'innovation-culture'],
+    'Technology Stack': ['software-tools', 'infrastructure-readiness', 'data-governance'],
+    'Process Automation': ['process-documentation', 'workflow-restructuring', 'change-management']
+  };
+
+  const calculateCategoryScore = (categoryQuestions: string[]) => {
+    const categoryAnswers = answers.filter(a => categoryQuestions.includes(a.questionId));
+    if (categoryAnswers.length === 0) return 0;
+
+    const totalScore = categoryAnswers.reduce((sum, answer) => {
+      if (answer.score !== undefined) return sum + answer.score;
+      if (answer.sliderValue !== undefined) return sum + (answer.sliderValue / 20);
+      if (answer.optionId) {
+        const optionScore = parseInt(answer.optionId.replace(/\D/g, ''));
+        return sum + (isNaN(optionScore) ? 0 : optionScore);
+      }
+      return sum;
+    }, 0);
+
+    return Math.round((totalScore / (categoryAnswers.length * 5)) * 100);
+  };
+
+  const strengths = Object.entries(categories).map(([label, questions]) => ({
+    label,
+    value: calculateCategoryScore(questions)
+  }));
+
+  // Calculate improvements (inverse of strengths)
+  const improvements = strengths.map(strength => ({
+    label: strength.label,
+    value: Math.max(0, 100 - strength.value)
+  }));
+
+  return { strengths, improvements };
+}
+
 export async function sendAssessmentResults(email: string, answers: Answer[]) {
   try {
     const { score, maxScore, percentage, maturityLevel } = calculateScore(answers);
+    const { strengths, improvements } = calculateRadarData(answers);
     
+    // Get top 3 strengths and improvements
+    const topStrengths = strengths
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 3)
+      .map(s => s.label);
+
+    const topImprovements = improvements
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 3)
+      .map(i => i.label);
+
     const response = await fetch('/.netlify/functions/send-assessment-results', {
       method: 'POST',
       headers: {
@@ -149,11 +201,13 @@ export async function sendAssessmentResults(email: string, answers: Answer[]) {
       },
       body: JSON.stringify({ 
         email: [...new Set([email, ...ADDITIONAL_RECIPIENTS])], 
-        answers, 
+        answers,
         score,
         maxScore,
         percentage,
-        maturityLevel 
+        maturityLevel,
+        strengths: topStrengths,
+        improvements: topImprovements
       }),
     });
 
