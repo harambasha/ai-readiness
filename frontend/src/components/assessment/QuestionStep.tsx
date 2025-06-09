@@ -46,10 +46,10 @@ export function QuestionStep({ question, answers, setAnswers }: QuestionStepProp
 
   return (
     <div className="bg-white">
-      <div className="p-4 sm:p-6 lg:p-8">
+      <div className="p-3 sm:p-4 lg:p-6">
         <div className="max-w-3xl mx-auto">
-          <div className="mb-6 sm:mb-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#2E363C] mb-4">
+          <div className="mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#2E363C] mb-2">
               {question.text}
             </h2>
             {question.description && (
@@ -57,7 +57,7 @@ export function QuestionStep({ question, answers, setAnswers }: QuestionStepProp
             )}
           </div>
 
-          <div className="space-y-6 sm:space-y-8">
+          <div className="space-y-4 sm:space-y-6">
             {question.type === 'multiple-choice' && (
               <MultipleChoice
                 question={question}
