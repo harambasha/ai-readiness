@@ -25,7 +25,10 @@ export function Wizard() {
     setAnswers,
   } = useWizard();
 
-  const currentQuestion = questions[currentStep - 2];
+  // Only get currentQuestion if we're on a question step
+  const currentQuestion = currentStep > 1 && currentStep <= questions.length + 1 
+    ? questions[currentStep - 2] 
+    : null;
 
   if (currentStep === 1) {
     return <WelcomeStep onStart={goToNextStep} />;
@@ -35,6 +38,18 @@ export function Wizard() {
     return (
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20">
         <ResultsStep />
+      </div>
+    );
+  }
+
+  // If we're on a question step but currentQuestion is null, something went wrong
+  if (!currentQuestion) {
+    return (
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
+          <p className="text-gray-600">Please try refreshing the page.</p>
+        </div>
       </div>
     );
   }
