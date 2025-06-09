@@ -1,4 +1,5 @@
 import { Answer } from '../types';
+import { questions } from '../data/questions';
 
 interface EmailData {
   to: string;
@@ -49,6 +50,17 @@ export async function sendAssessmentResults(email: string, answers: any[], score
   }
 }
 
+function getQuestionText(questionId: string): string {
+  const question = questions.find(q => q.id === questionId);
+  return question?.text || questionId;
+}
+
+function getOptionText(questionId: string, optionId: string): string {
+  const question = questions.find(q => q.id === questionId);
+  const option = question?.options?.find(o => o.id === optionId);
+  return option?.text || optionId;
+}
+
 function generateEmailHtml(data: EmailData): string {
   return `
     <html>
@@ -61,10 +73,10 @@ function generateEmailHtml(data: EmailData): string {
         <ul>
           ${data.answers.map(answer => `
             <li>
-              <strong>Question ID:</strong> ${answer.questionId}<br>
-              ${answer.optionId ? `<strong>Selected Option:</strong> ${answer.optionId}<br>` : ''}
+              <strong>Question:</strong> ${getQuestionText(answer.questionId)}<br>
+              ${answer.optionId ? `<strong>Selected Option:</strong> ${getOptionText(answer.questionId, answer.optionId)}<br>` : ''}
               ${answer.score ? `<strong>Score:</strong> ${answer.score}<br>` : ''}
-              ${answer.sliderValue ? `<strong>Slider Value:</strong> ${answer.sliderValue}<br>` : ''}
+              ${answer.sliderValue ? `<strong>Slider Value:</strong> ${answer.sliderValue}%<br>` : ''}
               ${answer.textValue ? `<strong>Text Response:</strong> ${answer.textValue}<br>` : ''}
             </li>
           `).join('')}
@@ -85,10 +97,10 @@ function generateEmailText(data: EmailData): string {
 
     Your Answers:
     ${data.answers.map(answer => `
-      Question ID: ${answer.questionId}
-      ${answer.optionId ? `Selected Option: ${answer.optionId}` : ''}
+      Question: ${getQuestionText(answer.questionId)}
+      ${answer.optionId ? `Selected Option: ${getOptionText(answer.questionId, answer.optionId)}` : ''}
       ${answer.score ? `Score: ${answer.score}` : ''}
-      ${answer.sliderValue ? `Slider Value: ${answer.sliderValue}` : ''}
+      ${answer.sliderValue ? `Slider Value: ${answer.sliderValue}%` : ''}
       ${answer.textValue ? `Text Response: ${answer.textValue}` : ''}
     `).join('\n')}
   `;
