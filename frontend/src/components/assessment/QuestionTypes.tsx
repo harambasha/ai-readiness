@@ -60,24 +60,64 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
   }, [question.id, currentAnswer?.score]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!sliderRef.current) return;
-    const rect = sliderRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    const value = Math.round(percentage / 25) * 25; // Snap to 0, 25, 50, 75, 100
-    setSliderValue(value);
-    onChange(value);
+    setIsDragging(true);
+    const value = calculateSliderValue(e.clientX);
+    handleSliderChange(value);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    const value = calculateSliderValue(e.clientX);
+    handleSliderChange(value);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (!sliderRef.current) return;
-    const rect = sliderRef.current.getBoundingClientRect();
-    const x = e.touches[0].clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    const value = Math.round(percentage / 25) * 25; // Snap to 0, 25, 50, 75, 100
-    setSliderValue(value);
-    onChange(value);
+    setIsDragging(true);
+    const touch = e.touches[0];
+    const value = calculateSliderValue(touch.clientX);
+    handleSliderChange(value);
   };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const value = calculateSliderValue(touch.clientX);
+    handleSliderChange(value);
+  };
+
+  const calculateSliderValue = (clientX: number) => {
+    if (!sliderRef.current) return 0;
+    const rect = sliderRef.current.getBoundingClientRect();
+    const position = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (position / rect.width) * 100));
+    return Math.round(percentage / 25) * 25; // Snap to 25% increments
+  };
+
+  const handleSliderChange = (value: number) => {
+    setSliderValue(value);
+    // Convert the percentage value to a score between 0 and 4
+    const score = (value / 100) * 4;
+    onChange(score);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('mousemove', handleMouseMove as any);
+      document.addEventListener('touchend', handleMouseUp);
+      document.addEventListener('touchmove', handleTouchMove as any);
+    }
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', handleMouseMove as any);
+      document.removeEventListener('touchend', handleMouseUp);
+      document.removeEventListener('touchmove', handleTouchMove as any);
+    };
+  }, [isDragging]);
 
   return (
     <div className="relative px-4">
@@ -105,30 +145,29 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
           {sliderValue}%
         </div>
       )}
-      <div className="flex justify-between mt-4 space-x-2">
-        {[0, 25, 50, 75, 100].map((value) => {
-          const label = value === 0 ? question.slider?.labels.start :
-                      value === 100 ? question.slider?.labels.end :
-                      value === 25 ? 'Early Stage' :
-                      value === 50 ? 'In Progress' :
-                      'Advanced';
-          return (
-            <button
-              key={value}
-              onClick={() => {
-                setSliderValue(value);
-                onChange(value);
-              }}
-              className={`flex-1 px-3 py-2 text-sm transition-all duration-200 rounded-lg ${
-                sliderValue === value
-                  ? 'bg-[#677076] text-white'
-                  : 'bg-white border-2 border-[#677076] text-[#2E363C] hover:border-[#677076]'
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mt-4">
+        {[
+          { value: 0, label: question.slider?.labels.start },
+          { value: 25, label: 'Early Stage' },
+          { value: 50, label: 'In Progress' },
+          { value: 75, label: 'Advanced' },
+          { value: 100, label: question.slider?.labels.end }
+        ].map(({ value, label }) => (
+          <button
+            key={value}
+            onClick={() => {
+              setSliderValue(value);
+              handleSliderChange(value);
+            }}
+            className={`w-full px-2 py-2 text-xs sm:text-sm transition-all duration-200 rounded-lg ${
+              sliderValue === value
+                ? 'bg-[#677076] text-white'
+                : 'bg-white border-2 border-[#677076] text-[#2E363C] hover:border-[#677076]'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
     </div>
   );
