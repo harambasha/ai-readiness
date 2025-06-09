@@ -285,12 +285,7 @@ function ResultsStep() {
     const sendFinalResults = async () => {
       if (userEmail && !emailSent) {
         try {
-          await sendAssessmentResults(
-            userEmail,
-            answers,
-            result.percentage,
-            result.maturityLevel
-          );
+          await sendAssessmentResults(userEmail, answers);
           setEmailSent(true);
           console.log('Final assessment results email sent successfully');
         } catch (error) {
@@ -300,7 +295,7 @@ function ResultsStep() {
     };
 
     sendFinalResults();
-  }, [userEmail, answers, result, emailSent]);
+  }, [userEmail, answers, emailSent]);
 
   const getRecommendation = (score: number): string => {
     if (score < 40) return "Your organization is in the early stages of AI readiness. Focus on developing foundational capabilities and building basic AI awareness.";
@@ -310,22 +305,59 @@ function ResultsStep() {
     return "Exceptional AI readiness! Continue leading innovation and sharing best practices.";
   };
 
-  const chartData = {
-    strengths: [
-      { label: 'Data Infrastructure', value: 85 },
-      { label: 'AI Strategy', value: 75 },
-      { label: 'Talent Development', value: 65 },
-      { label: 'Technology Stack', value: 70 },
-      { label: 'Process Automation', value: 60 },
-    ],
-    improvements: [
-      { label: 'Data Infrastructure', value: 40 },
-      { label: 'AI Strategy', value: 45 },
-      { label: 'Talent Development', value: 35 },
-      { label: 'Technology Stack', value: 50 },
-      { label: 'Process Automation', value: 55 },
-    ],
+  // Calculate radar chart data based on answers
+  const calculateRadarData = () => {
+    const categories = {
+      'Data Infrastructure': ['data-infrastructure', 'data-quality', 'data-privacy'],
+      'AI Strategy': ['strategy-vision', 'business-alignment', 'roi-expectations'],
+      'Talent Development': ['talent-expertise', 'talent-development', 'innovation-culture'],
+      'Technology Stack': ['software-tools', 'infrastructure-readiness', 'data-governance'],
+      'Process Automation': ['process-documentation', 'workflow-restructuring', 'change-management']
+    };
+
+    const calculateCategoryScore = (categoryQuestions: string[]) => {
+      const categoryAnswers = answers.filter(a => categoryQuestions.includes(a.questionId));
+      if (categoryAnswers.length === 0) return 0;
+
+      const totalScore = categoryAnswers.reduce((sum, answer) => {
+        if (answer.score !== undefined) return sum + answer.score;
+        if (answer.sliderValue !== undefined) return sum + (answer.sliderValue / 20);
+        if (answer.optionId) {
+          const optionScore = parseInt(answer.optionId.replace(/\D/g, ''));
+          return sum + (isNaN(optionScore) ? 0 : optionScore);
+        }
+        return sum;
+      }, 0);
+
+      return Math.round((totalScore / (categoryAnswers.length * 5)) * 100);
+    };
+
+    const strengths = Object.entries(categories).map(([label, questions]) => ({
+      label,
+      value: calculateCategoryScore(questions)
+    }));
+
+    // Calculate improvements (inverse of strengths)
+    const improvements = strengths.map(strength => ({
+      label: strength.label,
+      value: Math.max(0, 100 - strength.value)
+    }));
+
+    return { strengths, improvements };
   };
+
+  const { strengths, improvements } = calculateRadarData();
+
+  // Get top 3 strengths and improvements
+  const topStrengths = strengths
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 3)
+    .map(s => s.label);
+
+  const topImprovements = improvements
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 3)
+    .map(i => i.label);
 
   return (
     <div className="space-y-8 sm:space-y-12">
@@ -386,7 +418,7 @@ function ResultsStep() {
         <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
           AI Readiness Analysis
         </h3>
-        <RadarChart strengths={chartData.strengths} improvements={chartData.improvements} />
+        <RadarChart strengths={strengths} improvements={improvements} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
@@ -395,24 +427,14 @@ function ResultsStep() {
             Key Strengths
           </h3>
           <ul className="space-y-4">
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <CheckCircle2 className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">Data infrastructure and quality</span>
-            </li>
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <CheckCircle2 className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">AI strategy alignment</span>
-            </li>
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <CheckCircle2 className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">Talent development programs</span>
-            </li>
+            {topStrengths.map((strength, index) => (
+              <li key={index} className="flex items-start">
+                <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+                  <CheckCircle2 className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-gray-600">{strength}</span>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -421,24 +443,14 @@ function ResultsStep() {
             Areas for Improvement
           </h3>
           <ul className="space-y-4">
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <Target className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">AI governance framework</span>
-            </li>
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <Target className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">Change management processes</span>
-            </li>
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <Target className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">Innovation culture development</span>
-            </li>
+            {topImprovements.map((improvement, index) => (
+              <li key={index} className="flex items-start">
+                <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+                  <Target className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-gray-600">{improvement}</span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
