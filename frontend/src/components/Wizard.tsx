@@ -617,22 +617,22 @@ function ResultsStep() {
         </h3>
         <div className="grid gap-4">
           <div className="bg-white p-4 rounded-lg flex items-start">
-            <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-              <CheckCircle2 className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <span className="text-gray-600">Create an action plan based on your assessment results</span>
+            <span className="text-gray-600 text-sm sm:text-base">Create an action plan based on your assessment results</span>
           </div>
           <div className="bg-white p-4 rounded-lg flex items-start">
-            <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-              <CheckCircle2 className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <span className="text-gray-600">Share findings with key stakeholders</span>
+            <span className="text-gray-600 text-sm sm:text-base">Share findings with key stakeholders</span>
           </div>
           <div className="bg-white p-4 rounded-lg flex items-start">
-            <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-              <CheckCircle2 className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <span className="text-gray-600">Schedule a follow-up assessment in 6 months</span>
+            <span className="text-gray-600 text-sm sm:text-base">Schedule a follow-up assessment in 6 months</span>
           </div>
         </div>
       </div>
