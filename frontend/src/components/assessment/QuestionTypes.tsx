@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { Question, Answer } from '../../types';
 
@@ -13,14 +13,14 @@ interface MultipleChoiceProps extends BaseProps {
 
 export function MultipleChoice({ question, currentAnswer, onSelect }: MultipleChoiceProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-4">
       {question.options?.map((option) => {
         const isSelected = currentAnswer?.optionId === option.id;
         return (
           <button
             key={option.id}
             onClick={() => onSelect(option.id, option.score)}
-            className={`w-full text-left p-6 transition-all duration-200 ${
+            className={`w-full text-left p-4 transition-all duration-200 ${
               isSelected
                 ? 'bg-[#677076] border-2 border-[#677076] text-white transform scale-[1.02]'
                 : 'bg-white border-2 border-[#E7E9EC] hover:border-[#677076] hover:shadow-md text-[#2E363C]'
@@ -50,8 +50,14 @@ interface SliderProps extends BaseProps {
 }
 
 export function Slider({ question, currentAnswer, onChange }: SliderProps) {
-  const sliderRef = React.useRef<HTMLDivElement>(null);
-  const [sliderValue, setSliderValue] = React.useState<number | undefined>(currentAnswer?.sliderValue);
+  const [sliderValue, setSliderValue] = useState<number | undefined>(currentAnswer?.score);
+  const [isDragging, setIsDragging] = useState(false);
+  const sliderRef = useRef<HTMLDivElement>(null);
+
+  // Reset slider value when question changes
+  useEffect(() => {
+    setSliderValue(currentAnswer?.score);
+  }, [question.id, currentAnswer?.score]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!sliderRef.current) return;
@@ -74,19 +80,19 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative px-4">
       <div
         ref={sliderRef}
-        className="relative h-2 bg-[#E7E9EC] cursor-pointer"
+        className="relative h-2 bg-[#E7E9EC] cursor-pointer rounded-full"
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       >
         <div
-          className="absolute h-full bg-[#677076] transition-all duration-200"
+          className="absolute h-full bg-[#677076] transition-all duration-200 rounded-full"
           style={{ width: `${((sliderValue || 0) - (question.slider?.min || 0)) / ((question.slider?.max || 100) - (question.slider?.min || 0)) * 100}%` }}
         />
         <div
-          className="absolute w-6 h-6 bg-white border-2 border-[#677076] -top-2 transform -translate-x-1/2 transition-all duration-200 hover:scale-110"
+          className="absolute w-6 h-6 bg-white border-2 border-[#677076] -top-2 transform -translate-x-1/2 transition-all duration-200 hover:scale-110 rounded-full"
           style={{ left: `${((sliderValue || 0) - (question.slider?.min || 0)) / ((question.slider?.max || 100) - (question.slider?.min || 0)) * 100}%` }}
         />
       </div>
@@ -96,7 +102,7 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
       </div>
       {sliderValue !== undefined && (
         <div className="text-center mt-2 text-[#677076] font-medium">
-          {sliderValue}
+          {sliderValue}%
         </div>
       )}
       <div className="flex justify-between mt-4 space-x-2">
@@ -113,7 +119,7 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
                 setSliderValue(value);
                 onChange(value);
               }}
-              className={`flex-1 px-3 py-2 text-sm transition-all duration-200 ${
+              className={`flex-1 px-3 py-2 text-sm transition-all duration-200 rounded-lg ${
                 sliderValue === value
                   ? 'bg-[#677076] text-white'
                   : 'bg-white border-2 border-[#677076] text-[#2E363C] hover:border-[#677076]'
@@ -134,7 +140,7 @@ interface TextInputProps extends BaseProps {
 
 export function TextInput({ question, currentAnswer, onChange }: TextInputProps) {
   return (
-    <div className="bg-[#F5F6FA] p-8">
+    <div className="bg-[#F5F6FA] p-4 rounded-lg">
       <textarea
         value={currentAnswer?.textValue || ''}
         onChange={(e) => onChange(e.target.value)}
@@ -151,10 +157,10 @@ interface YesNoProps extends BaseProps {
 
 export function YesNo({ question, currentAnswer, onSelect }: YesNoProps) {
   return (
-    <div className="flex space-x-4">
+    <div className="flex space-x-4 px-4">
       <button
         onClick={() => onSelect(true)}
-        className={`flex-1 p-6 transition-all duration-200 ${
+        className={`flex-1 p-4 transition-all duration-200 ${
           currentAnswer?.score === question.yesNo?.yesScore
             ? 'bg-[#677076] text-white transform scale-[1.02]'
             : 'bg-white border-2 border-[#E7E9EC] hover:border-[#677076] hover:shadow-md text-[#2E363C]'
@@ -173,7 +179,7 @@ export function YesNo({ question, currentAnswer, onSelect }: YesNoProps) {
       </button>
       <button
         onClick={() => onSelect(false)}
-        className={`flex-1 p-6 transition-all duration-200 ${
+        className={`flex-1 p-4 transition-all duration-200 ${
           currentAnswer?.score === question.yesNo?.noScore
             ? 'bg-[#677076] text-white transform scale-[1.02]'
             : 'bg-white border-2 border-[#E7E9EC] hover:border-[#677076] hover:shadow-md text-[#2E363C]'

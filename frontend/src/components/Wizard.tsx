@@ -53,7 +53,7 @@ export function Wizard() {
           )}
 
           {/* Card container */}
-          <div className={` overflow-hidden${currentStep !== totalSteps ? ' shadow-lg' : ''}`}>
+          <div className={`overflow-hidden rounded-lg${currentStep !== totalSteps ? ' shadow-lg' : ''}`}>
             <div className="relative">
               {currentStep > 1 && currentStep <= questions.length + 1 && (
                 <QuestionStep
@@ -71,11 +71,11 @@ export function Wizard() {
 
             {/* Navigation */}
             {currentStep !== totalSteps && (
-              <div className="flex justify-between p-6 bg-[#F5F6FA] border-t border-[#E7E9EC]">
+              <div className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 bg-[#F5F6FA] border-t border-[#E7E9EC] gap-4 sm:gap-0">
                 <button
                   onClick={goToPreviousStep}
                   disabled={isFirstStep}
-                  className={`flex items-center px-6 py-3  transition-all duration-200 ${
+                  className={`flex items-center justify-center px-4 sm:px-6 py-3 transition-all duration-200 ${
                     isFirstStep
                       ? 'text-[#9AA3AA] cursor-not-allowed'
                       : 'text-[#2E363C] hover:bg-white hover:shadow-md'
@@ -87,7 +87,7 @@ export function Wizard() {
                 <button
                   onClick={goToNextStep}
                   disabled={isLastStep}
-                  className={`flex items-center px-6 py-3 transition-all duration-200 ${
+                  className={`flex items-center justify-center px-4 sm:px-6 py-3 transition-all duration-200 ${
                     isLastStep
                       ? 'text-[#9AA3AA] cursor-not-allowed'
                       : 'bg-[#000000] text-white hover:opacity-90'
