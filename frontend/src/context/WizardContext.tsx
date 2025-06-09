@@ -1,16 +1,25 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { questions } from '../data/questions';
 import { Question, Answer, MaturityLevel, WizardContextType } from '../types';
 
 export const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
 export function WizardProvider({ children }: { children: React.ReactNode }) {
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [showError, setShowError] = useState(false);
 
   const totalSteps = questions.length + 2; // Questions + Welcome + Results
+
+  // Update current question when step changes
+  useEffect(() => {
+    if (currentStep > 1 && currentStep <= questions.length + 1) {
+      setCurrentQuestion(questions[currentStep - 2]);
+    } else {
+      setCurrentQuestion(null);
+    }
+  }, [currentStep]);
 
   const goToNextStep = useCallback(() => {
     if (currentStep === 1) {
@@ -130,6 +139,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         currentStep,
         setCurrentStep,
         totalSteps,
+        currentQuestion,
         answers,
         setAnswers,
         questions,
@@ -139,7 +149,8 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         goToPreviousStep,
         isFirstStep: currentStep === 1,
         isLastStep: currentStep === totalSteps,
-        calculateScore
+        calculateScore,
+        canProceed
       }}
     >
       {children}

@@ -75,12 +75,13 @@ export type ScoreResult = {
 export interface WizardContextType {
   currentStep: number;
   setCurrentStep: (step: number) => void;
+  totalSteps: number;
+  currentQuestion: Question | null;
   answers: Answer[];
   setAnswers: (answers: Answer[]) => void;
   questions: Question[];
   showError: boolean;
   setShowError: (show: boolean) => void;
-  totalSteps: number;
   goToNextStep: () => void;
   goToPreviousStep: () => void;
   isFirstStep: boolean;
@@ -91,4 +92,5 @@ export interface WizardContextType {
     score: number;
     maxScore: number;
   };
+  canProceed: () => boolean;
 }
