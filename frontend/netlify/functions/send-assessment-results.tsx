@@ -18,7 +18,7 @@ type Answer = {
 };
 
 // Replace this with your verified sender email address
-const SENDER_EMAIL = 'ismir@antcolony.io';
+const SENDER_EMAIL = 'info@bloomteq.com';
 
 export const handler: Handler = async (event) => {
   // Handle CORS
