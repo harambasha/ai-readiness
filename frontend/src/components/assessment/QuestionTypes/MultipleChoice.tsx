@@ -5,7 +5,7 @@ import { Question, Answer } from '../../../types';
 interface MultipleChoiceProps {
   question: Question;
   currentAnswer?: Answer;
-  onSelect: (optionId: string) => void;
+  onSelect: (optionId: string, score: number) => void;
 }
 
 export function MultipleChoice({ question, currentAnswer, onSelect }: MultipleChoiceProps) {
@@ -18,7 +18,7 @@ export function MultipleChoice({ question, currentAnswer, onSelect }: MultipleCh
         return (
           <button
             key={option.id}
-            onClick={() => onSelect(option.id)}
+            onClick={() => onSelect(option.id, option.score)}
             className={`w-full text-left p-6 transition-all duration-200 ${
               isSelected
                 ? 'bg-[#677076] border-2 border-[#677076] text-white transform scale-[1.02]'
@@ -29,7 +29,7 @@ export function MultipleChoice({ question, currentAnswer, onSelect }: MultipleCh
               <span className={`font-medium ${isSelected ? 'text-white' : 'text-[#2E363C]'}`}>
                 {option.text}
               </span>
-              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+              <div className={`w-6 h-6 border-2 flex items-center justify-center transition-all duration-200 ${
                 isSelected 
                   ? 'border-white bg-white/20' 
                   : 'border-[#DCE0E3]'

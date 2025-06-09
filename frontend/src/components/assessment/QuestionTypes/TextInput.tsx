@@ -23,7 +23,7 @@ export function TextInput({ question, currentAnswer, onChange }: TextInputProps)
           onChange={(e) => onChange(e.target.value)}
           placeholder={isEmailQuestion ? "Enter your email..." : "Enter your company name..."}
           maxLength={50}
-          className="w-full h-12 p-4 border border-[#E7E9EC] focus:border-[#677076] focus:outline-none transition-all duration-200"
+          className="w-full h-12 px-4 border border-[#E7E9EC] focus:border-[#677076] focus:outline-none transition-all duration-200"
         />
         <div className="text-sm text-[#687177] text-right">
           {inputValue.length}/50 characters
@@ -39,7 +39,7 @@ export function TextInput({ question, currentAnswer, onChange }: TextInputProps)
         onChange={(e) => onChange(e.target.value)}
         placeholder={question.textInput.placeholder}
         maxLength={question.textInput.maxLength}
-        className="w-full h-32 p-4 border border-[#E7E9EC] focus:border-[#677076] focus:outline-none transition-all duration-200 resize-none"
+        className="w-full h-32 px-4 py-3 border border-[#E7E9EC] focus:border-[#677076] focus:outline-none transition-all duration-200 resize-none"
       />
       <div className="text-sm text-[#687177] text-right">
         {inputValue.length}/{question.textInput.maxLength} characters
