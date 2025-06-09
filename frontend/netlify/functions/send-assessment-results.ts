@@ -1,5 +1,6 @@
 import { Handler } from '@netlify/functions';
 import sgMail from '@sendgrid/mail';
+import { questions } from '../../src/data/questions';
 
 // Initialize SendGrid
 const apiKey = process.env.SENDGRID_API_KEY;
@@ -157,6 +158,7 @@ interface Answer {
   optionId?: string;
   sliderValue?: number;
   textValue?: string;
+  score?: number;
 }
 
 // Define weights for each option
@@ -318,34 +320,66 @@ const OPTION_WEIGHTS: Record<string, number> = {
 };
 
 // Calculate the score based on answers
-function calculateScore(answers: Answer[]): number {
-  let totalScore = 0;
-  let maxPossibleScore = 0;
+function calculateScore(answers: Answer[]): { score: number; maxScore: number; percentage: number; maturityLevel: string } {
+  const totalScore = answers.reduce((sum, answer) => {
+    const questionId = answer.questionId.split('_')[0];
+    const question = questions.find(q => q.id === questionId);
+    if (!question) return sum;
 
-  answers.forEach(answer => {
-    if (answer.optionId) {
-      // For multiple choice questions, each option has a weight
-      const optionWeight = OPTION_WEIGHTS[answer.optionId] || 0;
-      totalScore += optionWeight;
-      maxPossibleScore += 5; // Assuming 5 is the maximum weight for any option
+    let answerScore = 0;
+    if (answer.score !== undefined) {
+      answerScore = answer.score;
     } else if (answer.sliderValue !== undefined) {
-      // For slider questions, the value is the score
-      totalScore += answer.sliderValue;
-      maxPossibleScore += 100; // Sliders are 0-100
+      // Convert slider percentage to a score out of 5
+      answerScore = answer.sliderValue / 20; // Divide by 20 to convert 0-100 to 0-5 scale
+    } else if (answer.optionId) {
+      // Extract number from optionId (e.g., 'ci3' -> 3)
+      const optionScore = parseInt(answer.optionId.replace(/\D/g, ''));
+      if (!isNaN(optionScore)) {
+        answerScore = optionScore;
+      }
     }
-  });
 
-  // Convert to percentage
-  return (totalScore / maxPossibleScore) * 100;
-}
+    // Apply question weight
+    return sum + (answerScore * (question.weight || 1));
+  }, 0);
 
-// Calculate maturity level based on score
-function calculateMaturityLevel(score: number): string {
-  if (score >= 80) return 'Advanced';
-  if (score >= 60) return 'Intermediate';
-  if (score >= 40) return 'Developing';
-  if (score >= 20) return 'Beginning';
-  return 'Novice';
+  const maxPossibleScore = questions.reduce((sum, question) => {
+    if (question.type === 'multiple-choice' && question.options) {
+      const maxOptionScore = Math.max(...question.options.map(opt => opt.score));
+      return sum + (maxOptionScore * (question.weight || 1));
+    }
+    if (question.type === 'slider') {
+      return sum + (5 * (question.weight || 1)); // Slider max score is 5 (100/20)
+    }
+    if (question.type === 'yes-no') {
+      const maxYesNoScore = Math.max(question.yesNo?.yesScore || 0, question.yesNo?.noScore || 0);
+      return sum + (maxYesNoScore * (question.weight || 1));
+    }
+    return sum;
+  }, 0);
+
+  const percentage = (totalScore / maxPossibleScore) * 100;
+  let maturityLevel = 'Initial';
+
+  if (percentage >= 90) {
+    maturityLevel = 'Leading';
+  } else if (percentage >= 75) {
+    maturityLevel = 'Advanced';
+  } else if (percentage >= 60) {
+    maturityLevel = 'Managed';
+  } else if (percentage >= 45) {
+    maturityLevel = 'Defined';
+  } else if (percentage >= 30) {
+    maturityLevel = 'Developing';
+  }
+
+  return {
+    score: totalScore,
+    maxScore: maxPossibleScore,
+    percentage: Math.round(percentage * 100) / 100, // Round to 2 decimal places
+    maturityLevel
+  };
 }
 
 const handler: Handler = async (event, context) => {
@@ -380,9 +414,7 @@ const handler: Handler = async (event, context) => {
     const recipients = Array.isArray(email) ? email : [email];
     console.log('Sending to recipients:', recipients);
 
-    const score = calculateScore(answers);
-    const maturityLevel = calculateMaturityLevel(score);
-    const maxScore = 100; // Maximum possible score
+    const { score, maxScore, percentage, maturityLevel } = calculateScore(answers);
 
     const subject = 'Your AI Readiness Assessment Results';
     const text = `
@@ -390,7 +422,7 @@ const handler: Handler = async (event, context) => {
 
       Thank you for completing the AI Readiness Assessment.
 
-      Your Score: ${score}
+      Your Score: ${percentage}%
       Maturity Level: ${maturityLevel}
 
       Your Answers:
@@ -619,10 +651,10 @@ const handler: Handler = async (event, context) => {
 
             <div class="content">
               <div class="score-container">
-                <div class="score">${Math.round(score)}%</div>
+                <div class="score">${Math.round(percentage)}%</div>
                 <div class="maturity">${maturityLevel}</div>
                 <div class="progress-bar">
-                  <div class="progress" style="width: ${score}%"></div>
+                  <div class="progress" style="width: ${percentage}%"></div>
                 </div>
               </div>
 
