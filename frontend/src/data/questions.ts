@@ -2,6 +2,14 @@ import { Question } from '../types';
 
 export const questions: Question[] = [
   {
+    id: 'company-name',
+    text: 'What is your company name?',
+    description: 'Please enter your company name.',
+    category: 'company',
+    type: 'text',
+    weight: 0, // No weight as it's not scored
+  },
+  {
     id: 'company-email',
     text: 'Can you please provide your company email?',
     description: 'This helps us deliver your personalized AI readiness assessment results and recommendations directly to your inbox.',

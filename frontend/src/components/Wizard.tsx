@@ -439,9 +439,11 @@ function ResultsStep() {
   const result = calculateScore();
   const [emailSent, setEmailSent] = useState(false);
 
-  // Find the email from answers
+  // Find the email and company name from answers
   const emailAnswer = answers.find((a: Answer) => a.questionId === 'company-email');
+  const companyNameAnswer = answers.find((a: Answer) => a.questionId === 'company-name');
   const userEmail = emailAnswer?.textValue;
+  const companyName = companyNameAnswer?.textValue || 'Your Company';
 
   useEffect(() => {
     const sendFinalResults = async () => {
@@ -493,7 +495,7 @@ function ResultsStep() {
     <div className="space-y-8 sm:space-y-12">
       <div className="text-center">
         <h2 className="text-3xl sm:text-5xl font-bold text-[#677076] mb-6 sm:mb-8">
-          Your AI Readiness Score
+          {companyName}'s AI Readiness Score
         </h2>
         <div className="inline-block bg-[#f7f6f4] px-6 sm:px-8 py-3 sm:py-4 rounded-xl mb-6 sm:mb-8 shadow-sm">
           <span className="text-[#677076] text-lg sm:text-xl">

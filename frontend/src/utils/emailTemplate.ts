@@ -5,6 +5,9 @@ export function generateEmailTemplate(
   score: number,
   maturityLevel: string
 ): string {
+  // Get company name from answers
+  const companyName = answers['company-name'] || 'Your Company';
+
   const maturityLevels = {
     'Level 1': 'Initial',
     'Level 2': 'Managed',
@@ -227,7 +230,7 @@ export function generateEmailTemplate(
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AI Readiness Assessment Results</title>
+        <title>AI Readiness Assessment Results - ${companyName}</title>
         <style>
           body {
             font-family: Arial, sans-serif;
@@ -428,7 +431,7 @@ export function generateEmailTemplate(
         <div class="container">
           <div class="header">
             <h1>AI Readiness Assessment Results</h1>
-            <p>This assessment was generated based on your responses to our AI Readiness Assessment.</p>
+            <p>This assessment was generated based on ${companyName}'s responses to our AI Readiness Assessment.</p>
           </div>
           
           <div class="score-section">
