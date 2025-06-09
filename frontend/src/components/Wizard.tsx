@@ -27,81 +27,76 @@ export function Wizard() {
 
   const currentQuestion = questions[currentStep - 2];
 
+  if (currentStep === 1) {
+    return <WelcomeStep onStart={goToNextStep} />;
+  }
+
+  if (currentStep === totalSteps) {
+    return (
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+        <ResultsStep />
+      </div>
+    );
+  }
+
   return (
-    <>
-      {currentStep === 1 ? (
-        <WelcomeStep onStart={goToNextStep} />
-      ) : (
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-          {/* Progress indicator */}
-          {currentStep > 1 && currentStep < totalSteps && (
-            <div className="flex items-center justify-between mb-8 text-[#687177]">
-              <div className="flex items-center space-x-2">
-                <Target className="w-5 h-5" />
-                <span className="text-sm font-medium">Question {currentStep - 1} of {totalSteps - 2}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-32 h-1 bg-[#E7E9EC] rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#D9D9D9] via-[#A3A59F] to-[#B4926E] transition-all duration-500 ease-out"
-                    style={{ width: `${((currentStep - 1) / (totalSteps - 2)) * 100}%` }}
-                  />
-                </div>
-                <span className="text-sm font-medium">{Math.round(((currentStep - 1) / (totalSteps - 2)) * 100)}%</span>
-              </div>
-            </div>
-          )}
-
-          {/* Card container */}
-          <div className={`overflow-hidden rounded-lg${currentStep !== totalSteps ? ' shadow-lg' : ''}`}>
-            <div className="relative">
-              {currentStep > 1 && currentStep <= questions.length + 1 && (
-                <QuestionStep
-                  question={currentQuestion}
-                  answers={answers}
-                  setAnswers={setAnswers}
-                />
-              )}
-              {currentStep === totalSteps && (
-                <div>
-                  <ResultsStep />
-                </div>
-              )}
-            </div>
-
-            {/* Navigation */}
-            {currentStep !== totalSteps && (
-              <div className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 bg-[#F5F6FA] border-t border-[#E7E9EC] gap-4 sm:gap-0">
-                <button
-                  onClick={goToPreviousStep}
-                  disabled={isFirstStep}
-                  className={`flex items-center justify-center px-4 sm:px-6 py-3 transition-all duration-200 ${
-                    isFirstStep
-                      ? 'text-[#9AA3AA] cursor-not-allowed'
-                      : 'text-[#2E363C] hover:bg-white hover:shadow-md'
-                  }`}
-                >
-                  <ArrowLeft className="w-5 h-5 mr-2" />
-                  Previous
-                </button>
-                <button
-                  onClick={goToNextStep}
-                  disabled={isLastStep}
-                  className={`flex items-center justify-center px-4 sm:px-6 py-3 transition-all duration-200 ${
-                    isLastStep
-                      ? 'text-[#9AA3AA] cursor-not-allowed'
-                      : 'bg-[#000000] text-white hover:opacity-90'
-                  }`}
-                >
-                  {currentStep === 1 ? 'Start Assessment' : 'Next'}
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </button>
-              </div>
-            )}
-          </div>
+    <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+      {/* Progress indicator */}
+      <div className="flex items-center justify-between mb-8 text-[#687177]">
+        <div className="flex items-center space-x-2">
+          <Target className="w-5 h-5" />
+          <span className="text-sm font-medium">Question {currentStep - 1} of {totalSteps - 2}</span>
         </div>
-      )}
-    </>
+        <div className="flex items-center space-x-2">
+          <div className="w-32 h-1 bg-[#E7E9EC] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-[#D9D9D9] via-[#A3A59F] to-[#B4926E] transition-all duration-500 ease-out"
+              style={{ width: `${((currentStep - 1) / (totalSteps - 2)) * 100}%` }}
+            />
+          </div>
+          <span className="text-sm font-medium">{Math.round(((currentStep - 1) / (totalSteps - 2)) * 100)}%</span>
+        </div>
+      </div>
+
+      {/* Card container */}
+      <div className="overflow-hidden rounded-lg shadow-lg">
+        <div className="relative">
+          <QuestionStep
+            question={currentQuestion}
+            answers={answers}
+            setAnswers={setAnswers}
+          />
+        </div>
+
+        {/* Navigation */}
+        <div className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 bg-[#F5F6FA] border-t border-[#E7E9EC] gap-4 sm:gap-0">
+          <button
+            onClick={goToPreviousStep}
+            disabled={isFirstStep}
+            className={`flex items-center justify-center px-4 sm:px-6 py-3 transition-all duration-200 ${
+              isFirstStep
+                ? 'text-[#9AA3AA] cursor-not-allowed'
+                : 'text-[#2E363C] hover:bg-white hover:shadow-md'
+            }`}
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Previous
+          </button>
+          <button
+            onClick={goToNextStep}
+            disabled={isLastStep}
+            className={`flex items-center justify-center px-4 sm:px-6 py-3 transition-all duration-200 ${
+              isLastStep
+                ? 'text-[#9AA3AA] cursor-not-allowed'
+                : 'bg-[#000000] text-white hover:opacity-90'
+            }`}
+          >
+            Next
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
