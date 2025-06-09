@@ -474,7 +474,7 @@ export function generateEmailTemplate(
           <div class="cta-section">
             <h2>Ready to Accelerate Your AI Journey?</h2>
             <p>Our team of AI experts at Bloomteq can help you develop a comprehensive strategy and implementation plan tailored to your organization's needs.</p>
-            <a href="${calendlyUrl}" class="cta-button">Schedule a Consultation</a>
+            <a href="${calendlyUrl}" class="cta-button" style="color: #677076;">Schedule a Consultation</a>
           </div>
 
           <div class="footer">
