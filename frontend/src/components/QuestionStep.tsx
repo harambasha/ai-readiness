@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { CheckCircle2 } from 'lucide-react';
-import { Question, Answer } from '../../types';
-import { sendAssessmentResults } from '../../services/emailService';
-import { MultipleChoice, Slider, TextInput, YesNo } from './QuestionTypes';
+import { Question, Answer } from '../types';
+import { sendAssessmentResults } from '../services/emailService';
+import { MultipleChoice } from './assessment/QuestionTypes';
+import { Slider } from './assessment/QuestionTypes';
+import { TextInput } from './assessment/QuestionTypes';
+import { YesNo } from './assessment/QuestionTypes';
 
 interface QuestionStepProps {
   question: Question;
