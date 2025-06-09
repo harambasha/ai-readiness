@@ -12,9 +12,9 @@ interface RadarChartProps {
 }
 
 export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements }) => {
-  const size = 400;
+  const size = 500;
   const center = size / 2;
-  const radius = size * 0.4;
+  const radius = size * 0.35;
   const numPoints = strengths.length;
   const angleStep = (2 * Math.PI) / numPoints;
 
@@ -55,7 +55,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements 
 
   const generateLabels = () => {
     return strengths.map((point, index) => {
-      const { x, y } = getPointCoordinates(index, 110);
+      const { x, y } = getPointCoordinates(index, 115);
       return (
         <text
           key={`label-${index}`}
@@ -65,6 +65,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements 
           dominantBaseline="middle"
           fill="rgba(103, 112, 118, 0.8)"
           fontSize="12"
+          className="font-medium"
         >
           {point.label}
         </text>
@@ -86,11 +87,26 @@ export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements 
     ));
   };
 
+  const generateCircleLabels = () => {
+    return [20, 40, 60, 80, 100].map((value) => (
+      <text
+        key={`circle-label-${value}`}
+        x={center + radius + 10}
+        y={center - (value / 100) * radius}
+        fill="rgba(103, 112, 118, 0.6)"
+        fontSize="10"
+      >
+        {value}%
+      </text>
+    ));
+  };
+
   return (
     <div className="w-full max-w-2xl mx-auto p-4">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         {/* Background circles */}
         {generateCircles()}
+        {generateCircleLabels()}
         
         {/* Axis lines */}
         {generateAxisLines()}
@@ -115,11 +131,11 @@ export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements 
         {generateLabels()}
         
         {/* Legend */}
-        <g transform={`translate(${size - 150}, 20)`}>
+        <g transform={`translate(${size - 180}, 20)`}>
           <rect x="0" y="0" width="12" height="12" fill="rgba(103, 112, 118, 0.2)" stroke="rgba(103, 112, 118, 1)" />
-          <text x="20" y="10" fill="rgba(103, 112, 118, 0.8)" fontSize="12">Strengths</text>
+          <text x="20" y="10" fill="rgba(103, 112, 118, 0.8)" fontSize="12" className="font-medium">Strengths</text>
           <rect x="0" y="20" width="12" height="12" fill="rgba(138, 107, 78, 0.2)" stroke="rgba(138, 107, 78, 1)" />
-          <text x="20" y="30" fill="rgba(103, 112, 118, 0.8)" fontSize="12">Areas for Improvement</text>
+          <text x="20" y="30" fill="rgba(103, 112, 118, 0.8)" fontSize="12" className="font-medium">Areas for Improvement</text>
         </g>
       </svg>
     </div>

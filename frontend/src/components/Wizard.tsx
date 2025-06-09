@@ -531,11 +531,78 @@ function ResultsStep() {
         </p>
       </div>
 
+      <div className="relative w-full">
+        <img
+          src="/public/working_programming.png"
+          alt="Working Programming"
+          className="w-full h-auto rounded-lg shadow-lg"
+          onError={(e) => {
+            console.error('Error loading working programming image:', e);
+            const img = e.target as HTMLImageElement;
+            console.log('Failed image src:', img.src);
+          }}
+        />
+      </div>
+
       <div className="bg-white p-6 sm:p-8 rounded-lg shadow-sm">
         <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
           AI Readiness Analysis
         </h3>
         <RadarChart strengths={chartData.strengths} improvements={chartData.improvements} />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+        <div className="bg-gray-50 p-6 sm:p-8">
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">
+            Key Strengths
+          </h3>
+          <ul className="space-y-4">
+            <li className="flex items-start">
+              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+                <CheckCircle2 className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-gray-600">Data infrastructure and quality</span>
+            </li>
+            <li className="flex items-start">
+              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+                <CheckCircle2 className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-gray-600">AI strategy alignment</span>
+            </li>
+            <li className="flex items-start">
+              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+                <CheckCircle2 className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-gray-600">Talent development programs</span>
+            </li>
+          </ul>
+        </div>
+
+        <div className="bg-gray-50 p-6 sm:p-8">
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">
+            Areas for Improvement
+          </h3>
+          <ul className="space-y-4">
+            <li className="flex items-start">
+              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+                <Target className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-gray-600">AI governance framework</span>
+            </li>
+            <li className="flex items-start">
+              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+                <Target className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-gray-600">Change management processes</span>
+            </li>
+            <li className="flex items-start">
+              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
+                <Target className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-gray-600">Innovation culture development</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div className="bg-[#f7f6f4] p-6 sm:p-8 text-center">
