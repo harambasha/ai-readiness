@@ -3,6 +3,9 @@ export function generateEmailTemplate(
   score: number,
   maturityLevel: string
 ): string {
+  // Base64 encoded Bloomteq logo
+  const logoBase64 = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMjAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMCAyNWgxODBNMTAgMTBoMTgwTTEwIDQwaDE4MCIgc3Ryb2tlPSIjNjc3MDc2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjx0ZXh0IHg9IjEwIiB5PSIzNSIgZmlsbD0iIzY3NzA3NiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCI+Qmxvb210ZXE8L3RleHQ+PC9zdmc+';
+
   const maturityLevels = {
     'Level 1': 'Initial',
     'Level 2': 'Managed',
@@ -15,12 +18,16 @@ export function generateEmailTemplate(
     'customer-impact': {
       'ci1': 'No direct impact on customer experience',
       'ci2': 'Some impact on customer experience',
-      'ci3': 'Significant impact on customer experience'
+      'ci3': 'Significant impact on customer experience',
+      'ci4': 'High impact on customer experience',
+      'ci5': 'Transformative impact on customer experience'
     },
     'partnership-strategy': {
       'ps1': 'No formal partnership strategy',
       'ps2': 'Basic partnership strategy',
-      'ps3': 'Comprehensive partnership strategy'
+      'ps3': 'Comprehensive partnership strategy',
+      'ps4': 'Advanced partnership strategy',
+      'ps5': 'Strategic partnership ecosystem'
     },
     'software-tools': {
       'st1': 'Basic tools',
@@ -50,22 +57,30 @@ export function generateEmailTemplate(
     'ai-ethics': {
       'ae1': 'No ethical guidelines',
       'ae2': 'Basic ethical guidelines',
-      'ae3': 'Comprehensive ethical guidelines'
+      'ae3': 'Comprehensive ethical guidelines',
+      'ae4': 'Advanced ethical framework',
+      'ae5': 'Industry-leading ethical standards'
     },
     'change-management': {
       'cm1': 'No change management',
       'cm2': 'Basic change management',
-      'cm3': 'Comprehensive change management'
+      'cm3': 'Comprehensive change management',
+      'cm4': 'Advanced change management',
+      'cm5': 'Transformative change leadership'
     },
     'data-infrastructure': {
       'di1': 'Basic infrastructure',
       'di2': 'Moderate infrastructure',
-      'di3': 'Advanced infrastructure'
+      'di3': 'Advanced infrastructure',
+      'di4': 'Enterprise infrastructure',
+      'di5': 'Cutting-edge infrastructure'
     },
     'risk-management': {
       'rm1': 'No risk management',
       'rm2': 'Basic risk management',
-      'rm3': 'Comprehensive risk management'
+      'rm3': 'Comprehensive risk management',
+      'rm4': 'Advanced risk management',
+      'rm5': 'Enterprise risk framework'
     },
     'data-governance': {
       'dg1': 'No data governance',
@@ -75,7 +90,9 @@ export function generateEmailTemplate(
     'roi-expectations': {
       'roi1': 'No clear ROI expectations',
       'roi2': 'Basic ROI expectations',
-      'roi3': 'Detailed ROI expectations'
+      'roi3': 'Detailed ROI expectations',
+      'roi4': 'Advanced ROI metrics',
+      'roi5': 'Comprehensive ROI framework'
     }
   };
 
@@ -94,7 +111,17 @@ export function generateEmailTemplate(
     }
 
     // For slider values, convert to percentage
-    if (key.includes('slider') || key.includes('score')) {
+    if (key.includes('slider') || 
+        key.includes('score') || 
+        key.includes('maturity') || 
+        key.includes('readiness') || 
+        key.includes('quality') || 
+        key.includes('alignment') || 
+        key.includes('infrastructure') || 
+        key.includes('privacy') || 
+        key.includes('culture') || 
+        key.includes('engagement') || 
+        key.includes('market')) {
       const numValue = parseFloat(value);
       if (!isNaN(numValue)) {
         return `${numValue}%`;
@@ -169,26 +196,30 @@ export function generateEmailTemplate(
           .logo {
             max-width: 200px;
             margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
           }
           .score {
             font-size: 32px;
             font-weight: bold;
-            color: #2563eb;
+            color: #677076;
             text-align: center;
             margin: 30px 0;
             padding: 20px;
-            background-color: #f3f4f6;
+            background-color: #f7f6f4;
             border-radius: 8px;
           }
           .maturity-level {
-            background-color: #f3f4f6;
+            background-color: #f7f6f4;
             padding: 25px;
             border-radius: 8px;
             margin: 30px 0;
             text-align: center;
+            color: #677076;
           }
           .maturity-level h2 {
-            color: #1f2937;
+            color: #677076;
             margin-bottom: 10px;
           }
           .answers {
@@ -205,7 +236,7 @@ export function generateEmailTemplate(
           .question {
             font-weight: bold;
             margin-bottom: 10px;
-            color: #1f2937;
+            color: #677076;
           }
           .answer {
             color: #4b5563;
@@ -214,11 +245,11 @@ export function generateEmailTemplate(
           .analysis-section {
             margin: 40px 0;
             padding: 25px;
-            background-color: #f3f4f6;
+            background-color: #f7f6f4;
             border-radius: 8px;
           }
           .analysis-section h2 {
-            color: #1f2937;
+            color: #677076;
             margin-bottom: 20px;
           }
           .analysis-list {
@@ -229,33 +260,48 @@ export function generateEmailTemplate(
             margin-bottom: 10px;
             padding-left: 20px;
             position: relative;
+            color: #4b5563;
           }
           .analysis-list li:before {
             content: "•";
             position: absolute;
             left: 0;
-            color: #2563eb;
+            color: #677076;
           }
           .cta-section {
             text-align: center;
             margin: 40px 0;
             padding: 30px;
-            background-color: #2563eb;
-            color: white;
+            background-color: #f7f6f4;
             border-radius: 8px;
           }
           .cta-section h2 {
+            color: #677076;
             margin-bottom: 15px;
+            font-size: 24px;
+            font-weight: bold;
+          }
+          .cta-section p {
+            color: #4b5563;
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
           }
           .cta-button {
             display: inline-block;
-            padding: 12px 24px;
-            background-color: white;
-            color: #2563eb;
+            padding: 16px 32px;
+            background-color: #677076;
+            color: white;
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
-            margin-top: 20px;
+            font-size: 18px;
+            transition: all 0.2s ease;
+          }
+          .cta-button:hover {
+            background-color: #8a6b4e;
+            transform: scale(1.05);
           }
           .footer {
             text-align: center;
@@ -270,8 +316,8 @@ export function generateEmailTemplate(
       <body>
         <div class="container">
           <div class="header">
-            <img src="https://bloomteq.com/wp-content/uploads/2024/03/bloomteq-logo.png" alt="Bloomteq Logo" class="logo">
-            <h1>AI Readiness Assessment Results</h1>
+            <img src="${logoBase64}" alt="Bloomteq Logo" class="logo">
+            <h1 style="color: #677076;">AI Readiness Assessment Results</h1>
           </div>
           
           <div class="score">
@@ -284,7 +330,7 @@ export function generateEmailTemplate(
           </div>
           
           <div class="answers">
-            <h2>Your Responses</h2>
+            <h2 style="color: #677076;">Your Responses</h2>
             ${Object.entries(answers)
               .filter(([key]) => key !== 'company-email')
               .map(([key, value]) => `
