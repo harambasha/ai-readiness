@@ -451,56 +451,67 @@ const handler: Handler = async (event, context) => {
               font-size: 1.25rem;
               font-weight: 600;
             }
-            ul {
-              list-style: none;
-              padding: 0;
-            }
-            li {
-              margin-bottom: 20px;
-              padding: 15px;
-              background-color: #f8f9fa;
-              border-radius: 8px;
-            }
-            .score {
-              font-size: 24px;
-              font-weight: bold;
-              color: #677076;
-              margin: 20px 0;
-            }
-            .maturity-level {
-              font-size: 18px;
-              color: #677076;
-              margin-bottom: 30px;
-            }
-            .question {
-              font-weight: bold;
-              color: #2E363C;
-              margin-bottom: 10px;
-            }
-            .answer {
-              color: #677076;
-            }
             .grid {
               display: grid;
               grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-              gap: 2rem;
+              gap: 1.5rem;
               margin-top: 2rem;
             }
             .card {
-              background: white;
-              padding: 2rem;
-              border: 2px solid #E7E9EC;
+              background: #f9fafb;
+              padding: 1.5rem;
               border-radius: 8px;
             }
-            .card ul {
-              list-style: none;
-              padding: 0;
-            }
-            .card li {
+            .list-item {
+              display: flex;
+              align-items: flex-start;
               margin-bottom: 1rem;
-              padding: 0;
-              background: none;
-              color: #687177;
+            }
+            .icon-container {
+              width: 2rem;
+              height: 2rem;
+              background: #677076;
+              border-radius: 0.5rem;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-right: 1rem;
+              margin-top: 0.25rem;
+            }
+            .icon {
+              width: 1.25rem;
+              height: 1.25rem;
+              color: white;
+            }
+            .text {
+              color: #4b5563;
+            }
+            .score-section {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 1rem;
+              margin: 2rem 0;
+            }
+            .score {
+              font-size: 3.75rem;
+              font-weight: bold;
+              color: #677076;
+            }
+            .maturity {
+              font-size: 1.5rem;
+              font-weight: 600;
+            }
+            .progress-bar {
+              height: 0.5rem;
+              background: #E7E9EC;
+              border-radius: 9999px;
+              overflow: hidden;
+              margin: 1rem 0;
+            }
+            .progress {
+              height: 100%;
+              background: linear-gradient(to right, #677076, #8a6b4e);
             }
             .cta-section {
               margin-top: 40px;
@@ -543,66 +554,89 @@ const handler: Handler = async (event, context) => {
             </p>
           </div>
 
-          <div class="grid">
-            <div class="card">
-              <h3>Overall Score</h3>
-              <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
-                <div style="font-size: 3.75rem; font-weight: bold; color: #677076;">
-                  ${Math.round(score)}%
-                </div>
-                <div style="font-size: 1.5rem; font-weight: 600;">
-                  ${maturityLevel}
-                </div>
-              </div>
-            </div>
+          <div class="score-section">
+            <div class="score">${Math.round(score)}%</div>
+            <div class="maturity">${maturityLevel}</div>
+          </div>
 
-            <div class="card">
-              <h3>Detailed Breakdown</h3>
-              <div style="margin-top: 1rem;">
-                <div style="display: flex; justify-content: space-between; color: #687177; font-size: 0.875rem; margin-bottom: 0.25rem;">
-                  <span>Score</span>
-                  <span>${score} / ${maxScore}</span>
-                </div>
-                <div style="height: 0.5rem; background: #E7E9EC; border-radius: 9999px; overflow: hidden;">
-                  <div style="height: 100%; background: linear-gradient(to right, #677076, #8a6b4e); width: ${score}%;"></div>
-                </div>
-              </div>
-            </div>
+          <div class="progress-bar">
+            <div class="progress" style="width: ${score}%"></div>
           </div>
 
           <div class="grid">
             <div class="card">
-              <h3>Next Steps</h3>
-              <ul>
-                <li>Review your detailed assessment report</li>
-                <li>Identify key areas for improvement</li>
-                <li>Develop an action plan</li>
-                <li>Set measurable goals</li>
+              <h3>Key Strengths</h3>
+              <ul style="list-style: none; padding: 0;">
+                <li class="list-item">
+                  <div class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                  </div>
+                  <span class="text">Data infrastructure and quality</span>
+                </li>
+                <li class="list-item">
+                  <div class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                  </div>
+                  <span class="text">AI strategy alignment</span>
+                </li>
+                <li class="list-item">
+                  <div class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                  </div>
+                  <span class="text">Talent development programs</span>
+                </li>
               </ul>
             </div>
 
             <div class="card">
-              <h3>Resources</h3>
-              <ul>
-                <li>Schedule a free consultation to get your personalized AI implementation roadmap</li>
-                <li>Access our comprehensive AI readiness guide</li>
-                <li>Learn from industry best practices and case studies</li>
-              </ul>
-            </div>
-
-            <div class="card">
-              <h3>Support</h3>
-              <ul>
-                <li>Get expert guidance on your AI journey</li>
-                <li>Receive personalized recommendations</li>
-                <li>Access dedicated support for implementation</li>
+              <h3>Areas for Improvement</h3>
+              <ul style="list-style: none; padding: 0;">
+                <li class="list-item">
+                  <div class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <circle cx="12" cy="12" r="6"></circle>
+                      <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                  </div>
+                  <span class="text">AI governance framework</span>
+                </li>
+                <li class="list-item">
+                  <div class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <circle cx="12" cy="12" r="6"></circle>
+                      <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                  </div>
+                  <span class="text">Change management processes</span>
+                </li>
+                <li class="list-item">
+                  <div class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <circle cx="12" cy="12" r="6"></circle>
+                      <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                  </div>
+                  <span class="text">Innovation culture development</span>
+                </li>
               </ul>
             </div>
           </div>
 
           <div class="card" style="margin-top: 2rem;">
             <h3>Your Detailed Responses</h3>
-            <ul>
+            <ul style="list-style: none; padding: 0;">
               ${answers.map(answer => {
                 const questionId = answer.questionId.split('_')[0]; // Get the prefix (it, te, dq, etc.)
                 const questionText = QUESTION_MAP[questionId] || answer.questionId;
@@ -617,9 +651,17 @@ const handler: Handler = async (event, context) => {
                 }
 
                 return `
-                  <li>
-                    <div class="question">${questionText}</div>
-                    <div class="answer">${answerText}</div>
+                  <li class="list-item">
+                    <div class="icon-container">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="m9 12 2 2 4-4"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <div style="font-weight: bold; color: #2E363C;">${questionText}</div>
+                      <div style="color: #677076;">${answerText}</div>
+                    </div>
                   </li>
                 `;
               }).join('')}
