@@ -11,6 +11,7 @@ import {
 import { Question, Answer } from '../types';
 import { TextInput } from './assessment/QuestionTypes/TextInput';
 import Image from 'next/image';
+import { RadarChart } from './RadarChart';
 
 export function Wizard() {
   const {
@@ -471,6 +472,23 @@ function ResultsStep() {
     return "Exceptional AI readiness! Continue leading innovation and sharing best practices.";
   };
 
+  const chartData = {
+    strengths: [
+      { label: 'Data Infrastructure', value: 85 },
+      { label: 'AI Strategy', value: 75 },
+      { label: 'Talent Development', value: 65 },
+      { label: 'Technology Stack', value: 70 },
+      { label: 'Process Automation', value: 60 },
+    ],
+    improvements: [
+      { label: 'Data Infrastructure', value: 40 },
+      { label: 'AI Strategy', value: 45 },
+      { label: 'Talent Development', value: 35 },
+      { label: 'Technology Stack', value: 50 },
+      { label: 'Process Automation', value: 55 },
+    ],
+  };
+
   return (
     <div className="space-y-8 sm:space-y-12">
       <div className="text-center">
@@ -504,19 +522,6 @@ function ResultsStep() {
         </button>
       </div>
 
-      <div className="relative w-full">
-        <img
-          src="/public/working_programming.png"
-          alt="Working Programming"
-          className="w-full h-auto rounded-lg shadow-lg"
-          onError={(e) => {
-            console.error('Error loading working programming image:', e);
-            const img = e.target as HTMLImageElement;
-            console.log('Failed image src:', img.src);
-          }}
-        />
-      </div>
-
       <div className="bg-gray-50 p-6 sm:p-8">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">
           What This Means
@@ -526,58 +531,11 @@ function ResultsStep() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-        <div className="bg-gray-50 p-6 sm:p-8">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">
-            Key Strengths
-          </h3>
-          <ul className="space-y-4">
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <CheckCircle2 className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">Data infrastructure and quality</span>
-            </li>
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <CheckCircle2 className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">AI strategy alignment</span>
-            </li>
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <CheckCircle2 className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">Talent development programs</span>
-            </li>
-          </ul>
-        </div>
-
-        <div className="bg-gray-50 p-6 sm:p-8">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">
-            Areas for Improvement
-          </h3>
-          <ul className="space-y-4">
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <Target className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">AI governance framework</span>
-            </li>
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <Target className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">Change management processes</span>
-            </li>
-            <li className="flex items-start">
-              <div className="w-8 h-8 bg-[#677076] rounded-lg flex items-center justify-center mr-4 mt-1">
-                <Target className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-gray-600">Innovation culture development</span>
-            </li>
-          </ul>
-        </div>
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-sm">
+        <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+          AI Readiness Analysis
+        </h3>
+        <RadarChart strengths={chartData.strengths} improvements={chartData.improvements} />
       </div>
 
       <div className="bg-[#f7f6f4] p-6 sm:p-8 text-center">
@@ -594,7 +552,7 @@ function ResultsStep() {
           className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold bg-[#677076] text-white hover:bg-[#8a6b4e] transition-all duration-200 transform hover:scale-105"
         >
           Schedule a Consultation
-          <ArrowRight className="w-5 sm:w-6 h-5 sm:h-6 ml-2" />
+          <ArrowRight className="w-5 sm:w-6 h-5 sm:h-6 ml-2 text-white" />
         </a>
       </div>
 
