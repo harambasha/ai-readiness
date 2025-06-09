@@ -103,7 +103,7 @@ export function generateEmailTemplate(
   const roundedScore = Math.round(score * 100) / 100;
 
   // Get Calendly URL from environment variable
-  const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || 'https://calendly.com/bloomteq/ai-readiness-consultation';
+  const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || 'https://calendly.com/ismir-bloomteq/30min';
 
   function formatAnswer(key: string, value: string): string {
     // Check if this is an option-based answer
