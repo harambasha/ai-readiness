@@ -503,12 +503,12 @@ function ResultsStep() {
     const sendFinalResults = async () => {
       if (userEmail && !emailSent) {
         try {
-          await sendAssessmentResults({
-            to: userEmail,
+          await sendAssessmentResults(
+            userEmail,
             answers,
-            score: result.percentage,
-            maturityLevel: result.maturityLevel
-          });
+            result.percentage,
+            result.maturityLevel
+          );
           setEmailSent(true);
           console.log('Final assessment results email sent successfully');
         } catch (error) {
