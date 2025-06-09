@@ -31,12 +31,12 @@ export function QuestionStep({ question, answers, setAnswers, showError }: Quest
     // If this is the email question, send the email
     if (question.id === 'company-email') {
       try {
-        await sendAssessmentResults({
-          to: text,
-          answers: newAnswers,
-          score: 0, // Initial score
-          maturityLevel: 'In Progress'
-        });
+        await sendAssessmentResults(
+          text,
+          newAnswers,
+          0, // Initial score
+          'In Progress'
+        );
       } catch (error) {
         console.error('Error sending initial email:', error);
       }
