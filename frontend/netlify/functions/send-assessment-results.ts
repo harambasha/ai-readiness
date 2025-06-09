@@ -17,17 +17,30 @@ const handler: Handler = async (event, context) => {
   }
 
   try {
-    const { email, answers, score, maturityLevel } = JSON.parse(event.body || '{}');
+    const body = JSON.parse(event.body || '{}');
+    console.log('Received request body:', JSON.stringify(body, null, 2));
+
+    const { email, answers, score, maturityLevel } = body;
 
     if (!email || !answers || score === undefined || !maturityLevel) {
+      console.error('Missing required fields:', { email, answers, score, maturityLevel });
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing required fields' }),
+        body: JSON.stringify({ 
+          error: 'Missing required fields',
+          details: {
+            hasEmail: !!email,
+            hasAnswers: !!answers,
+            hasScore: score !== undefined,
+            hasMaturityLevel: !!maturityLevel
+          }
+        }),
       };
     }
 
     // Convert to array if it's a single email
     const recipients = Array.isArray(email) ? email : [email];
+    console.log('Sending to recipients:', recipients);
 
     const subject = 'Your AI Readiness Assessment Results';
     const text = `
@@ -132,25 +145,40 @@ const handler: Handler = async (event, context) => {
     const sendPromises = recipients.map(recipient => {
       const msg = {
         to: recipient,
-        from: 'noreply@yourdomain.com', // Replace with your verified sender
+        from: 'noreply@bloomteq.com', // Updated to use Bloomteq domain
         subject,
         text,
         html,
       };
+      console.log('Sending email to:', recipient);
       return sgMail.send(msg);
     });
 
-    await Promise.all(sendPromises);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: 'Assessment results sent successfully' }),
-    };
+    try {
+      await Promise.all(sendPromises);
+      console.log('Successfully sent all emails');
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Assessment results sent successfully' }),
+      };
+    } catch (sendError) {
+      console.error('Error sending emails:', sendError);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          error: 'Failed to send emails',
+          details: sendError.message
+        }),
+      };
+    }
   } catch (error) {
-    console.error('Error sending assessment results:', error);
+    console.error('Error processing request:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to send assessment results' }),
+      body: JSON.stringify({ 
+        error: 'Failed to process request',
+        details: error.message
+      }),
     };
   }
 };
