@@ -3,9 +3,6 @@ export function generateEmailTemplate(
   score: number,
   maturityLevel: string
 ): string {
-  // Base64 encoded Bloomteq logo
-  const logoBase64 = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMjAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMCAyNWgxODBNMTAgMTBoMTgwTTEwIDQwaDE4MCIgc3Ryb2tlPSIjNjc3MDc2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjx0ZXh0IHg9IjEwIiB5PSIzNSIgZmlsbD0iIzY3NzA3NiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCI+Qmxvb210ZXE8L3RleHQ+PC9zdmc+';
-
   const maturityLevels = {
     'Level 1': 'Initial',
     'Level 2': 'Managed',
@@ -32,7 +29,9 @@ export function generateEmailTemplate(
     'software-tools': {
       'st1': 'Basic tools',
       'st2': 'Advanced tools',
-      'st3': 'Enterprise-grade tools'
+      'st3': 'Enterprise-grade tools',
+      'st4': 'Cutting-edge tools',
+      'st5': 'Industry-leading tools'
     },
     'dedicated-it-team': {
       'it1': 'No dedicated IT team',
@@ -47,12 +46,16 @@ export function generateEmailTemplate(
     'talent-expertise': {
       'te1': 'Limited expertise',
       'te2': 'Moderate expertise',
-      'te3': 'Extensive expertise'
+      'te3': 'Extensive expertise',
+      'te4': 'Advanced expertise',
+      'te5': 'Industry-leading expertise'
     },
     'data-quality': {
       'dq1': 'Poor data quality',
       'dq2': 'Moderate data quality',
-      'dq3': 'High data quality'
+      'dq3': 'High data quality',
+      'dq4': 'Excellent data quality',
+      'dq5': 'Industry-leading data quality'
     },
     'ai-ethics': {
       'ae1': 'No ethical guidelines',
@@ -159,8 +162,30 @@ export function generateEmailTemplate(
             improvements.push(formatQuestion(key));
           }
         }
+      } else if (key.includes('optionId')) {
+        // For option-based answers, check the numeric part
+        const optionScore = parseInt(value.replace(/\D/g, ''));
+        if (!isNaN(optionScore)) {
+          if (optionScore >= 4) {
+            strengths.push(formatQuestion(key));
+          } else if (optionScore <= 2) {
+            improvements.push(formatQuestion(key));
+          }
+        }
       }
     });
+
+    // If no strengths or improvements found, add some default ones
+    if (strengths.length === 0) {
+      strengths.push('Data infrastructure and quality');
+      strengths.push('AI strategy alignment');
+      strengths.push('Talent development programs');
+    }
+    if (improvements.length === 0) {
+      improvements.push('AI governance framework');
+      improvements.push('Change management processes');
+      improvements.push('Innovation culture development');
+    }
 
     return { strengths, improvements };
   }
@@ -193,13 +218,6 @@ export function generateEmailTemplate(
             text-align: center;
             margin-bottom: 40px;
           }
-          .logo {
-            max-width: 200px;
-            margin-bottom: 20px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-          }
           .score {
             font-size: 32px;
             font-weight: bold;
@@ -221,6 +239,11 @@ export function generateEmailTemplate(
           .maturity-level h2 {
             color: #677076;
             margin-bottom: 10px;
+          }
+          .maturity-level p {
+            color: #4b5563;
+            font-size: 18px;
+            line-height: 1.6;
           }
           .answers {
             margin-top: 40px;
@@ -292,7 +315,7 @@ export function generateEmailTemplate(
             display: inline-block;
             padding: 16px 32px;
             background-color: #677076;
-            color: white;
+            color: white !important;
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
@@ -316,7 +339,6 @@ export function generateEmailTemplate(
       <body>
         <div class="container">
           <div class="header">
-            <img src="${logoBase64}" alt="Bloomteq Logo" class="logo">
             <h1 style="color: #677076;">AI Readiness Assessment Results</h1>
           </div>
           
@@ -359,7 +381,7 @@ export function generateEmailTemplate(
           <div class="cta-section">
             <h2>Ready to Accelerate Your AI Journey?</h2>
             <p>Our team of AI experts at Bloomteq can help you develop a comprehensive strategy and implementation plan tailored to your organization's needs.</p>
-            <a href="${calendlyUrl}" class="cta-button">Schedule a Consultation</a>
+            <a href="${calendlyUrl}" class="cta-button" style="color: white !important;">Schedule a Consultation</a>
           </div>
 
           <div class="footer">
