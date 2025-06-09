@@ -7,24 +7,42 @@ interface EmailData {
   maturityLevel: string;
 }
 
-export async function sendAssessmentResults(data: EmailData): Promise<void> {
+export async function sendEmail(to: string, subject: string, text: string, html: string) {
   try {
-    const response = await fetch('/api/send-email', {
+    const response = await fetch('/.netlify/functions/send-email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        to: data.to,
-        subject: 'Your AI Readiness Assessment Results',
-        html: generateEmailHtml(data),
-        text: generateEmailText(data),
-      }),
+      body: JSON.stringify({ to, subject, text, html }),
     });
 
     if (!response.ok) {
       throw new Error('Failed to send email');
     }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error;
+  }
+}
+
+export async function sendAssessmentResults(email: string, answers: any[], score: number, maturityLevel: string) {
+  try {
+    const response = await fetch('/.netlify/functions/send-assessment-results', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, answers, score, maturityLevel }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send assessment results');
+    }
+
+    return await response.json();
   } catch (error) {
     console.error('Error sending assessment results:', error);
     throw error;

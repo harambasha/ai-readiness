@@ -5,7 +5,7 @@
   environment = { SENDGRID_API_KEY = "", NEXT_TELEMETRY_DISABLED = "1", NODE_VERSION = "20.11.1", NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/bloomteq/ai-readiness-consultation" }
 
 [functions]
-  directory = "src/pages/api"
+  directory = "netlify/functions"
   node_bundler = "esbuild"
 
 [[headers]]
