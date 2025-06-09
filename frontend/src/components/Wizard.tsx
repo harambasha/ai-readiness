@@ -52,7 +52,7 @@ export function Wizard() {
           )}
 
           {/* Card container */}
-          <div className={`bg-white overflow-hidden${currentStep !== totalSteps ? ' shadow-lg' : ''}`}>
+          <div className={` overflow-hidden${currentStep !== totalSteps ? ' shadow-lg' : ''}`}>
             <div className="relative">
               {currentStep > 1 && currentStep <= questions.length + 1 && (
                 <QuestionStep
