@@ -4,7 +4,7 @@ const nextConfig = {
   output: 'export',
   env: {
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
-    NEXT_PUBLIC_CALENDLY_URL: process.env.NEXT_PUBLIC_CALENDLY_URL || 'https://calendly.com/bloomteq/ai-readiness-consultation',
+    NEXT_PUBLIC_CALENDLY_URL: process.env.NEXT_PUBLIC_CALENDLY_URL || 'https://calendly.com/ismir-bloomteq/30min',
   },
   images: {
     unoptimized: true,
@@ -17,6 +17,7 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    domains: ['images.unsplash.com'],
   },
   trailingSlash: true,
   assetPrefix: '.',
