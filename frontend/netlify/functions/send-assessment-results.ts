@@ -584,22 +584,46 @@ const handler: Handler = async (event, context) => {
             <div class="card">
               <h3>Resources</h3>
               <ul>
-                <li>AI Implementation Guide</li>
-                <li>Best Practices Documentation</li>
-                <li>Case Studies</li>
-                <li>Expert Consultation</li>
+                <li>Schedule a free consultation to get your personalized AI implementation roadmap</li>
+                <li>Access our comprehensive AI readiness guide</li>
+                <li>Learn from industry best practices and case studies</li>
               </ul>
             </div>
 
             <div class="card">
               <h3>Support</h3>
               <ul>
-                <li>Schedule a Consultation</li>
-                <li>Join our Community</li>
-                <li>Access Training Materials</li>
-                <li>Get Expert Support</li>
+                <li>Get expert guidance on your AI journey</li>
+                <li>Receive personalized recommendations</li>
+                <li>Access dedicated support for implementation</li>
               </ul>
             </div>
+          </div>
+
+          <div class="card" style="margin-top: 2rem;">
+            <h3>Your Detailed Responses</h3>
+            <ul>
+              ${answers.map(answer => {
+                const questionId = answer.questionId.split('_')[0]; // Get the prefix (it, te, dq, etc.)
+                const questionText = QUESTION_MAP[questionId] || answer.questionId;
+                let answerText = '';
+                
+                if (answer.optionId) {
+                  answerText = OPTION_MAP[answer.optionId] || answer.optionId;
+                } else if (answer.sliderValue !== undefined) {
+                  answerText = SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
+                } else if (answer.textValue) {
+                  answerText = answer.textValue;
+                }
+
+                return `
+                  <li>
+                    <div class="question">${questionText}</div>
+                    <div class="answer">${answerText}</div>
+                  </li>
+                `;
+              }).join('')}
+            </ul>
           </div>
 
           <div class="cta-section">
