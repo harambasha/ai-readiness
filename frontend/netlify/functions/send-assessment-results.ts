@@ -577,7 +577,7 @@ const handler: Handler = async (event, context) => {
               display: inline-block;
               padding: 14px 32px;
               background: linear-gradient(135deg, #677076 0%, #8a6b4e 100%);
-              color: white;
+              color: white !important;
               text-decoration: none;
               border-radius: 8px;
               font-weight: 600;
@@ -731,7 +731,7 @@ const handler: Handler = async (event, context) => {
                 tailored to your organization's needs. Schedule a free consultation with our AI experts 
                 to discuss your results and next steps.
               </p>
-              <a href="https://calendly.com/bloomteq/ai-readiness-consultation" class="cta-button">
+              <a href="https://calendly.com/ismir-bloomteq/30min" class="cta-button">
                 Schedule Your Free Consultation
               </a>
             </div>
