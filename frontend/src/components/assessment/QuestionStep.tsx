@@ -1,37 +1,48 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 import { Question, Answer } from '../../types';
+import { sendAssessmentResults } from '../../services/emailService';
 import { MultipleChoice, Slider, TextInput } from './QuestionTypes';
 
 interface QuestionStepProps {
   question: Question;
-  currentAnswer?: Answer;
-  onAnswer: (answer: Answer) => void;
+  answers: Answer[];
+  setAnswers: (answers: Answer[]) => void;
+  showError?: boolean;
 }
 
-export function QuestionStep({ question, currentAnswer, onAnswer }: QuestionStepProps) {
+export function QuestionStep({ question, answers, setAnswers }: QuestionStepProps) {
+  const currentAnswer = answers.find(a => a.questionId === question.id);
+
   const handleMultipleChoiceSelect = (optionId: string) => {
     const option = question.options?.find(opt => opt.id === optionId);
-    onAnswer({
+    const newAnswers = answers.filter(a => a.questionId !== question.id);
+    newAnswers.push({
       questionId: question.id,
       optionId,
       score: option?.score || 0
     });
+    setAnswers(newAnswers);
   };
 
   const handleSliderChange = (value: number) => {
-    onAnswer({
+    const newAnswers = answers.filter(a => a.questionId !== question.id);
+    newAnswers.push({
       questionId: question.id,
       sliderValue: value,
       score: Math.round(value / 25) // Convert percentage to 0-4 score
     });
+    setAnswers(newAnswers);
   };
 
   const handleTextChange = (value: string) => {
-    onAnswer({
+    const newAnswers = answers.filter(a => a.questionId !== question.id);
+    newAnswers.push({
       questionId: question.id,
       textValue: value,
       score: 0 // Text questions don't contribute to score
     });
+    setAnswers(newAnswers);
   };
 
   return (
