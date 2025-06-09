@@ -26,18 +26,26 @@ const handler: Handler = async (event, context) => {
       };
     }
 
-    const msg = {
-      to,
-      from: 'noreply@yourdomain.com', // Replace with your verified sender
-      subject,
-      text,
-      html,
-    };
+    // Convert to array if it's a single email
+    const recipients = Array.isArray(to) ? to : [to];
 
-    await sgMail.send(msg);
+    // Send to each recipient individually
+    const sendPromises = recipients.map(recipient => {
+      const msg = {
+        to: recipient,
+        from: 'noreply@yourdomain.com', // Replace with your verified sender
+        subject,
+        text,
+        html,
+      };
+      return sgMail.send(msg);
+    });
+
+    await Promise.all(sendPromises);
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Email sent successfully' }),
+      body: JSON.stringify({ message: 'Emails sent successfully' }),
     };
   } catch (error) {
     console.error('Error sending email:', error);

@@ -10,6 +10,53 @@ interface EmailData {
 
 const ADDITIONAL_RECIPIENTS = ['ismir@bloomteq.com', 'nermin@bloomteq.com'];
 
+// Map for option IDs to their text values
+const OPTION_MAP: Record<string, string> = {
+  // IT Team questions
+  'it1': 'No dedicated IT team',
+  'it2': 'Small IT team (1-5 people)',
+  'it3': 'Medium IT team (6-20 people)',
+  'it4': 'Large IT team (20+ people)',
+  
+  // Team Expertise questions
+  'te1': 'No AI/ML expertise',
+  'te2': 'Basic understanding',
+  'te3': 'Some practical experience',
+  'te4': 'Advanced expertise',
+  
+  // Data Quality questions
+  'dq1': 'Poor - No data standards',
+  'dq2': 'Basic - Some standards in place',
+  'dq3': 'Good - Well-defined standards',
+  'dq4': 'Excellent - Comprehensive standards',
+  
+  // Data Infrastructure questions
+  'di1': 'Basic - Limited infrastructure',
+  'di2': 'Developing - Some modern tools',
+  'di3': 'Advanced - Cloud-based solutions',
+  'di4': 'State-of-the-art - AI-ready infrastructure',
+  
+  // Strategy Vision questions
+  'sv1': 'Not Started',
+  'sv2': 'Early Stage',
+  'sv3': 'In Progress',
+  'sv4': 'Advanced',
+  'sv5': 'Complete',
+  
+  // Yes/No questions
+  'yn1': 'Yes',
+  'yn2': 'No'
+};
+
+// Map for slider values to their text values
+const SLIDER_MAP: Record<number, string> = {
+  0: 'Not Started',
+  25: 'Early Stage',
+  50: 'In Progress',
+  75: 'Advanced',
+  100: 'Complete'
+};
+
 export async function sendEmail(to: string, subject: string, text: string, html: string) {
   try {
     const response = await fetch('/.netlify/functions/send-email', {
@@ -68,9 +115,11 @@ function getQuestionText(questionId: string): string {
 }
 
 function getOptionText(questionId: string, optionId: string): string {
-  const question = questions.find(q => q.id === questionId);
-  const option = question?.options?.find(o => o.id === optionId);
-  return option?.text || optionId;
+  return OPTION_MAP[optionId] || optionId;
+}
+
+function getSliderText(sliderValue: number): string {
+  return SLIDER_MAP[sliderValue] || `${sliderValue}%`;
 }
 
 function generateEmailHtml(data: EmailData): string {
@@ -88,7 +137,7 @@ function generateEmailHtml(data: EmailData): string {
               <strong>Question:</strong> ${getQuestionText(answer.questionId)}<br>
               ${answer.optionId ? `<strong>Selected Option:</strong> ${getOptionText(answer.questionId, answer.optionId)}<br>` : ''}
               ${answer.score ? `<strong>Score:</strong> ${answer.score}<br>` : ''}
-              ${answer.sliderValue ? `<strong>Slider Value:</strong> ${answer.sliderValue}%<br>` : ''}
+              ${answer.sliderValue ? `<strong>Slider Value:</strong> ${getSliderText(answer.sliderValue)}<br>` : ''}
               ${answer.textValue ? `<strong>Text Response:</strong> ${answer.textValue}<br>` : ''}
             </li>
           `).join('')}
@@ -112,7 +161,7 @@ function generateEmailText(data: EmailData): string {
       Question: ${getQuestionText(answer.questionId)}
       ${answer.optionId ? `Selected Option: ${getOptionText(answer.questionId, answer.optionId)}` : ''}
       ${answer.score ? `Score: ${answer.score}` : ''}
-      ${answer.sliderValue ? `Slider Value: ${answer.sliderValue}%` : ''}
+      ${answer.sliderValue ? `Slider Value: ${getSliderText(answer.sliderValue)}` : ''}
       ${answer.textValue ? `Text Response: ${answer.textValue}` : ''}
     `).join('\n')}
   `;
