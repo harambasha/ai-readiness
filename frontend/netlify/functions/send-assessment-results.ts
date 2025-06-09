@@ -145,7 +145,7 @@ const handler: Handler = async (event, context) => {
     const sendPromises = recipients.map(recipient => {
       const msg = {
         to: recipient,
-        from: 'noreply@bloomteq.com', // Updated to use Bloomteq domain
+        from: 'info@bloomteq.com', // Updated to use verified sender
         subject,
         text,
         html,
