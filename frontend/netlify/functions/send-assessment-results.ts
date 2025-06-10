@@ -8,6 +8,14 @@ if (!apiKey) {
   console.error('SENDGRID_API_KEY is not set in environment variables');
   throw new Error('Email service is not properly configured. Please contact support.');
 }
+
+// Validate API key format
+if (!apiKey.startsWith('SG.')) {
+  console.error('Invalid SendGrid API key format. API key should start with "SG."');
+  throw new Error('Email service is not properly configured. Please contact support.');
+}
+
+console.log('Initializing SendGrid with API key:', apiKey.substring(0, 5) + '...');
 sgMail.setApiKey(apiKey);
 
 // Map for option IDs to their text values
@@ -748,7 +756,10 @@ const handler: Handler = async (event, context) => {
       console.log('Sending email to:', recipients);
       const msg = {
         to: recipients,
-        from: 'noreply@bloomteq.com',
+        from: {
+          email: 'info@bloomteq.com',
+          name: 'Bloomteq AI Readiness Assessment'
+        },
         subject,
         text,
         html,
@@ -763,11 +774,15 @@ const handler: Handler = async (event, context) => {
         };
       } catch (emailError) {
         console.error('Error sending email:', emailError);
+        if (emailError.response) {
+          console.error('SendGrid API Response:', emailError.response.body);
+        }
         return {
           statusCode: 500,
           body: JSON.stringify({ 
             error: 'Failed to send email',
-            details: emailError instanceof Error ? emailError.message : 'Unknown error'
+            details: emailError instanceof Error ? emailError.message : 'Unknown error',
+            response: emailError.response?.body
           }),
         };
       }
