@@ -5,7 +5,8 @@ import { questions } from '../../src/data/questions';
 // Initialize SendGrid
 const apiKey = process.env.SENDGRID_API_KEY;
 if (!apiKey) {
-  throw new Error('SENDGRID_API_KEY is not set');
+  console.error('SENDGRID_API_KEY is not set in environment variables');
+  throw new Error('Email service is not properly configured. Please contact support.');
 }
 sgMail.setApiKey(apiKey);
 
