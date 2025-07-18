@@ -343,7 +343,7 @@ function ResultsStep() {
 
       <div className="relative w-full">
         <img
-          src="/public/working_programming.png"
+          src="/working_programming.png"
           alt="Working Programming"
           className="w-full h-auto rounded-lg shadow-lg"
           onError={(e) => {
@@ -415,7 +415,7 @@ function ResultsStep() {
 
       <div className="relative w-full">
         <img
-          src="/public/future_image.png"
+          src="/future_image.png"
           alt="Future of AI"
           className="w-full h-auto rounded-lg shadow-lg"
           onError={(e) => {
