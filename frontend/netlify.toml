@@ -1,8 +1,8 @@
 [build]
   base = "frontend"
   command = "npm run build"
-  publish = ".next"
-  environment = { SENDGRID_API_KEY = "", NEXT_TELEMETRY_DISABLED = "1", NODE_VERSION = "20.11.1", NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/ismir-bloomteq/30min" }
+  publish = "dist"
+  environment = { SENDGRID_API_KEY = "", NODE_VERSION = "20.11.1", VITE_CALENDLY_URL = "https://calendly.com/ismir-bloomteq/30min" }
 
 [functions]
   directory = "netlify/functions"
@@ -34,18 +34,6 @@
   force = true
 
 [[redirects]]
-  from = "/_next/static/*"
-  to = "/_next/static/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = true
-
-[[redirects]]
   from = "/api/send-email"
   to = "/.netlify/functions/send-email"
   status = 200
@@ -57,5 +45,8 @@
   status = 200
   force = true
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs" 
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true 

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { questions } from '../data/questions';
 import { Question, Answer, MaturityLevel, WizardContextType } from '../types';
+import { useLanguage } from './LanguageContext';
 
 export const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
@@ -9,13 +10,14 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [showError, setShowError] = useState(false);
+  const { language } = useLanguage();
 
-  const totalSteps = questions.length + 2; // Questions + Welcome + Results
+  const totalSteps = questions.length + 3; // Questions + Welcome + Team Warning + Results
 
   // Update current question when step changes
   useEffect(() => {
-    if (currentStep > 1 && currentStep <= questions.length + 1) {
-      setCurrentQuestion(questions[currentStep - 2]);
+    if (currentStep > 2 && currentStep <= questions.length + 2) {
+      setCurrentQuestion(questions[currentStep - 3]);
     } else {
       setCurrentQuestion(null);
     }
@@ -23,7 +25,12 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
 
   const goToNextStep = useCallback(() => {
     if (currentStep === 1) {
-      setCurrentStep(2);
+      setCurrentStep(2); // Go to team warning
+      return;
+    }
+    
+    if (currentStep === 2) {
+      setCurrentStep(3); // Go to first question
       return;
     }
     
@@ -31,7 +38,8 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const currentQuestion = questions[currentStep - 2];
+    // Only validate answers for question steps (step 3 and onwards)
+    const currentQuestion = questions[currentStep - 3];
     const currentAnswer = answers.find(a => a.questionId === currentQuestion.id);
     
     if (!currentAnswer) {
@@ -156,7 +164,8 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         isFirstStep: currentStep === 1,
         isLastStep: currentStep === totalSteps,
         calculateScore,
-        canProceed
+        canProceed,
+        language
       }}
     >
       {children}

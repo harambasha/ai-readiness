@@ -1,21 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { Question, Answer } from '../../types';
+import { useLanguage } from '../../context/LanguageContext';
+import { optionTranslations, placeholderTranslations } from '../../data/questionTranslations';
+import { Language } from '../../config/translations';
 
 interface BaseProps {
   question: Question;
   currentAnswer?: Answer;
+  language: Language;
 }
 
 interface MultipleChoiceProps extends BaseProps {
   onSelect: (optionId: string, score: number) => void;
 }
 
-export function MultipleChoice({ question, currentAnswer, onSelect }: MultipleChoiceProps) {
+export function MultipleChoice({ question, currentAnswer, onSelect, language }) {
   return (
     <div className="space-y-4 px-4">
       {question.options?.map((option) => {
         const isSelected = currentAnswer?.optionId === option.id;
+        const optionText = optionTranslations[language][option.id] || option.text;
         return (
           <button
             key={option.id}
@@ -27,9 +32,7 @@ export function MultipleChoice({ question, currentAnswer, onSelect }: MultipleCh
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className={`font-medium ${isSelected ? 'text-white' : 'text-[#2E363C]'}`}>
-                {option.text}
-              </span>
+              <span className={`font-medium ${isSelected ? 'text-white' : 'text-[#2E363C]'}`}>{optionText}</span>
               <div className={`w-6 h-6 border-2 flex items-center justify-center transition-all duration-200 ${
                 isSelected 
                   ? 'border-white bg-white/20' 
@@ -49,12 +52,11 @@ interface SliderProps extends BaseProps {
   onChange: (score: number, sliderValue: number) => void;
 }
 
-export function Slider({ question, currentAnswer, onChange }: SliderProps) {
+export function Slider({ question, currentAnswer, onChange, language }) {
   const [sliderValue, setSliderValue] = useState<number | undefined>(currentAnswer?.score ? (currentAnswer.score / 4) * 100 : undefined);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Reset slider value when question changes
   useEffect(() => {
     setSliderValue(currentAnswer?.score ? (currentAnswer.score / 4) * 100 : undefined);
   }, [question.id, currentAnswer?.score]);
@@ -64,14 +66,13 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
     const rect = sliderRef.current.getBoundingClientRect();
     const position = clientX - rect.left;
     const percentage = Math.max(0, Math.min(100, (position / rect.width) * 100));
-    return Math.round(percentage / 25) * 25; // Snap to 25% increments
+    return Math.round(percentage / 25) * 25;
   };
 
   const handleSliderChange = (value: number) => {
     setSliderValue(value);
-    // Convert the percentage value to a score between 0 and 4
     const score = (value / 100) * 4;
-    onChange(score, value); // Pass score and sliderValue
+    onChange(score, value);
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -100,28 +101,27 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
     handleSliderChange(value);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const touch = e.touches[0];
-    const value = calculateSliderValue(touch.clientX);
-    handleSliderChange(value);
-  };
-
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('mousemove', handleMouseMove as any);
-      document.addEventListener('touchend', handleMouseUp);
-      document.addEventListener('touchmove', handleTouchMove as any);
+      window.addEventListener('mousemove', handleMouseMove as any);
+      window.addEventListener('mouseup', handleMouseUp as any);
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove as any);
+        window.removeEventListener('mouseup', handleMouseUp as any);
+      };
     }
-    return () => {
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('mousemove', handleMouseMove as any);
-      document.removeEventListener('touchend', handleMouseUp);
-      document.removeEventListener('touchmove', handleTouchMove as any);
-    };
   }, [isDragging]);
+
+  // Use translations for slider labels
+  const startLabel = optionTranslations[language]['not-started'] || question.slider?.labels?.start;
+  const endLabel = optionTranslations[language]['completed'] || question.slider?.labels?.end;
+  const sliderLabels = [
+    { value: 0, label: startLabel },
+    { value: 25, label: optionTranslations[language]['early-stage'] },
+    { value: 50, label: optionTranslations[language]['in-progress'] },
+    { value: 75, label: optionTranslations[language]['advanced-level'] },
+    { value: 100, label: endLabel }
+  ];
 
   return (
     <div className="relative px-4">
@@ -141,8 +141,8 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
         />
       </div>
       <div className="flex justify-between mt-4 text-sm text-[#687177]">
-        <span>{question.slider?.labels.start}</span>
-        <span>{question.slider?.labels.end}</span>
+        <span>{startLabel}</span>
+        <span>{endLabel}</span>
       </div>
       {sliderValue !== undefined && (
         <div className="text-center mt-2 text-[#677076] font-medium">
@@ -150,13 +150,7 @@ export function Slider({ question, currentAnswer, onChange }: SliderProps) {
         </div>
       )}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mt-4">
-        {[
-          { value: 0, label: question.slider?.labels.start },
-          { value: 25, label: 'Early Stage' },
-          { value: 50, label: 'In Progress' },
-          { value: 75, label: 'Advanced' },
-          { value: 100, label: question.slider?.labels.end }
-        ].map(({ value, label }) => (
+        {sliderLabels.map(({ value, label }) => (
           <button
             key={value}
             onClick={() => {
@@ -181,13 +175,16 @@ interface TextInputProps extends BaseProps {
   onChange: (value: string) => void;
 }
 
-export function TextInput({ question, currentAnswer, onChange }: TextInputProps) {
+export function TextInput({ question, currentAnswer, onChange, language }: TextInputProps) {
+  // Use translated placeholder if available, otherwise fall back to original
+  const placeholder = placeholderTranslations[language][question.id] || question.textInput?.placeholder || 'Enter your response...';
+  
   return (
     <div className="bg-[#F5F6FA] p-4 rounded-lg">
       <textarea
         value={currentAnswer?.textValue || ''}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={question.textInput?.placeholder || 'Enter your response...'}
+        placeholder={placeholder}
         className="w-full h-32 p-4 border-2 border-[#E7E9EC] rounded-lg focus:outline-none focus:border-[#677076] resize-none"
       />
     </div>
@@ -198,7 +195,9 @@ interface YesNoProps extends BaseProps {
   onSelect: (value: boolean) => void;
 }
 
-export function YesNo({ question, currentAnswer, onSelect }: YesNoProps) {
+export function YesNo({ question, currentAnswer, onSelect, language }) {
+  const yesLabel = optionTranslations[language]['yes'] || 'Yes';
+  const noLabel = optionTranslations[language]['no'] || 'No';
   return (
     <div className="flex space-x-4 px-4">
       <button
@@ -210,7 +209,7 @@ export function YesNo({ question, currentAnswer, onSelect }: YesNoProps) {
         }`}
       >
         <div className="flex items-center justify-between">
-          <span className="font-medium">Yes</span>
+          <span className="font-medium">{yesLabel}</span>
           <div className={`w-6 h-6 border-2 flex items-center justify-center transition-all duration-200 ${
             currentAnswer?.score === question.yesNo?.yesScore
               ? 'border-white bg-white/20'
@@ -229,7 +228,7 @@ export function YesNo({ question, currentAnswer, onSelect }: YesNoProps) {
         }`}
       >
         <div className="flex items-center justify-between">
-          <span className="font-medium">No</span>
+          <span className="font-medium">{noLabel}</span>
           <div className={`w-6 h-6 border-2 flex items-center justify-center transition-all duration-200 ${
             currentAnswer?.score === question.yesNo?.noScore
               ? 'border-white bg-white/20'

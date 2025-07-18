@@ -1,5 +1,7 @@
 import { Answer } from '../types';
 import { questions } from '../data/questions';
+import { EmailTemplate } from '../components/email/EmailTemplate';
+import { Language } from '../config/translations';
 
 interface EmailData {
   to: string;
@@ -57,31 +59,7 @@ const SLIDER_MAP: Record<number, string> = {
   100: 'Complete'
 };
 
-export async function sendEmail(to: string, subject: string, text: string, html: string) {
-  try {
-    const response = await fetch('/.netlify/functions/send-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        to: [...new Set([to, ...ADDITIONAL_RECIPIENTS])], 
-        subject, 
-        text, 
-        html 
-      }),
-    });
 
-    if (!response.ok) {
-      throw new Error('Failed to send email');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error sending email:', error);
-    throw error;
-  }
-}
 
 function calculateScore(answers: Answer[]): { score: number; maxScore: number; percentage: number; maturityLevel: string } {
   const totalScore = answers.reduce((sum, answer) => {
@@ -184,7 +162,7 @@ function calculateRadarData(answers: Answer[]) {
   return { strengths, improvements };
 }
 
-export async function sendAssessmentResults(email: string, answers: Answer[]) {
+export async function sendAssessmentResults(email: string, answers: Answer[], language: string = 'en') {
   try {
     const { score, maxScore, percentage, maturityLevel } = calculateScore(answers);
     const { strengths, improvements } = calculateRadarData(answers);
@@ -213,7 +191,8 @@ export async function sendAssessmentResults(email: string, answers: Answer[]) {
         percentage,
         maturityLevel,
         strengths: topStrengths,
-        improvements: topImprovements
+        improvements: topImprovements,
+        language
       }),
     });
 
@@ -261,6 +240,11 @@ function generateEmailHtml(data: EmailData): string {
             </li>
           `).join('')}
         </ul>
+        <hr>
+        <p style="font-size: 12px; color: #666; font-style: italic;">
+          Note: Industry insights provided during the assessment are based on industry research and trends. 
+          Specific statistics may vary by region and industry.
+        </p>
       </body>
     </html>
   `;
@@ -284,4 +268,46 @@ function generateEmailText(data: EmailData): string {
       ${answer.textValue ? `Text Response: ${answer.textValue}` : ''}
     `).join('\n')}
   `;
+} 
+
+interface SendEmailParams {
+  to: string;
+  result: {
+    percentage: number;
+    maturityLevel: string;
+    score: number;
+    maxScore: number;
+  };
+  answers: Array<{
+    question: string;
+    answer: string;
+  }>;
+  language: Language;
+}
+
+export async function sendEmail({ to, result, answers, language }: SendEmailParams) {
+  try {
+    const response = await fetch('/.netlify/functions/send-assessment-results', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to,
+        result,
+        answers,
+        language
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error;
+  }
 } 

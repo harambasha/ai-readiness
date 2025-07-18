@@ -93,4 +93,5 @@ export interface WizardContextType {
     maxScore: number;
   };
   canProceed: () => boolean;
+  language: string;
 }

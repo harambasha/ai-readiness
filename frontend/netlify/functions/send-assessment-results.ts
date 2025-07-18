@@ -18,6 +18,34 @@ if (!apiKey.startsWith('SG.')) {
 console.log('Initializing SendGrid with API key:', apiKey.substring(0, 5) + '...');
 sgMail.setApiKey(apiKey);
 
+// Industry Facts for email
+const industryFacts = {
+  en: {
+    'strategy-vision': 'Industry Insight: According to McKinsey research, most Fortune 500 companies have formal AI strategies, but implementation remains a challenge.',
+    'talent-expertise': 'Industry Insight: The AI talent gap is a major challenge. Gartner reports that companies investing in AI training see higher employee retention rates.',
+    'data-quality': 'Industry Insight: IBM research indicates that poor data quality costs businesses millions annually.',
+    'ai-ethics': 'Industry Insight: Deloitte research shows that consumers increasingly consider AI ethics when making purchasing decisions.',
+    'change-management': 'Industry Insight: According to Prosci research, most AI projects fail due to poor change management.',
+    'data-infrastructure': 'Industry Insight: AWS research indicates that companies with modern data infrastructure see faster AI deployment times.',
+    'risk-management': 'Industry Insight: PwC research shows that many AI projects face regulatory compliance issues.',
+    'roi-expectations': 'Industry Insight: According to MIT Sloan research, AI projects with realistic ROI expectations are more likely to be considered successful.',
+    'customer-impact': 'Industry Insight: Salesforce research shows that AI-powered customer service improves satisfaction and reduces costs.',
+    'kpi-measurement': 'Industry Insight: According to MIT research, companies with well-defined AI KPIs are more likely to achieve their goals.'
+  },
+  bs: {
+    'strategy-vision': 'Industrijska perspektiva: Prema McKinsey istraživanju, većina Fortune 500 kompanija ima formalne AI strategije, ali implementacija ostaje izazov.',
+    'talent-expertise': 'Industrijska perspektiva: Praznina u AI talentima je glavni izazov. Gartner izvještava da kompanije koje ulažu u AI obuku vide višu stopu zadržavanja zaposlenih.',
+    'data-quality': 'Industrijska perspektiva: IBM istraživanje pokazuje da loš kvalitet podataka košta poslovne subjekte milijune godišnje.',
+    'ai-ethics': 'Industrijska perspektiva: Deloitte istraživanje pokazuje da potrošači sve više razmatraju AI etiku prilikom donošenja odluka o kupnji.',
+    'change-management': 'Industrijska perspektiva: Prema Prosci istraživanju, većina AI projekata ne uspijeva zbog lošeg upravljanja promjenama.',
+    'data-infrastructure': 'Industrijska perspektiva: AWS istraživanje pokazuje da kompanije s modernom infrastrukturom podataka vide brže vrijeme AI implementacije.',
+    'risk-management': 'Industrijska perspektiva: PwC istraživanje pokazuje da se mnogi AI projekti suočavaju s problemima regulatorne usklađenosti.',
+    'roi-expectations': 'Industrijska perspektiva: Prema MIT Sloan istraživanju, AI projekti s realističnim očekivanjima ROI-a su vjerojatniji da će biti smatrani uspješnim.',
+    'customer-impact': 'Industrijska perspektiva: Salesforce istraživanje pokazuje da AI-powered customer service poboljšava zadovoljstvo i smanjuje troškove.',
+    'kpi-measurement': 'Industrijska perspektiva: Prema MIT istraživanju, kompanije s dobro definisanim AI KPI-jima su vjerojatnije da će postići svoje ciljeve.'
+  }
+};
+
 // Map for option IDs to their text values
 const OPTION_MAP: Record<string, string> = {
   // IT Team questions
@@ -149,7 +177,8 @@ const QUESTION_MAP: Record<string, string> = {
   'customer-impact': 'How do you measure customer impact?',
   'market-readiness': 'How ready is your market?',
   'regulatory-compliance': 'How do you handle regulatory compliance?',
-  'partnership-strategy': 'How well-defined is your partnership strategy?'
+  'partnership-strategy': 'How well-defined is your partnership strategy?',
+  'kpi-measurement': 'What key performance indicators (KPIs) do you plan to use to measure AI success?'
 };
 
 // Map for slider values to their text values
@@ -391,421 +420,211 @@ function calculateScore(answers: Answer[]): { score: number; maxScore: number; p
   };
 }
 
-const handler: Handler = async (event, context) => {
+interface AssessmentResult {
+  email: string[];
+  answers: any[];
+  score: number;
+  maxScore: number;
+  percentage: number;
+  maturityLevel: string;
+  strengths: string[];
+  improvements: string[];
+  language?: string;
+}
+
+const getTranslatedContent = (language: string = 'en') => {
+  const translations = {
+    en: {
+      subject: 'Your AI Readiness Assessment Results',
+      greeting: 'Thank you for completing the AI Readiness Assessment. Here are your results:',
+      overallScore: 'Overall Score',
+      yourAnswers: 'Your Answers',
+      recommendations: 'Recommendations',
+      cta: 'View Full Report',
+      footer: 'Thank you for using our AI Readiness Assessment tool.',
+      dataRec: 'Improve data infrastructure and quality standards',
+      techRec: 'Enhance technical capabilities and tooling',
+      peopleRec: 'Develop AI expertise and change management',
+      strategyRec: 'Align AI strategy with business objectives'
+    },
+    bs: {
+      subject: 'Vaši rezultati procjene spremnosti za AI',
+      greeting: 'Hvala vam što ste završili procjenu spremnosti za AI. Evo vaših rezultata:',
+      overallScore: 'Ukupan rezultat',
+      yourAnswers: 'Vaši odgovori',
+      recommendations: 'Preporuke',
+      cta: 'Pogledajte puni izvještaj',
+      footer: 'Hvala vam što koristite naš alat za procjenu spremnosti za AI.',
+      dataRec: 'Poboljšajte infrastrukturu podataka i standarde kvaliteta',
+      techRec: 'Unapredite tehničke sposobnosti i alate',
+      peopleRec: 'Razvijte AI ekspertizu i upravljanje promjenama',
+      strategyRec: 'Uskladite AI strategiju s poslovnim ciljevima'
+    }
+  };
+  
+  return translations[language as keyof typeof translations] || translations.en;
+};
+
+const generateEmailHtml = (data: AssessmentResult) => {
+  const t = getTranslatedContent(data.language);
+  
+  const answersHtml = data.answers.map(answer => {
+    const questionId = answer.questionId;
+    const fact = industryFacts[data.language as keyof typeof industryFacts]?.[questionId];
+    
+    return `
+      <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #E7E9EC;">
+        <h4 style="color: #2E363C; margin: 0 0 10px 0; font-size: 16px; font-weight: 600;">
+          ${answer.question}
+        </h4>
+        <p style="color: #687177; margin: 0 0 8px 0; font-size: 14px;">
+          ${answer.answer}
+        </p>
+        ${fact ? `
+          <div style="background-color: #FFF7ED; border-left: 4px solid #F59E0B; padding: 8px 12px; margin-top: 8px; border-radius: 4px;">
+            <p style="color: #92400E; margin: 0; font-size: 12px; font-style: italic;">
+              ${fact}
+            </p>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${t.subject}</title>
+      </head>
+      <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8f9fa;">
+        <div style="background-color: #ffffff; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <div style="background-color: #677076; padding: 30px; text-align: center;">
+            <img src="https://bloomteq.com/wp-content/uploads/2024/01/bloomteq-logo-white.png" alt="Bloomteq Logo" style="height: 40px; margin-bottom: 20px;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">
+              ${t.subject}
+            </h1>
+          </div>
+          
+          <!-- Content -->
+          <div style="padding: 30px;">
+            <p style="color: #687177; font-size: 16px; line-height: 1.5; margin-bottom: 30px;">
+              ${t.greeting}
+            </p>
+            
+            <!-- Overall Score -->
+            <div style="background-color: #f8f9fa; border: 1px solid #E7E9EC; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+              <h2 style="color: #2E363C; margin: 0 0 15px 0; font-size: 20px; font-weight: 600;">
+                ${t.overallScore}
+              </h2>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                <span style="font-size: 36px; font-weight: bold; color: #677076;">
+                  ${Math.round(data.percentage)}%
+                </span>
+                <span style="font-size: 18px; font-weight: 600; color: #677076;">
+                  ${data.maturityLevel}
+                </span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 14px; color: #687177; margin-bottom: 5px;">
+                <span>${t.overallScore}</span>
+                <span>${data.score} / ${data.maxScore}</span>
+              </div>
+              <div style="width: 100%; height: 8px; background-color: #E7E9EC; border-radius: 4px; overflow: hidden;">
+                <div style="width: ${data.percentage}%; height: 100%; background-color: #677076; transition: width 0.5s ease;"></div>
+              </div>
+            </div>
+            
+            <!-- Your Answers -->
+            <h3 style="color: #2E363C; margin: 30px 0 15px 0; font-size: 18px; font-weight: 600;">
+              ${t.yourAnswers}
+            </h3>
+            <div style="background-color: #ffffff; border: 1px solid #E7E9EC; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+              ${answersHtml}
+            </div>
+            
+            <!-- Recommendations -->
+            <div style="background-color: #f8f9fa; border: 1px solid #E7E9EC; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+              <h3 style="color: #2E363C; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">
+                ${t.recommendations}
+              </h3>
+              <ul style="color: #687177; font-size: 14px; line-height: 1.6; margin: 0; padding-left: 20px;">
+                <li>${t.dataRec}</li>
+                <li>${t.techRec}</li>
+                <li>${t.peopleRec}</li>
+                <li>${t.strategyRec}</li>
+              </ul>
+            </div>
+            
+            <!-- CTA Button -->
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="#" style="display: inline-block; background-color: #677076; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                ${t.cta}
+              </a>
+            </div>
+            
+            <!-- Footer -->
+            <p style="color: #687177; font-size: 14px; line-height: 1.5; text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #E7E9EC;">
+              ${t.footer}
+            </p>
+            
+            <!-- Disclaimer -->
+            <div style="background-color: #f8f9fa; border: 1px solid #E7E9EC; border-radius: 6px; padding: 15px; margin-top: 20px;">
+              <p style="color: #687177; font-size: 12px; line-height: 1.4; margin: 0; font-style: italic; text-align: center;">
+                ${data.language === 'bs' 
+                  ? 'Napomena: Industrijske perspektive prikazane tijekom procjene temelje se na industrijskim istraživanjima i trendovima. Specifične statistike mogu varirati ovisno o regiji i industriji.'
+                  : 'Note: Industry insights provided during the assessment are based on industry research and trends. Specific statistics may vary by region and industry.'
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+};
+
+export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
-      body: JSON.stringify({ error: 'Method not allowed' }),
+      body: JSON.stringify({ error: 'Method not allowed' })
     };
   }
 
   try {
-    const body = JSON.parse(event.body || '{}');
-    console.log('Received request body:', JSON.stringify(body, null, 2));
-
-    const { email, answers } = body;
-
-    if (!email || !answers) {
-      console.error('Missing required fields:', { email, answers });
+    const data: AssessmentResult = JSON.parse(event.body || '{}');
+    
+    if (!data.email || !data.answers) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ 
-          error: 'Missing required fields',
-          details: {
-            hasEmail: !!email,
-            hasAnswers: !!answers
-          }
-        }),
+        body: JSON.stringify({ error: 'Missing required fields' })
       };
     }
 
-    // Convert to array if it's a single email
-    const recipients = Array.isArray(email) ? email : [email];
-    console.log('Sending to recipients:', recipients);
+    const html = generateEmailHtml(data);
+    const t = getTranslatedContent(data.language);
 
-    try {
-      const { score, maxScore, percentage, maturityLevel } = calculateScore(answers);
-      console.log('Calculated scores:', { score, maxScore, percentage, maturityLevel });
+    const msg = {
+      to: data.email,
+      from: 'noreply@bloomteq.com',
+      subject: t.subject,
+      html: html
+    };
 
-      const subject = 'Your AI Readiness Assessment Results';
-      const text = `
-        Your AI Readiness Assessment Results
+    await sgMail.send(msg);
 
-        Thank you for completing the AI Readiness Assessment.
-
-        Your Score: ${percentage}%
-        Maturity Level: ${maturityLevel}
-
-        Your Answers:
-        ${answers.map(answer => {
-          const questionId = answer.questionId.split('_')[0]; // Get the prefix (it, te, dq, etc.)
-          const questionText = QUESTION_MAP[questionId] || answer.questionId;
-          let answerText = '';
-          
-          if (answer.optionId) {
-            answerText = `Selected Option: ${OPTION_MAP[answer.optionId] || answer.optionId}`;
-          } else if (answer.sliderValue !== undefined) {
-            answerText = `Slider Value: ${SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`}`;
-          } else if (answer.textValue) {
-            answerText = `Text Response: ${answer.textValue}`;
-          }
-
-          return `
-            Question: ${questionText}
-            ${answerText}
-          `;
-        }).join('\n')}
-      `;
-
-      const html = `
-        <html>
-          <head>
-            <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-            <style>
-              body {
-                font-family: 'IBM Plex Sans', Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                margin: 0;
-                padding: 0;
-                background-color: #f5f5f5;
-              }
-              .container {
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #ffffff;
-              }
-              .header {
-                text-align: center;
-                padding: 40px 20px;
-                background: linear-gradient(135deg, #677076 0%, #8a6b4e 100%);
-                color: white;
-              }
-              .logo {
-                max-width: 120px;
-                height: auto;
-                margin-bottom: 20px;
-              }
-              h1 {
-                margin: 0;
-                font-size: 28px;
-                font-weight: 700;
-                color: white;
-              }
-              .subtitle {
-                color: rgba(255, 255, 255, 0.9);
-                font-size: 16px;
-                margin-top: 10px;
-              }
-              .content {
-                padding: 40px 20px;
-              }
-              .score-container {
-                text-align: center;
-                margin-bottom: 40px;
-              }
-              .score {
-                font-size: 48px;
-                font-weight: 700;
-                color: #677076;
-                margin: 0;
-              }
-              .maturity {
-                font-size: 20px;
-                font-weight: 600;
-                color: #8a6b4e;
-                margin: 10px 0;
-              }
-              .progress-bar {
-                height: 8px;
-                background: #f0f0f0;
-                border-radius: 4px;
-                margin: 20px auto;
-                max-width: 300px;
-                overflow: hidden;
-              }
-              .progress {
-                height: 100%;
-                background: linear-gradient(to right, #677076, #8a6b4e);
-                border-radius: 4px;
-              }
-              .section {
-                margin-bottom: 40px;
-              }
-              .section-title {
-                font-size: 20px;
-                font-weight: 600;
-                color: #2E363C;
-                margin-bottom: 20px;
-                padding-bottom: 10px;
-                border-bottom: 2px solid #f0f0f0;
-              }
-              .grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-                margin-bottom: 40px;
-              }
-              .card {
-                background: #f9fafb;
-                padding: 20px;
-                border-radius: 8px;
-              }
-              .list-item {
-                display: flex;
-                align-items: flex-start;
-                margin-bottom: 15px;
-              }
-              .icon-container {
-                width: 24px;
-                height: 24px;
-                background: #677076;
-                border-radius: 6px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-right: 12px;
-                flex-shrink: 0;
-              }
-              .icon {
-                width: 14px;
-                height: 14px;
-                color: white;
-              }
-              .text {
-                color: #4b5563;
-                font-size: 14px;
-              }
-              .response-item {
-                margin-bottom: 24px;
-                padding-bottom: 24px;
-                border-bottom: 1px solid #f0f0f0;
-              }
-              .response-item:last-child {
-                border-bottom: none;
-                margin-bottom: 0;
-                padding-bottom: 0;
-              }
-              .question {
-                font-weight: 600;
-                color: #2E363C;
-                margin-bottom: 8px;
-                font-size: 15px;
-              }
-              .answer {
-                color: #677076;
-                font-size: 14px;
-              }
-              .cta-section {
-                background: #f9fafb;
-                padding: 40px 20px;
-                text-align: center;
-                border-top: 1px solid #f0f0f0;
-              }
-              .cta-title {
-                font-size: 24px;
-                color: #2E363C;
-                margin-bottom: 16px;
-                font-weight: 600;
-              }
-              .cta-description {
-                color: #677076;
-                margin-bottom: 24px;
-                font-size: 15px;
-                max-width: 500px;
-                margin-left: auto;
-                margin-right: auto;
-              }
-              .cta-button {
-                display: inline-block;
-                padding: 14px 32px;
-                background: linear-gradient(135deg, #677076 0%, #8a6b4e 100%);
-                color: white !important;
-                text-decoration: none;
-                border-radius: 8px;
-                font-weight: 600;
-                font-size: 15px;
-                transition: opacity 0.2s;
-              }
-              .cta-button:hover {
-                opacity: 0.9;
-              }
-              .footer {
-                text-align: center;
-                padding: 20px;
-                color: #677076;
-                font-size: 12px;
-              }
-              @media (max-width: 600px) {
-                .grid {
-                  grid-template-columns: 1fr;
-                }
-                .header {
-                  padding: 30px 20px;
-                }
-                h1 {
-                  font-size: 24px;
-                }
-                .content {
-                  padding: 30px 20px;
-                }
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <img src="https://cdn.theorg.com/1672900b-0fd1-453d-a7f5-04dbb991c987_medium.jpg" alt="Bloomteq Logo" class="logo">
-                <h1>Your AI Readiness Results</h1>
-                <div class="subtitle">Based on your responses, here's your organization's current AI readiness assessment.</div>
-              </div>
-
-              <div class="content">
-                <div class="score-container">
-                  <div class="score">${Math.round(percentage)}%</div>
-                  <div class="maturity">${maturityLevel}</div>
-                  <div class="progress-bar">
-                    <div class="progress" style="width: ${percentage}%"></div>
-                  </div>
-                </div>
-
-                <div class="grid">
-                  <div class="card">
-                    <div class="section-title">Key Strengths</div>
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                      ${body.strengths?.map(strength => `
-                        <li class="list-item">
-                          <div class="icon-container">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                              <circle cx="12" cy="12" r="10"></circle>
-                              <path d="m9 12 2 2 4-4"></path>
-                            </svg>
-                          </div>
-                          <span class="text">${strength}</span>
-                        </li>
-                      `).join('')}
-                    </ul>
-                  </div>
-
-                  <div class="card">
-                    <div class="section-title">Areas for Improvement</div>
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                      ${body.improvements?.map(improvement => `
-                        <li class="list-item">
-                          <div class="icon-container">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                              <circle cx="12" cy="12" r="10"></circle>
-                              <circle cx="12" cy="12" r="6"></circle>
-                              <circle cx="12" cy="12" r="2"></circle>
-                            </svg>
-                          </div>
-                          <span class="text">${improvement}</span>
-                        </li>
-                      `).join('')}
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="section">
-                  <div class="section-title">Your Detailed Responses</div>
-                  <div>
-                    ${answers.map(answer => {
-                      const questionId = answer.questionId.split('_')[0];
-                      const questionText = QUESTION_MAP[questionId] || answer.questionId;
-                      let answerText = '';
-                      
-                      if (answer.optionId) {
-                        answerText = OPTION_MAP[answer.optionId] || answer.optionId;
-                      } else if (answer.sliderValue !== undefined) {
-                        answerText = SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
-                      } else if (answer.textValue) {
-                        answerText = answer.textValue;
-                      }
-
-                      return `
-                        <div class="response-item">
-                          <div class="question">${questionText}</div>
-                          <div class="answer">${answerText}</div>
-                        </div>
-                      `;
-                    }).join('')}
-                  </div>
-                </div>
-              </div>
-
-              <div class="cta-section">
-                <h2 class="cta-title">Ready to Transform Your Business with AI?</h2>
-                <p class="cta-description">
-                  Based on your assessment results, we can help you develop a comprehensive AI strategy 
-                  tailored to your organization's needs. Schedule a free consultation with our AI experts 
-                  to discuss your results and next steps.
-                </p>
-                <a href="https://calendly.com/ismir-bloomteq/30min" class="cta-button">
-                  Schedule Your Free Consultation
-                </a>
-              </div>
-
-              <div class="footer">
-                © ${new Date().getFullYear()} Bloomteq. All rights reserved.
-              </div>
-            </div>
-          </body>
-        </html>
-      `;
-
-      console.log('Sending email to:', recipients);
-      const msg = {
-        to: recipients,
-        from: {
-          email: 'info@bloomteq.com',
-          name: 'Bloomteq AI Readiness Assessment'
-        },
-        subject,
-        text,
-        html,
-      };
-
-      try {
-        await sgMail.send(msg);
-        console.log('Email sent successfully');
-        return {
-          statusCode: 200,
-          body: JSON.stringify({ message: 'Email sent successfully' }),
-        };
-      } catch (emailError) {
-        console.error('Error sending email:', emailError);
-        if (emailError.response) {
-          console.error('SendGrid API Response:', emailError.response.body);
-        }
-        return {
-          statusCode: 500,
-          body: JSON.stringify({ 
-            error: 'Failed to send email',
-            details: emailError instanceof Error ? emailError.message : 'Unknown error',
-            response: emailError.response?.body
-          }),
-        };
-      }
-    } catch (calculationError) {
-      console.error('Error calculating scores:', calculationError);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ 
-          error: 'Failed to calculate scores',
-          details: calculationError instanceof Error ? calculationError.message : 'Unknown error'
-        }),
-      };
-    }
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Email sent successfully' })
+    };
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error('Error sending email:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ 
-        error: 'Failed to process request',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      }),
+      body: JSON.stringify({ error: 'Failed to send email' })
     };
   }
-};
-
-export { handler }; 
+}; 
