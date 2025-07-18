@@ -18,7 +18,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
-    "noEmit": false,
+    "noEmit": true,
     "incremental": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -27,9 +27,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "outDir": "dist",
-    "declaration": true,
-    "declarationMap": true,
     "sourceMap": true
   },
   "include": [
