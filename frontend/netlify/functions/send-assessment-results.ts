@@ -139,6 +139,26 @@ const SLIDER_MAP: Record<number, string> = {
   100: 'Complete'
 };
 
+// Map for maturity levels
+const MATURITY_LEVELS = {
+  en: {
+    'Initial': 'Initial',
+    'Developing': 'Developing', 
+    'Defined': 'Defined',
+    'Managed': 'Managed',
+    'Advanced': 'Advanced',
+    'Leading': 'Leading'
+  },
+  bs: {
+    'Initial': 'Početni',
+    'Developing': 'U Razvoju',
+    'Defined': 'Definisan', 
+    'Managed': 'Upravljan',
+    'Advanced': 'Napredan',
+    'Leading': 'Vodeći'
+  }
+};
+
 // Function to get question text by ID
 function getQuestionText(questionId: string, language: string = 'en'): string {
   const questionTranslations = {
@@ -212,18 +232,206 @@ function getAnswerText(answer: any, language: string = 'en'): string {
   }
   
   if (answer.optionId) {
-    return OPTION_MAP[answer.optionId] || answer.optionId;
+    // Translate option text based on language
+    const optionTranslations = {
+      en: {
+        // IT Team questions
+        'it1': 'Yes, we have a dedicated IT team',
+        'it2': 'No, we don\'t have a dedicated IT team',
+        'it3': 'Don\'t know / Not sure',
+        
+        // Strategy Vision questions
+        'sv1': 'No formal AI strategy exists',
+        'sv2': 'Basic ideas but no concrete plans',
+        'sv3': 'Strategy in development with some goals defined',
+        'sv4': 'Clear strategy with defined objectives',
+        'sv5': 'Comprehensive strategy integrated with business goals',
+        'sv6': 'Don\'t know / Not sure',
+        
+        // Talent Expertise questions
+        'te1': 'No dedicated AI expertise',
+        'te2': 'Basic understanding in key teams',
+        'te3': 'Dedicated AI roles and capabilities',
+        'te4': 'Advanced expertise and specialized teams',
+        'te5': 'Industry-leading AI capabilities',
+        'te6': 'Don\'t know / Not sure',
+        
+        // Data Quality questions
+        'dq1': 'No standardized quality measures',
+        'dq2': 'Basic quality controls',
+        'dq3': 'Established quality framework',
+        'dq4': 'Advanced quality management',
+        'dq5': 'Industry-leading standards',
+        'dq6': 'Don\'t know / Not sure',
+        
+        // AI Ethics questions
+        'ae1': 'No formal ethics framework',
+        'ae2': 'Basic guidelines in place',
+        'ae3': 'Established ethics policies',
+        'ae4': 'Comprehensive ethics framework',
+        'ae5': 'Industry-leading ethics standards',
+        'ae6': 'Don\'t know / Not sure',
+        
+        // Change Management questions
+        'cm1': 'No formal change management',
+        'cm2': 'Basic change processes',
+        'cm3': 'Structured change framework',
+        'cm4': 'Advanced change capabilities',
+        'cm5': 'Exceptional change management',
+        'cm6': 'Don\'t know / Not sure',
+        
+        // Data Infrastructure questions
+        'di1': 'Basic data storage only',
+        'di2': 'Some data integration',
+        'di3': 'Modern data warehouse',
+        'di4': 'Advanced data platform',
+        'di5': 'Full data ecosystem',
+        'di6': 'Don\'t know / Not sure',
+        
+        // Risk Management questions
+        'rm1': 'No risk framework',
+        'rm2': 'Basic risk assessment',
+        'rm3': 'Structured risk management',
+        'rm4': 'Advanced risk controls',
+        'rm5': 'Comprehensive risk framework',
+        'rm6': 'Don\'t know / Not sure',
+        
+        // ROI Expectations questions
+        'roi1': 'Immediate cost savings (0-6 months)',
+        'roi2': 'Short-term efficiency gains (6-12 months)',
+        'roi3': 'Medium-term process optimization (1-2 years)',
+        'roi4': 'Long-term strategic advantage (2-3 years)',
+        'roi5': 'Transformational impact (3+ years)',
+        'roi6': 'Don\'t know / Would like guidance',
+        
+        // Customer Impact questions
+        'ci1': 'No direct customer impact planned',
+        'ci2': 'Basic customer service automation',
+        'ci3': 'Enhanced customer insights and personalization',
+        'ci4': 'Advanced customer experience transformation',
+        'ci5': 'Complete customer journey reimagining',
+        'ci6': 'Don\'t know / Would like guidance',
+        
+        // Yes/No questions
+        'yn1': 'Yes',
+        'yn2': 'No'
+      },
+      bs: {
+        // IT Team questions
+        'it1': 'Da, imamo posvećen IT tim',
+        'it2': 'Ne, nemamo posvećen IT tim',
+        'it3': 'Ne znam / Nisam siguran',
+        
+        // Strategy Vision questions
+        'sv1': 'Ne postoji formalna AI strategija',
+        'sv2': 'Osnovne ideje ali bez konkretnih planova',
+        'sv3': 'Strategija u razvoju s nekim definisanim ciljevima',
+        'sv4': 'Jasna strategija s definisanim ciljevima',
+        'sv5': 'Sveobuhvatna strategija integrirana s poslovnim ciljevima',
+        'sv6': 'Ne znam / Nisam siguran',
+        
+        // Talent Expertise questions
+        'te1': 'Nema posvećene AI ekspertize',
+        'te2': 'Osnovno razumijevanje u ključnim timovima',
+        'te3': 'Posvećene AI uloge i sposobnosti',
+        'te4': 'Napredna ekspertiza i specijalizirani timovi',
+        'te5': 'AI sposobnosti na nivou industrije',
+        'te6': 'Ne znam / Nisam siguran',
+        
+        // Data Quality questions
+        'dq1': 'Nema standardiziranih mjera kvaliteta',
+        'dq2': 'Osnovne kontrole kvaliteta',
+        'dq3': 'Uspostavljen okvir kvaliteta',
+        'dq4': 'Napredno upravljanje kvalitetom',
+        'dq5': 'Standardi na nivou industrije',
+        'dq6': 'Ne znam / Nisam siguran',
+        
+        // AI Ethics questions
+        'ae1': 'Nema formalnog etičkog okvira',
+        'ae2': 'Osnovne smjernice na mjestu',
+        'ae3': 'Uspostavljene etičke politike',
+        'ae4': 'Sveobuhvatni etički okvir',
+        'ae5': 'Etički standardi na nivou industrije',
+        'ae6': 'Ne znam / Nisam siguran',
+        
+        // Change Management questions
+        'cm1': 'Nema formalnog upravljanja promjenama',
+        'cm2': 'Osnovni procesi promjena',
+        'cm3': 'Strukturirani okvir promjena',
+        'cm4': 'Napredne sposobnosti promjena',
+        'cm5': 'Izvrsno upravljanje promjenama',
+        'cm6': 'Ne znam / Nisam siguran',
+        
+        // Data Infrastructure questions
+        'di1': 'Samo osnovno skladištenje podataka',
+        'di2': 'Neka integracija podataka',
+        'di3': 'Moderno skladište podataka',
+        'di4': 'Napredna platforma podataka',
+        'di5': 'Pun ekosistem podataka',
+        'di6': 'Ne znam / Nisam siguran',
+        
+        // Risk Management questions
+        'rm1': 'Nema okvira rizika',
+        'rm2': 'Osnovna procjena rizika',
+        'rm3': 'Strukturirano upravljanje rizicima',
+        'rm4': 'Napredne kontrole rizika',
+        'rm5': 'Sveobuhvatni okvir rizika',
+        'rm6': 'Ne znam / Nisam siguran',
+        
+        // ROI Expectations questions
+        'roi1': 'Trenutne uštede troškova (0-6 mjeseci)',
+        'roi2': 'Kratkoročni dobitci efikasnosti (6-12 mjeseci)',
+        'roi3': 'Srednjoročna optimizacija procesa (1-2 godine)',
+        'roi4': 'Dugoročna strateška prednost (2-3 godine)',
+        'roi5': 'Transformacijski utjecaj (3+ godine)',
+        'roi6': 'Ne znam / Želio bih smjernice',
+        
+        // Customer Impact questions
+        'ci1': 'Nije planiran direktan utjecaj na kupce',
+        'ci2': 'Osnovna automatizacija korisničke službe',
+        'ci3': 'Poboljšani uvidi o kupcima i personalizacija',
+        'ci4': 'Napredna transformacija korisničkog iskustva',
+        'ci5': 'Potpuno preosmišljavanje putanje kupca',
+        'ci6': 'Ne znam / Želio bih smjernice',
+        
+        // Yes/No questions
+        'yn1': 'Da',
+        'yn2': 'Ne'
+      }
+    };
+    
+    const translatedOption = optionTranslations[language as keyof typeof optionTranslations]?.[answer.optionId];
+    return translatedOption || OPTION_MAP[answer.optionId] || answer.optionId;
   }
   
   if (answer.sliderValue !== undefined) {
-    return SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
+    // Translate slider values
+    const sliderTranslations = {
+      en: {
+        0: 'Not Started',
+        25: 'Early Stage',
+        50: 'In Progress',
+        75: 'Advanced',
+        100: 'Complete'
+      },
+      bs: {
+        0: 'Nije Započeto',
+        25: 'Rana Faza',
+        50: 'U Toku',
+        75: 'Napredno',
+        100: 'Završeno'
+      }
+    };
+    
+    const translatedSlider = sliderTranslations[language as keyof typeof sliderTranslations]?.[answer.sliderValue];
+    return translatedSlider || SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
   }
   
   if (answer.score !== undefined) {
-    return `Score: ${answer.score}`;
+    return language === 'bs' ? `Rezultat: ${answer.score}` : `Score: ${answer.score}`;
   }
   
-  return 'No answer provided';
+  return language === 'bs' ? 'Nije dat odgovor' : 'No answer provided';
 }
 
 // Define the Answer type
@@ -541,7 +749,7 @@ const generateEmailHtml = (data: AssessmentResult) => {
         <div style="background-color: #ffffff; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
           <!-- Header -->
           <div style="background-color: #677076; padding: 30px; text-align: center;">
-            <img src="https://bloomteq.com/wp-content/uploads/2024/01/bloomteq-logo-white.png" alt="Bloomteq Logo" style="height: 40px; margin-bottom: 20px;">
+            <img src="https://bloomteq.com/wp-content/uploads/2024/01/bloomteq-logo-white.png" alt="Bloomteq Logo" style="height: 40px; margin-bottom: 20px; display: inline-block;">
             <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">
               ${t.subject}
             </h1>
@@ -563,11 +771,11 @@ const generateEmailHtml = (data: AssessmentResult) => {
                   ${Math.round(data.percentage)}%
                 </span>
                 <span style="font-size: 18px; font-weight: 600; color: #677076;">
-                  ${data.maturityLevel}
+                  ${MATURITY_LEVELS[data.language as keyof typeof MATURITY_LEVELS]?.[data.maturityLevel as keyof typeof MATURITY_LEVELS.en] || data.maturityLevel}
                 </span>
               </div>
               <div style="display: flex; justify-content: space-between; font-size: 14px; color: #687177; margin-bottom: 5px;">
-                <span>${t.overallScore}</span>
+                <span>${data.language === 'bs' ? 'Rezultat' : 'Score'}</span>
                 <span>${data.score} / ${data.maxScore}</span>
               </div>
               <div style="width: 100%; height: 8px; background-color: #E7E9EC; border-radius: 4px; overflow: hidden;">
