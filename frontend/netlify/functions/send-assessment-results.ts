@@ -49,136 +49,85 @@ const industryFacts = {
 // Map for option IDs to their text values
 const OPTION_MAP: Record<string, string> = {
   // IT Team questions
-  'it1': 'No dedicated IT team',
-  'it2': 'Small IT team (1-5 people)',
-  'it3': 'Medium IT team (6-20 people)',
-  'it4': 'Large IT team (20+ people)',
-  
-  // Team Expertise questions
-  'te1': 'No AI/ML expertise',
-  'te2': 'Basic understanding',
-  'te3': 'Some practical experience',
-  'te4': 'Advanced expertise',
-  
-  // Data Quality questions
-  'dq1': 'Poor - No data standards',
-  'dq2': 'Basic - Some standards in place',
-  'dq3': 'Good - Well-defined standards',
-  'dq4': 'Excellent - Comprehensive standards',
-  
-  // Data Infrastructure questions
-  'di1': 'Basic - Limited infrastructure',
-  'di2': 'Developing - Some modern tools',
-  'di3': 'Advanced - Cloud-based solutions',
-  'di4': 'State-of-the-art - AI-ready infrastructure',
+  'it1': 'Yes, we have a dedicated IT team',
+  'it2': 'No, we don\'t have a dedicated IT team',
+  'it3': 'Don\'t know / Not sure',
   
   // Strategy Vision questions
-  'sv1': 'Not Started',
-  'sv2': 'Early Stage',
-  'sv3': 'In Progress',
-  'sv4': 'Advanced',
-  'sv5': 'Complete',
-
-  // Software Tools questions
-  'st1': 'Basic - Limited tools',
-  'st2': 'Developing - Some modern tools',
-  'st3': 'Advanced - Comprehensive toolset',
-  'st4': 'State-of-the-art - AI-ready tools',
-
+  'sv1': 'No formal AI strategy exists',
+  'sv2': 'Basic ideas but no concrete plans',
+  'sv3': 'Strategy in development with some goals defined',
+  'sv4': 'Clear strategy with defined objectives',
+  'sv5': 'Comprehensive strategy integrated with business goals',
+  'sv6': 'Don\'t know / Not sure',
+  
+  // Talent Expertise questions
+  'te1': 'No dedicated AI expertise',
+  'te2': 'Basic understanding in key teams',
+  'te3': 'Dedicated AI roles and capabilities',
+  'te4': 'Advanced expertise and specialized teams',
+  'te5': 'Industry-leading AI capabilities',
+  'te6': 'Don\'t know / Not sure',
+  
+  // Data Quality questions
+  'dq1': 'No standardized quality measures',
+  'dq2': 'Basic quality controls',
+  'dq3': 'Established quality framework',
+  'dq4': 'Advanced quality management',
+  'dq5': 'Industry-leading standards',
+  'dq6': 'Don\'t know / Not sure',
+  
   // AI Ethics questions
-  'ae1': 'Not Started',
-  'ae2': 'Early Stage',
-  'ae3': 'In Progress',
-  'ae4': 'Advanced',
-  'ae5': 'Complete',
-
+  'ae1': 'No formal ethics framework',
+  'ae2': 'Basic guidelines in place',
+  'ae3': 'Established ethics policies',
+  'ae4': 'Comprehensive ethics framework',
+  'ae5': 'Industry-leading ethics standards',
+  'ae6': 'Don\'t know / Not sure',
+  
   // Change Management questions
-  'cm1': 'Not Started',
-  'cm2': 'Early Stage',
-  'cm3': 'In Progress',
-  'cm4': 'Advanced',
-  'cm5': 'Complete',
-
+  'cm1': 'No formal change management',
+  'cm2': 'Basic change processes',
+  'cm3': 'Structured change framework',
+  'cm4': 'Advanced change capabilities',
+  'cm5': 'Exceptional change management',
+  'cm6': 'Don\'t know / Not sure',
+  
+  // Data Infrastructure questions
+  'di1': 'Basic data storage only',
+  'di2': 'Some data integration',
+  'di3': 'Modern data warehouse',
+  'di4': 'Advanced data platform',
+  'di5': 'Full data ecosystem',
+  'di6': 'Don\'t know / Not sure',
+  
   // Risk Management questions
-  'rm1': 'Not Started',
-  'rm2': 'Early Stage',
-  'rm3': 'In Progress',
-  'rm4': 'Advanced',
-  'rm5': 'Complete',
-
-  // Data Governance questions
-  'dg1': 'Not Started',
-  'dg2': 'Early Stage',
-  'dg3': 'In Progress',
-  'dg4': 'Advanced',
-  'dg5': 'Complete',
-
-  // Customer Impact questions
-  'ci1': 'Not Started',
-  'ci2': 'Early Stage',
-  'ci3': 'In Progress',
-  'ci4': 'Advanced',
-  'ci5': 'Complete',
-
-  // Partnership Strategy questions
-  'ps1': 'Not Started',
-  'ps2': 'Early Stage',
-  'ps3': 'In Progress',
-  'ps4': 'Advanced',
-  'ps5': 'Complete',
-
+  'rm1': 'No risk framework',
+  'rm2': 'Basic risk assessment',
+  'rm3': 'Structured risk management',
+  'rm4': 'Advanced risk controls',
+  'rm5': 'Comprehensive risk framework',
+  'rm6': 'Don\'t know / Not sure',
+  
   // ROI Expectations questions
-  'roi1': 'Short-term (0-6 months)',
-  'roi2': 'Medium-term (6-12 months)',
-  'roi3': 'Long-term (12+ months)',
-  'roi4': 'Strategic investment'
-};
-
-// Map for question IDs to their text values
-const QUESTION_MAP: Record<string, string> = {
-  // Company Information
-  'company-name': 'Company Name',
-  'company-email': 'Company Email',
+  'roi1': 'Immediate cost savings (0-6 months)',
+  'roi2': 'Short-term efficiency gains (6-12 months)',
+  'roi3': 'Medium-term process optimization (1-2 years)',
+  'roi4': 'Long-term strategic advantage (2-3 years)',
+  'roi5': 'Transformational impact (3+ years)',
+  'roi6': 'Don\'t know / Would like guidance',
   
-  // Business Context
-  'company-challenges': 'What are your main business challenges?',
-  'business-goals': 'What are your primary business goals?',
-  'business-metrics': 'What key metrics do you track?',
-  'time-consuming-processes': 'What are your most time-consuming processes?',
-  'process-documentation': 'How well are your processes documented?',
-  'workflow-restructuring': 'How ready are you for workflow restructuring?',
-  'software-tools': 'What is your current software tool landscape?',
-  'software-list': 'What software tools do you currently use?',
-  'it-solutions-alignment': 'How well are your IT solutions aligned?',
-  'dedicated-it-team': 'Do you have a dedicated IT Team in your company?',
+  // Customer Impact questions
+  'ci1': 'No direct customer impact planned',
+  'ci2': 'Basic customer service automation',
+  'ci3': 'Enhanced customer insights and personalization',
+  'ci4': 'Advanced customer experience transformation',
+  'ci5': 'Complete customer journey reimagining',
+  'ci6': 'Don\'t know / Would like guidance',
   
-  // Strategy & Vision
-  'strategy-vision': 'How well-defined is your organization\'s AI strategy and vision?',
-  'data-maturity': 'What is your data maturity level?',
-  'infrastructure-readiness': 'How ready is your infrastructure for AI?',
-  'talent-expertise': 'What is your team\'s AI/ML expertise level?',
-  'data-quality': 'How would you rate your data quality and standardization?',
-  'data-privacy': 'How well do you handle data privacy?',
-  'ai-ethics': 'How well-defined are your AI ethics guidelines?',
-  'business-alignment': 'How well is AI aligned with your business goals?',
-  'change-management': 'How ready are you for change management?',
-  'innovation-culture': 'How strong is your innovation culture?',
-  'data-infrastructure': 'How advanced is your data infrastructure?',
-  'talent-development': 'How well do you develop AI talent?',
-  'risk-management': 'How well do you manage AI-related risks?',
-  'stakeholder-engagement': 'How well do you engage stakeholders?',
-  'data-governance': 'How well do you govern your data?',
-  
-  // Business Objectives
-  'business-objectives': 'What are your specific business objectives?',
-  'industry-challenges': 'What are your industry-specific challenges?',
-  'roi-expectations': 'What are your ROI expectations?',
-  'competitor-analysis': 'How do you analyze your competitors?',
-  'customer-impact': 'How do you measure customer impact?',
-  'market-readiness': 'How ready is your market?',
-  'regulatory-compliance': 'How do you handle regulatory compliance?',
-  'partnership-strategy': 'How well-defined is your partnership strategy?',
-  'kpi-measurement': 'What key performance indicators (KPIs) do you plan to use to measure AI success?'
+  // Yes/No questions
+  'yn1': 'Yes',
+  'yn2': 'No'
 };
 
 // Map for slider values to their text values
@@ -189,6 +138,93 @@ const SLIDER_MAP: Record<number, string> = {
   75: 'Advanced',
   100: 'Complete'
 };
+
+// Function to get question text by ID
+function getQuestionText(questionId: string, language: string = 'en'): string {
+  const questionTranslations = {
+    en: {
+      'company-name': 'What is your company name?',
+      'company-email': 'Can you please provide your company email?',
+      'dedicated-it-team': 'Do you have a dedicated IT Team in your company?',
+      'strategy-vision': 'How well-defined is your organization\'s AI strategy and vision?',
+      'talent-expertise': 'What is your team\'s AI/ML expertise level?',
+      'data-quality': 'How would you rate your data quality and standardization?',
+      'ai-ethics': 'How mature is your AI ethics and responsibility framework?',
+      'change-management': 'Rate your organization\'s change management capabilities',
+      'data-infrastructure': 'How advanced is your data infrastructure?',
+      'risk-management': 'How mature is your AI risk management framework?',
+      'roi-expectations': 'What are your expectations for AI ROI and timeline?',
+      'customer-impact': 'How do you expect AI to impact your customer experience?',
+      'data-maturity': 'Rate your organization\'s data management maturity',
+      'infrastructure-readiness': 'How ready is your infrastructure for AI implementation?',
+      'data-privacy': 'How well do you handle data privacy and compliance?',
+      'business-alignment': 'How well is AI aligned with your business objectives?',
+      'innovation-culture': 'How strong is your organization\'s innovation culture?',
+      'talent-development': 'How well do you develop and retain AI talent?',
+      'stakeholder-engagement': 'How well do you engage stakeholders in AI initiatives?',
+      'data-governance': 'How mature is your data governance framework?',
+      'business-objectives': 'What are your specific business objectives for AI?',
+      'industry-challenges': 'What are your industry-specific challenges?',
+      'competitor-analysis': 'How do you analyze your competitors\' AI initiatives?',
+      'market-readiness': 'How ready is your market for AI adoption?',
+      'regulatory-compliance': 'How do you handle regulatory compliance for AI?',
+      'partnership-strategy': 'How well-defined is your AI partnership strategy?',
+      'kpi-measurement': 'What key performance indicators (KPIs) do you plan to use to measure AI success?'
+    },
+    bs: {
+      'company-name': 'Koje je ime vaše kompanije?',
+      'company-email': 'Možete li nam dati vašu email adresu?',
+      'dedicated-it-team': 'Imate li posvećen IT tim u vašoj kompaniji?',
+      'strategy-vision': 'Koliko je dobro definisana AI strategija i vizija vaše organizacije?',
+      'talent-expertise': 'Koji je nivo AI/ML ekspertize vašeg tima?',
+      'data-quality': 'Kako ocjenjujete kvalitet i standardizaciju vaših podataka?',
+      'ai-ethics': 'Koliko je zreo vaš AI etički i odgovorni okvir?',
+      'change-management': 'Ocijenite sposobnosti upravljanja promjenama vaše organizacije',
+      'data-infrastructure': 'Koliko je napredna vaša infrastruktura podataka?',
+      'risk-management': 'Koliko je zreo vaš AI okvir upravljanja rizicima?',
+      'roi-expectations': 'Koja su vaša očekivanja za AI ROI i vremenski okvir?',
+      'customer-impact': 'Kako očekujete da će AI utjecati na vaše korisničko iskustvo?',
+      'data-maturity': 'Ocijenite zrelost upravljanja podacima vaše organizacije',
+      'infrastructure-readiness': 'Koliko je spremna vaša infrastruktura za AI implementaciju?',
+      'data-privacy': 'Koliko dobro upravljate privatnošću podataka i usklađenošću?',
+      'business-alignment': 'Koliko je dobro AI usklađen s vašim poslovnim ciljevima?',
+      'innovation-culture': 'Koliko je jaka inovacijska kultura vaše organizacije?',
+      'talent-development': 'Koliko dobro razvijate i zadržavate AI talente?',
+      'stakeholder-engagement': 'Koliko dobro angažujete dionike u AI inicijativama?',
+      'data-governance': 'Koliko je zreo vaš okvir upravljanja podacima?',
+      'business-objectives': 'Koji su vaši specifični poslovni ciljevi za AI?',
+      'industry-challenges': 'Koji su vaši izazovi specifični za industriju?',
+      'competitor-analysis': 'Kako analizirate AI inicijative vaših konkurenata?',
+      'market-readiness': 'Koliko je spremno vaše tržište za usvajanje AI-a?',
+      'regulatory-compliance': 'Kako upravljate regulatornom usklađenošću za AI?',
+      'partnership-strategy': 'Koliko je dobro definisana vaša AI strategija partnerstva?',
+      'kpi-measurement': 'Koje ključne pokazatelje uspješnosti (KPI-je) planirate koristiti za mjerenje AI uspjeha?'
+    }
+  };
+  
+  return questionTranslations[language as keyof typeof questionTranslations]?.[questionId] || questionId;
+}
+
+// Function to get answer text from answer data
+function getAnswerText(answer: any, language: string = 'en'): string {
+  if (answer.textValue) {
+    return answer.textValue;
+  }
+  
+  if (answer.optionId) {
+    return OPTION_MAP[answer.optionId] || answer.optionId;
+  }
+  
+  if (answer.sliderValue !== undefined) {
+    return SLIDER_MAP[answer.sliderValue] || `${answer.sliderValue}%`;
+  }
+  
+  if (answer.score !== undefined) {
+    return `Score: ${answer.score}`;
+  }
+  
+  return 'No answer provided';
+}
 
 // Define the Answer type
 interface Answer {
@@ -470,15 +506,17 @@ const generateEmailHtml = (data: AssessmentResult) => {
   
   const answersHtml = data.answers.map(answer => {
     const questionId = answer.questionId;
+    const questionText = getQuestionText(questionId, data.language);
+    const answerText = getAnswerText(answer, data.language);
     const fact = industryFacts[data.language as keyof typeof industryFacts]?.[questionId];
     
     return `
       <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #E7E9EC;">
         <h4 style="color: #2E363C; margin: 0 0 10px 0; font-size: 16px; font-weight: 600;">
-          ${answer.question}
+          ${questionText}
         </h4>
         <p style="color: #687177; margin: 0 0 8px 0; font-size: 14px;">
-          ${answer.answer}
+          ${answerText}
         </p>
         ${fact ? `
           <div style="background-color: #FFF7ED; border-left: 4px solid #F59E0B; padding: 8px 12px; margin-top: 8px; border-radius: 4px;">
