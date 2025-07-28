@@ -240,11 +240,11 @@ function ResultsStep() {
   // Calculate radar chart data based on answers
   const calculateRadarData = () => {
     const categories = {
-      'Data Infrastructure': ['data-infrastructure', 'data-quality', 'data-privacy'],
-      'AI Strategy': ['strategy-vision', 'business-alignment', 'roi-expectations'],
-      'Talent Development': ['talent-expertise', 'talent-development', 'innovation-culture'],
-      'Technology Stack': ['software-tools', 'infrastructure-readiness', 'data-governance'],
-      'Process Automation': ['process-documentation', 'workflow-restructuring', 'change-management']
+      [t('chartCategories.dataInfrastructure')]: ['data-infrastructure', 'data-quality', 'data-privacy'],
+      [t('chartCategories.aiStrategy')]: ['strategy-vision', 'business-alignment', 'roi-expectations'],
+      [t('chartCategories.talentDevelopment')]: ['talent-expertise', 'talent-development', 'innovation-culture'],
+      [t('chartCategories.technologyStack')]: ['software-tools', 'infrastructure-readiness', 'data-governance'],
+      [t('chartCategories.processAutomation')]: ['process-documentation', 'workflow-restructuring', 'change-management']
     };
 
     const calculateCategoryScore = (categoryQuestions: string[]) => {
@@ -358,7 +358,7 @@ function ResultsStep() {
         <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
           {t('aiReadinessAnalysis')}
         </h3>
-        <RadarChart strengths={strengths} improvements={improvements} />
+        <RadarChart strengths={strengths} improvements={improvements} language={language} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">

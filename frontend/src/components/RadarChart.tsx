@@ -18,9 +18,27 @@ interface RadarChartProps {
     label: string;
     value: number;
   }[];
+  language?: 'en' | 'bs';
 }
 
-export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements }) => {
+export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements, language = 'en' }) => {
+  // Get translated labels
+  const getTranslatedLabels = () => {
+    const labels = {
+      en: {
+        strengths: 'Strengths',
+        areasForImprovement: 'Areas for Improvement'
+      },
+      bs: {
+        strengths: 'Snage',
+        areasForImprovement: 'Područja za Poboljšanje'
+      }
+    };
+    return labels[language] || labels.en;
+  };
+
+  const translatedLabels = getTranslatedLabels();
+
   // Transform data for Recharts
   const data = strengths.map((strength, index) => ({
     subject: strength.label,
@@ -49,14 +67,14 @@ export const RadarChart: React.FC<RadarChartProps> = ({ strengths, improvements 
             tick={{ fill: 'rgba(103, 112, 118, 0.6)', fontSize: 10 }}
           />
           <Radar
-            name="Strengths"
+            name={translatedLabels.strengths}
             dataKey="strengths"
             stroke="rgba(103, 112, 118, 1)"
             fill="rgba(103, 112, 118, 0.2)"
             fillOpacity={0.6}
           />
           <Radar
-            name="Areas for Improvement"
+            name={translatedLabels.areasForImprovement}
             dataKey="improvements"
             stroke="rgba(138, 107, 78, 1)"
             fill="rgba(138, 107, 78, 0.2)"

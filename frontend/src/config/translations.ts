@@ -98,19 +98,34 @@ export const translations = {
     // Results
     results: {
       title: 'Your AI Readiness Results',
-      subtitle: 'Based on your responses, here\'s your assessment:',
+      subtitle: 'Based on your responses, here is your assessment:',
       overallScore: 'Overall Score',
       categoryScores: 'Category Scores',
       keyStrengths: 'Key Strengths',
       areasForImprovement: 'Areas for Improvement',
       recommendations: 'Recommendations',
-      getFullReport: 'Get Your Full Report',
+      getFullReport: 'Get Your Complete Report',
       emailPlaceholder: 'Enter your email address',
       sendResults: 'Send Results',
       emailSent: 'Results sent successfully!',
       emailError: 'Error sending results. Please try again.',
       downloadPDF: 'Download PDF Report',
       shareResults: 'Share Results'
+    },
+    
+    // Radar Chart Categories
+    chartCategories: {
+      dataInfrastructure: 'Data Infrastructure',
+      aiStrategy: 'AI Strategy',
+      talentDevelopment: 'Talent Development',
+      technologyStack: 'Technology Stack',
+      processAutomation: 'Process Automation'
+    },
+    
+    // Chart Elements
+    chartElements: {
+      strengths: 'Strengths',
+      areasForImprovement: 'Areas for Improvement'
     },
     
     // Common
@@ -147,8 +162,6 @@ export const translations = {
     exceptionalAiReadinessContinueLeadingInnovationAndSharingBestPractices: 'Exceptional AI readiness! Continue leading innovation and sharing best practices.',
     
     // Results page
-    keyStrengths: 'Key Strengths',
-    areasForImprovement: 'Areas for Improvement',
     readyToAccelerateYourAiJourney: 'Ready to Accelerate Your AI Journey?',
     ourTeamOfAiExpertsAtBloomteqCanHelpYouDevelopAComprehensiveStrategyAndImplementationPlanTailoredToYourOrganizationSNeeds: 'Our team of AI experts at Bloomteq can help you develop a comprehensive strategy and implementation plan tailored to your organization\'s needs.',
     scheduleAConsultation: 'Schedule a Consultation',
@@ -168,12 +181,12 @@ export const translations = {
     
     // Maturity levels
     maturityLevels: {
-      Initial: 'Initial',
-      Developing: 'Developing',
-      Defined: 'Defined',
-      Managed: 'Managed',
-      Advanced: 'Advanced',
-      Leading: 'Leading'
+      Initial: 'Initial stage',
+      Developing: 'Developing stage',
+      Defined: 'Defined stage',
+      Managed: 'Managed stage',
+      Advanced: 'Advanced stage',
+      Leading: 'Leading stage in the industry'
     }
   },
   
@@ -192,7 +205,7 @@ export const translations = {
         part2: ' AI Inovacijama'
       },
       description: 'Provjerite je li vaša organizacija spremna iskoristiti puni potencijal umjetne inteligencije. U samo 10 minuta dobit ćete personalizirane uvide i konkretne preporuke.',
-      startButton: 'Započni Besplatnu Procjenu',
+      startButton: 'Pokrenite Procjenu',
       features: {
         comprehensive: 'Sveobuhvatna Procjena',
         actionable: 'Koristi Putanja',
@@ -291,6 +304,21 @@ export const translations = {
       shareResults: 'Podijeli Rezultate'
     },
     
+    // Radar Chart Categories
+    chartCategories: {
+      dataInfrastructure: 'Data Infrastruktura',
+      aiStrategy: 'AI Strategija',
+      talentDevelopment: 'Razvoj Talenata',
+      technologyStack: 'Tehnološki Stack',
+      processAutomation: 'Automatizacija Procesa'
+    },
+    
+    // Chart Elements
+    chartElements: {
+      strengths: 'Snage',
+      areasForImprovement: 'Područja za Poboljšanje'
+    },
+    
     // Common
     loading: 'Učitavanje...',
     error: 'Došlo je do greške',
@@ -325,15 +353,13 @@ export const translations = {
     exceptionalAiReadinessContinueLeadingInnovationAndSharingBestPractices: 'Izvrsna spremnost za AI! Nastavite voditi inovacije i dijeliti najbolje prakse.',
     
     // Results page
-    keyStrengths: 'Ključne Snage',
-    areasForImprovement: 'Područja za Poboljšanje',
     readyToAccelerateYourAiJourney: 'Spremni da Ubrzate Vaš AI Put?',
     ourTeamOfAiExpertsAtBloomteqCanHelpYouDevelopAComprehensiveStrategyAndImplementationPlanTailoredToYourOrganizationSNeeds: 'Naš tim AI eksperata u Bloomteq-u može vam pomoći da razvijete sveobuhvatnu strategiju i plan implementacije prilagođen potrebama vaše organizacije.',
-    scheduleAConsultation: 'Zakažite Konzultaciju',
+    scheduleAConsultation: 'Zakažite Konsultaciju',
     whatThisMeans: 'Šta Ovo Znači',
     nextSteps: 'Sljedeći Koraci',
     createAnActionPlanBasedOnYourAssessmentResults: 'Kreirajte akcioni plan na osnovu rezultata vaše procjene',
-    shareFindingsWithKeyStakeholders: 'Podijelite nalaze s ključnim dionicima',
+    shareFindingsWithKeyStakeholders: 'Podijelite nalaze s ključnim ljudima',
     scheduleAFollowUpAssessmentInSixMonths: 'Zakažite naknadnu procjenu za šest mjeseci',
     
     // Footer
@@ -346,12 +372,12 @@ export const translations = {
     
     // Maturity levels
     maturityLevels: {
-      Initial: 'Početni',
-      Developing: 'U Razvoju',
-      Defined: 'Definisan',
-      Managed: 'Upravljan',
-      Advanced: 'Napredan',
-      Leading: 'Vodeći'
+      Initial: 'Početni stadij',
+      Developing: 'U razvojnom stadiju',
+      Defined: 'Definisan stadij',
+      Managed: 'Dobro kontroliran stadij',
+      Advanced: 'Napredan stadij',
+      Leading: 'Vodeći stadij u industriji'
     }
   }
 };

@@ -749,7 +749,7 @@ const generateEmailHtml = (data: AssessmentResult) => {
         <div style="background-color: #ffffff; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
           <!-- Header -->
           <div style="background-color: #677076; padding: 30px; text-align: center;">
-            <img src="https://bloomteq.com/wp-content/uploads/2024/01/bloomteq-logo-white.png" alt="Bloomteq Logo" style="height: 40px; margin-bottom: 20px; display: inline-block;">
+            <img src="https://i.ibb.co/spmLdT8v/btlogo.png" alt="Bloomteq Logo" style="height: 40px; margin-bottom: 20px; display: inline-block;">
             <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">
               ${t.subject}
             </h1>
@@ -774,10 +774,7 @@ const generateEmailHtml = (data: AssessmentResult) => {
                   ${MATURITY_LEVELS[data.language as keyof typeof MATURITY_LEVELS]?.[data.maturityLevel as keyof typeof MATURITY_LEVELS.en] || data.maturityLevel}
                 </span>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 14px; color: #687177; margin-bottom: 5px;">
-                <span>${data.language === 'bs' ? 'Rezultat' : 'Score'}</span>
-                <span>${data.score} / ${data.maxScore}</span>
-              </div>
+          
               <div style="width: 100%; height: 8px; background-color: #E7E9EC; border-radius: 4px; overflow: hidden;">
                 <div style="width: ${data.percentage}%; height: 100%; background-color: #677076; transition: width 0.5s ease;"></div>
               </div>
@@ -806,7 +803,7 @@ const generateEmailHtml = (data: AssessmentResult) => {
             
             <!-- CTA Button -->
             <div style="text-align: center; margin: 30px 0;">
-              <a href="#" style="display: inline-block; background-color: #677076; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+              <a href="https://calendly.com/ismir-bloomteq/30min" target="_blank" style="display: inline-block; background-color: #677076; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
                 ${t.cta}
               </a>
             </div>
