@@ -84,8 +84,8 @@ export const industryFacts: Record<string, IndustryFact> = {
 
   // Workflow Restructuring
   'workflow-restructuring': {
-    en: "Industry Insight: Bain & Company research indicates that companies that restructure workflows for AI see significant productivity gains. Most successful AI implementations involve process redesign.",
-    bs: "Industrijska perspektiva: Bain & Company istraživanje pokazuje da kompanije koje restrukturiraju radne tokove za AI vide značajna poboljšanja produktivnosti. Većina uspješnih AI implementacija uključuje redizajn procesa."
+    en: "Industry Insight: Bain & Company research indicates that companies that restructure business processes for AI see significant productivity gains. Most successful AI implementations involve process redesign.",
+    bs: "Industrijska perspektiva: Bain & Company istraživanje pokazuje da kompanije koje restrukturiraju poslovne procese za AI vide značajna poboljšanja produktivnosti. Većina uspješnih AI implementacija uključuje redizajn procesa."
   },
 
   // IT Solutions Alignment
@@ -109,7 +109,7 @@ export const industryFacts: Record<string, IndustryFact> = {
   // Stakeholder Engagement
   'stakeholder-engagement': {
     en: "Industry Insight: PMI research indicates that projects with strong stakeholder engagement are more likely to meet objectives. Most successful AI projects have executive sponsorship.",
-    bs: "Industrijska perspektiva: PMI istraživanje pokazuje da su projekti s jakim angažmanom dionika vjerojatniji da će ispuniti ciljeve. Većina uspješnih AI projekata ima izvršno sponzorstvo."
+    bs: "Industrijska perspektiva: PMI istraživanje pokazuje da su projekti s jakim angažmanom ključnih ljudi (aktera) vjerojatniji da će ispuniti ciljeve. Većina uspješnih AI projekata ima izvršno sponzorstvo."
   },
 
   // Business Objectives

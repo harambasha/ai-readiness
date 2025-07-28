@@ -238,8 +238,8 @@ export const questions: Question[] = [
   },
   {
     id: 'workflow-restructuring',
-    text: 'Are you open to restructuring workflows to accommodate AI and automation?',
-    description: 'Workflow restructuring is often necessary to fully leverage AI capabilities.',
+    text: 'Are you open to restructuring business processes to accommodate AI and automation?',
+    description: 'Business process restructuring is often necessary to fully leverage AI capabilities.',
     category: 'strategy',
     type: 'slider',
     weight: 1.0,
@@ -255,8 +255,8 @@ export const questions: Question[] = [
   },
   {
     id: 'it-solutions-alignment',
-    text: 'How well do your current IT solutions align with your business workflow and user needs?',
-    description: 'IT-Business alignment is crucial for successful AI implementation.',
+    text: 'How well do your current IT solutions align with your business processes and user needs?',
+    description: 'IT-Business alignment helps guide successful AI implementation.',
     category: 'strategy',
     type: 'slider',
     weight: 1.0,
@@ -265,15 +265,15 @@ export const questions: Question[] = [
       max: 100,
       step: 25,
       labels: {
-        start: 'Poor Alignment',
-        end: 'Excellent Alignment'
+        start: 'Poor',
+        end: 'Excellent'
       }
     }
   },
   {
     id: 'talent-development',
     text: 'Rate your AI talent development program',
-    description: 'AI talent development is crucial for sustainable AI implementation.',
+    description: 'AI talent development helps guide sustainable AI implementation.',
     category: 'talent',
     type: 'slider',
     weight: 1.5,
@@ -282,8 +282,8 @@ export const questions: Question[] = [
       max: 100,
       step: 10,
       labels: {
-        start: 'Limited',
-        end: 'Comprehensive'
+        start: 'Poor',
+        end: 'Excellent'
       }
     }
   },
