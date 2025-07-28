@@ -364,7 +364,7 @@ function ResultsStep() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         <div className="bg-gray-50 p-6 sm:p-8">
           <h3 className="text-xl font-semibold text-gray-900 mb-4">
-            {t('keyStrengths')}
+            {t('results.keyStrengths')}
           </h3>
           <ul className="space-y-4">
             {topStrengths.map((strength, index) => (
@@ -380,7 +380,7 @@ function ResultsStep() {
 
         <div className="bg-gray-50 p-6 sm:p-8">
           <h3 className="text-xl font-semibold text-gray-900 mb-4">
-            {t('areasForImprovement')}
+            {t('results.areasForImprovement')}
           </h3>
           <ul className="space-y-4">
             {topImprovements.map((improvement, index) => (

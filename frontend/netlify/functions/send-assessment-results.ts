@@ -697,7 +697,7 @@ const getTranslatedContent = (language: string = 'en') => {
       overallScore: 'Ukupan rezultat',
       yourAnswers: 'Vaši odgovori',
       recommendations: 'Preporuke',
-      cta: 'Pogledajte puni izvještaj',
+      cta: 'Zatražite konsultaciju',
       footer: 'Hvala vam što koristite naš alat za procjenu spremnosti za AI.',
       dataRec: 'Poboljšajte infrastrukturu podataka i standarde kvaliteta',
       techRec: 'Unapredite tehničke sposobnosti i alate',
@@ -749,7 +749,7 @@ const generateEmailHtml = (data: AssessmentResult) => {
         <div style="background-color: #ffffff; margin: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
           <!-- Header -->
           <div style="background-color: #677076; padding: 30px; text-align: center;">
-            <img src="https://i.ibb.co/spmLdT8v/btlogo.png" alt="Bloomteq Logo" style="height: 40px; margin-bottom: 20px; display: inline-block;">
+            <img src="https://i.ibb.co/spmLdT8v/btlogo.png" alt="Bloomteq Logo" style="height: 60px; margin-bottom: 20px; display: inline-block;">
             <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">
               ${t.subject}
             </h1>
@@ -766,7 +766,7 @@ const generateEmailHtml = (data: AssessmentResult) => {
               <h2 style="color: #2E363C; margin: 0 0 15px 0; font-size: 20px; font-weight: 600;">
                 ${t.overallScore}
               </h2>
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
                 <span style="font-size: 36px; font-weight: bold; color: #677076;">
                   ${Math.round(data.percentage)}%
                 </span>
@@ -774,8 +774,7 @@ const generateEmailHtml = (data: AssessmentResult) => {
                   ${MATURITY_LEVELS[data.language as keyof typeof MATURITY_LEVELS]?.[data.maturityLevel as keyof typeof MATURITY_LEVELS.en] || data.maturityLevel}
                 </span>
               </div>
-          
-              <div style="width: 100%; height: 8px; background-color: #E7E9EC; border-radius: 4px; overflow: hidden;">
+              <div style="width: 100%; height: 8px; background-color: #E7E9EC; border-radius: 4px; overflow: hidden; margin-top: 15px;">
                 <div style="width: ${data.percentage}%; height: 100%; background-color: #677076; transition: width 0.5s ease;"></div>
               </div>
             </div>

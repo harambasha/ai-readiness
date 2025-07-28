@@ -61,3 +61,6 @@ var/
 *.egg
 venv/
 .venv/
+
+# Local Netlify folder
+.netlify
