@@ -130,6 +130,7 @@ export const translations = {
     
     // Common
     loading: 'Loading...',
+    sending: 'Sending...',
     error: 'An error occurred',
     success: 'Success',
     cancel: 'Cancel',
@@ -143,6 +144,12 @@ export const translations = {
     assessmentCoversDifferentAreas: 'This assessment covers different areas (business, governance, technology). For best results, consider involving a team that covers all areas.',
     linkCopiedToClipboard: 'Link copied to clipboard!',
     aiReadinessAnalysis: 'AI Readiness Analysis',
+
+    // Email Validation
+    emailValidation: {
+      required: 'Email address is required',
+      invalid: 'Please enter a valid email address'
+    },
     
     // Team approach warning
     teamApproachRecommended: 'Team Approach Recommended',
@@ -321,6 +328,7 @@ export const translations = {
     
     // Common
     loading: 'Učitavanje...',
+    sending: 'Slanje...',
     error: 'Došlo je do greške',
     success: 'Uspjeh',
     cancel: 'Otkaži',
@@ -334,6 +342,12 @@ export const translations = {
     assessmentCoversDifferentAreas: 'Ova procjena pokriva različita područja (biznis, governance, tehnologiju). Za najbolje rezultate, razmislite o uključivanju tima koji pokriva sva područja.',
     linkCopiedToClipboard: 'Link kopiran u clipboard!',
     aiReadinessAnalysis: 'AI Analiza Spremnosti',
+
+    // Email Validation
+    emailValidation: {
+      required: 'Email adresa je obavezna',
+      invalid: 'Unesite valjanu email adresu'
+    },
     
     // Team approach warning
     teamApproachRecommended: 'Preporučuje se Timski Pristup',

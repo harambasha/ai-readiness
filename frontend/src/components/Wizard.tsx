@@ -28,6 +28,31 @@ export function Wizard() {
   } = useWizard();
   const { t, language } = useLanguage();
 
+  // Email validation function
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Check if current step can proceed
+  const canProceedToNext = (): boolean => {
+    // If we're on the company-email question, validate the email
+    if (currentQuestion?.id === 'company-email') {
+      const emailAnswer = answers.find(a => a.questionId === 'company-email');
+      if (!emailAnswer?.textValue || !validateEmail(emailAnswer.textValue)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  // Handle next step with validation
+  const handleNextStep = () => {
+    if (canProceedToNext()) {
+      goToNextStep();
+    }
+  };
+
   // Only get currentQuestion if we're on a question step (after welcome and team warning)
   const currentQuestion = currentStep > 2 && currentStep <= questions.length + 2 
     ? questions[currentStep - 3] 
@@ -181,18 +206,26 @@ export function Wizard() {
             <ArrowLeft className="w-5 h-5 mr-2" />
             {t('previous')}
           </button>
-          <button
-            onClick={goToNextStep}
-            disabled={isLastStep}
-            className={`flex items-center justify-center px-4 sm:px-6 py-3 transition-all duration-200 ${
-              isLastStep
-                ? 'text-[#9AA3AA] cursor-not-allowed'
-                : 'bg-[#000000] text-white hover:opacity-90'
-            }`}
-          >
-            {t('next')}
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </button>
+          <div className="flex flex-col items-end space-y-2">
+            {currentQuestion?.id === 'company-email' && !canProceedToNext() && (
+              <p className="text-sm text-red-600 flex items-center">
+                <span className="mr-1">⚠️</span>
+                {t('emailValidation.invalid')}
+              </p>
+            )}
+            <button
+              onClick={handleNextStep}
+              disabled={isLastStep || (currentQuestion?.id === 'company-email' && !canProceedToNext())}
+              className={`flex items-center justify-center px-4 sm:px-6 py-3 transition-all duration-200 ${
+                isLastStep || (currentQuestion?.id === 'company-email' && !canProceedToNext())
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-[#000000] text-white hover:opacity-90'
+              }`}
+            >
+              {t('next')}
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -205,6 +238,9 @@ function ResultsStep() {
   const { calculateScore, answers, language } = useWizard();
   const result = calculateScore();
   const [emailSent, setEmailSent] = useState(false);
+  const [emailInput, setEmailInput] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { t } = useLanguage();
 
   // Find the email and company name from answers
@@ -213,12 +249,59 @@ function ResultsStep() {
   const userEmail = emailAnswer?.textValue;
   const companyName = companyNameAnswer?.textValue || 'Your Company';
 
+  // Email validation function
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Handle email input change
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value;
+    setEmailInput(email);
+    
+    // Clear error when user starts typing
+    if (emailError) {
+      setEmailError('');
+    }
+  };
+
+  // Handle email submission
+  const handleSendEmail = async () => {
+    // Validate email
+    if (!emailInput.trim()) {
+      setEmailError(t('emailValidation.required'));
+      return;
+    }
+
+    if (!validateEmail(emailInput.trim())) {
+      setEmailError(t('emailValidation.invalid'));
+      return;
+    }
+
+    setIsLoading(true);
+    setEmailError('');
+
+    try {
+      await sendAssessmentResults(emailInput.trim(), answers, language);
+      setEmailSent(true);
+      console.log('Assessment results email sent successfully');
+    } catch (error) {
+      console.error('Error sending assessment results:', error);
+      setEmailError(t('results.emailError'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Auto-send email if user email is found in answers (existing functionality)
   useEffect(() => {
     const sendFinalResults = async () => {
-      if (userEmail && !emailSent) {
+      if (userEmail && !emailSent && validateEmail(userEmail)) {
         try {
           await sendAssessmentResults(userEmail, answers, language);
           setEmailSent(true);
+          setEmailInput(userEmail);
           console.log('Final assessment results email sent successfully');
         } catch (error) {
           console.error('Error sending final assessment results:', error);
@@ -313,6 +396,59 @@ function ResultsStep() {
         <div className="mt-4 sm:mt-6">
           <AnimatedScore value={result.percentage} />
         </div>
+
+        {/* Email Input Section */}
+        {!emailSent && (
+          <div className="mt-6 sm:mt-8 max-w-md mx-auto">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+                {t('results.getFullReport')}
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <input
+                    type="email"
+                    value={emailInput}
+                    onChange={handleEmailChange}
+                    placeholder={t('results.emailPlaceholder')}
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#677076] transition-colors ${
+                      emailError ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    disabled={isLoading}
+                  />
+                  {emailError && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <span className="mr-1">⚠️</span>
+                      {emailError}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={handleSendEmail}
+                  disabled={isLoading || !emailInput.trim()}
+                  className={`w-full px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                    isLoading || !emailInput.trim()
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-[#677076] text-white hover:bg-[#4d545a] transform hover:scale-105'
+                  }`}
+                >
+                  {isLoading ? (
+                    <span className="flex items-center justify-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      {t('sending')}
+                    </span>
+                  ) : (
+                    t('results.sendResults')
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {emailSent && (
           <div className="mt-4 sm:mt-6 flex items-center justify-center">
             <CheckCircle2 className="w-5 h-5 text-[#677076] mr-2" />
@@ -321,6 +457,7 @@ function ResultsStep() {
             </span>
           </div>
         )}
+
         <button
           className="mt-6 sm:mt-8 px-6 sm:px-8 py-3 bg-[#677076] text-white rounded-lg hover:bg-[#4d545a] transition text-base sm:text-lg font-medium"
           onClick={() => {
