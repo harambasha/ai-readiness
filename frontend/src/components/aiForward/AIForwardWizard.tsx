@@ -120,6 +120,24 @@ export function AIForwardWizard() {
       }
     }
     
+    if (currentQuestion.type === 'multiple-choice') {
+      if (!answer || !Array.isArray(answer) || answer.length === 0) {
+        return 'Molimo odaberite bar jednu opciju';
+      }
+    }
+    
+    if (currentQuestion.type === 'yes-no') {
+      if (answer === null || answer === undefined) {
+        return 'Molimo odaberite odgovor';
+      }
+    }
+    
+    if (currentQuestion.type === 'likert') {
+      if (typeof answer !== 'number' || answer < 1 || answer > 5) {
+        return 'Molimo ocijenite na skali od 1 do 5';
+      }
+    }
+    
     return '';
   }, [currentStep, answers]);
 
