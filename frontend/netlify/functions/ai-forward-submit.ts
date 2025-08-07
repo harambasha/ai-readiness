@@ -40,7 +40,7 @@ const generateConfirmationEmail = (answers: Record<string, any>) => {
         <div class="container">
           <div class="header">
             <div class="logo">AI FORWARD</div>
-            <p>Inovacioni centar Banja Luka & Ilyria Tech Group Sarajevo</p>
+            <p>Inovacioni centar Banja Luka & Bloomteq</p>
           </div>
           
           <div class="content">
@@ -55,7 +55,7 @@ const generateConfirmationEmail = (answers: Record<string, any>) => {
             <div class="signature">
               <p>Srdačno,<br>
               <strong>AI FORWARD tim</strong><br>
-              Inovacioni centar Banja Luka & Ilyria Tech Group Sarajevo</p>
+              Inovacioni centar Banja Luka & Bloomteq Sarajevo</p>
             </div>
           </div>
           

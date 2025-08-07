@@ -1,9 +1,7 @@
 import React from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { Button } from '../common/Button';
-import { TextInput } from '../assessment/QuestionTypes/TextInput';
-import { MultipleChoice } from '../assessment/QuestionTypes/MultipleChoice';
-import { YesNo } from '../assessment/QuestionTypes/YesNo';
+import { AIForwardTextInput } from './AIForwardTextInput';
+import { AIForwardMultipleChoice } from './AIForwardMultipleChoice';
+import { AIForwardYesNo } from './AIForwardYesNo';
 import { Likert } from '../assessment/QuestionTypes/Likert';
 import { AIForwardQuestion } from '../../data/aiForwardQuestions';
 import { aiForwardTranslations } from '../../config/aiForwardTranslations';
@@ -37,7 +35,7 @@ export function AIForwardQuestionStep({
     switch (question.type) {
       case 'text':
         return (
-          <TextInput
+          <AIForwardTextInput
             value={value as string || ''}
             onChange={(newValue) => onChange(newValue)}
             placeholder="Unesite vaš odgovor..."
@@ -47,7 +45,7 @@ export function AIForwardQuestionStep({
 
       case 'multiple-choice':
         return (
-          <MultipleChoice
+          <AIForwardMultipleChoice
             options={question.options || []}
             value={value as string[] || []}
             onChange={(newValue) => onChange(newValue)}
@@ -61,7 +59,7 @@ export function AIForwardQuestionStep({
 
       case 'yes-no':
         return (
-          <YesNo
+          <AIForwardYesNo
             value={value as string || null}
             onChange={(newValue) => onChange(newValue)}
             yesLabel={t.form.yes}
@@ -89,65 +87,25 @@ export function AIForwardQuestionStep({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
-      <div className="space-y-6">
-        {/* Question Header */}
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+    <div className="bg-white">
+      <div className="p-3 sm:p-4 lg:p-6">
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#2E363C] mb-4">
             {question.text}
             {question.required && <span className="text-red-500 ml-1">*</span>}
           </h2>
           {question.description && (
-            <p className="text-gray-600 text-lg leading-relaxed">
-              {question.description}
-            </p>
+            <p className="text-base sm:text-lg text-[#687177] mb-6">{question.description}</p>
           )}
         </div>
 
-        {/* Question Input */}
-        <div className="mt-8">
+        <div className="space-y-4 sm:space-y-6">
           {renderQuestionInput()}
-        </div>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between pt-8 border-t border-gray-200">
-          <Button
-            variant="outline"
-            onClick={onPrevious}
-            disabled={false}
-            icon={ArrowLeft}
-            iconPosition="left"
-          >
-            {t.navigation.previous}
-          </Button>
-
-          <div className="flex items-center space-x-4">
-            {isLastQuestion ? (
-              <Button
-                onClick={onSubmit}
-                disabled={!canProceed || isSubmitting}
-                icon={isSubmitting ? undefined : ArrowRight}
-                iconPosition="right"
-                loading={isSubmitting}
-              >
-                {isSubmitting ? t.common.loading : t.navigation.submit}
-              </Button>
-            ) : (
-              <Button
-                onClick={onNext}
-                disabled={!canProceed}
-                icon={ArrowRight}
-                iconPosition="right"
-              >
-                {t.navigation.next}
-              </Button>
-            )}
-          </div>
         </div>
 
         {/* Required Field Notice */}
         {question.required && (
-          <div className="text-sm text-gray-500 text-center">
+          <div className="mt-6 text-sm text-[#687177] text-center">
             * {t.form.required}
           </div>
         )}
