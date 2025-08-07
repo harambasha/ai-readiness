@@ -60,14 +60,14 @@
   force = true
 
 [[redirects]]
-  from = "/api/send-assessment-results"
-  to = "/.netlify/functions/send-assessment-results"
+  from = "/api/ai-forward-submit"
+  to = "/.netlify/functions/ai-forward-submit"
   status = 200
   force = true
 
 [[redirects]]
-  from = "/api/ai-forward-submit"
-  to = "/.netlify/functions/ai-forward-submit"
+  from = "/api/send-assessment-results"
+  to = "/.netlify/functions/send-assessment-results"
   status = 200
   force = true
 
