@@ -66,6 +66,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/ai-forward-submit"
+  to = "/.netlify/functions/ai-forward-submit"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
