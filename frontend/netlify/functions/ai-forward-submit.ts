@@ -189,6 +189,13 @@ export const handler: Handler = async (event) => {
   }
 
   try {
+    // Debug environment variables
+    console.log('Environment variables:', {
+      SENDGRID_API_KEY: process.env.SENDGRID_API_KEY ? 'SET' : 'NOT SET',
+      FROM_EMAIL: process.env.FROM_EMAIL,
+      ADMIN_EMAIL: process.env.ADMIN_EMAIL
+    });
+
     const submission: AIForwardSubmission = JSON.parse(event.body || '{}');
     
     if (!submission.answers || !submission.answers['email']) {
