@@ -2,7 +2,7 @@
   base = "frontend"
   command = "npm run build"
   publish = "dist"
-  environment = { SENDGRID_API_KEY = "", NODE_VERSION = "20.11.1", VITE_CALENDLY_URL = "https://calendly.com/ismir-bloomteq/30min" }
+  environment = { NODE_VERSION = "20.11.1", VITE_CALENDLY_URL = "https://calendly.com/ismir-bloomteq/30min" }
 
 [functions]
   directory = "netlify/functions"
