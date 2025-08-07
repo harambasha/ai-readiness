@@ -146,7 +146,7 @@ export function AIForwardWizard() {
 
       // Try to send data to backend (but don't block success display)
       try {
-        const response = await fetch('/api/ai-forward-submit', {
+        const response = await fetch('/.netlify/functions/ai-forward-submit', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
