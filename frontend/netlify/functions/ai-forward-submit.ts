@@ -2,7 +2,11 @@ import { Handler } from '@netlify/functions';
 import sgMail from '@sendgrid/mail';
 
 // Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+const apiKey = process.env.SENDGRID_API_KEY;
+if (!apiKey) {
+  throw new Error('SENDGRID_API_KEY is not set');
+}
+sgMail.setApiKey(apiKey);
 
 interface AIForwardSubmission {
   answers: Record<string, any>;
@@ -195,6 +199,23 @@ export const handler: Handler = async (event) => {
       FROM_EMAIL: process.env.FROM_EMAIL,
       ADMIN_EMAIL: process.env.ADMIN_EMAIL
     });
+
+    // Check if SendGrid API key is available
+    if (!process.env.SENDGRID_API_KEY) {
+      console.error('SENDGRID_API_KEY is not set');
+      return {
+        statusCode: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        },
+        body: JSON.stringify({ 
+          error: 'SendGrid API key not configured' 
+        })
+      };
+    }
 
     const submission: AIForwardSubmission = JSON.parse(event.body || '{}');
     
